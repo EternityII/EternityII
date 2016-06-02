@@ -98,6 +98,8 @@ void Generator::parcoursRowScan()
 
     int x = 0, y = 0;
 
+    nb_noeuds = 0;
+    nb_solutions = 0;
     nb_noeuds_first.clear();
     nb_noeuds_first.str("");
 
@@ -304,6 +306,7 @@ void Generator::generationRecursive(int &position)
         solutionFoundEvent();
     }
 }
+
 void Generator::placerPieceRecursion(int &position, int coord_x, int coord_y, int position_type, Piece &piece_coin)
 {
     if (canPutPiece(piece_coin, coord_x, coord_y, position_type)) { // vérifie si la piece est placable
@@ -313,6 +316,7 @@ void Generator::placerPieceRecursion(int &position, int coord_x, int coord_y, in
         pickOffPiece(piece_coin.getId(), coord_x, coord_y);
     }
 }
+
 void Generator::getPositionInformation(const int &position, int &position_type, int &coord_x, int &coord_y) const
 {
     position_type = coordonnees[position][POS_TYPE];
