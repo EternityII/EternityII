@@ -15,7 +15,7 @@ int main()
         FileIn file_in(str.str().c_str());
         Jeu jeu = file_in.initJeu();
         Generator generator(jeu);
-        generator.parcoursRowScan();
+        generator.parcoursValues();
 
         cout << "---" << endl << endl;
     }

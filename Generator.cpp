@@ -81,14 +81,14 @@ void Generator::coordinatesCreator()
 }
 
 /**
- * Initialise le parcoursRowScan en position 0,0 en placant la premiere piece de bord
+ * Initialise le parcoursValues
  *
  * @param int type_parcours le type de parcours à utiliser
  */
-void Generator::parcoursRowScan()
+void Generator::parcoursValues()
 {
 
-    cout << "### parcoursRowScan()" << endl << endl;
+    cout << "### parcoursValues()" << endl << endl;
     // preparation de tous les elements utilises dans la recursivite
 
     coordinatesCreator(); // crée les coordonnées
@@ -100,26 +100,23 @@ void Generator::parcoursRowScan()
 
     nb_noeuds = 0;
     nb_solutions = 0;
-    nb_noeuds_first.clear();
-    nb_noeuds_first.str("");
 
-    clock_t start = clock(); // initialise le chronometre
+    cout << "|  | Nombre de noeuds | Temps (sec) |" << endl
+        << "| --- | ---: | ---:" << endl;
+
+    start = clock(); // initialise le chronometre
+
+
     jeu.getTabC()[0].setRotation(Piece::RIGHT); // Oriente la pièce 0
     putPiece(x, y, jeu.getTabC()[0]); // place la premiere pièce (pour eviter la duplication de solutions
 
 
     generationRecursive(position);
 
-    cout << "|  |  |" << endl
-        << "| --- | ---:" << endl
-        << "| Premiere solution temps (sec) | `" << (first_solution - start) / (double) (CLOCKS_PER_SEC) << "`" << endl
-        << nb_noeuds_first.str()
-        << "| temps (sec) | `" << (clock() - start) / (double) (CLOCKS_PER_SEC) << "`" << endl;
-    cout << "| nb_noeuds | `" << nb_noeuds << "`" << endl;
-    cout << "| nb_solutions | `" << nb_solutions << "`" << endl << endl;
+    cout << "| All | `" << nb_noeuds << "` | `" << (clock() - start) / (double) (CLOCKS_PER_SEC) << "`" << endl << endl;
+    cout << "*nb_solutions* : `" << nb_solutions << "`" << endl << endl;
 
 }
-
 
 /**
  * Compare deux bord de deux pièces
@@ -350,7 +347,7 @@ void Generator::solutionFoundEvent()
     nb_solutions++;
 
     if (nb_solutions == 1) {
-        first_solution = clock();
-        nb_noeuds_first << "| nb_noeuds_first | `" << nb_noeuds << "`" << endl;
+        cout << "| First | `" << nb_noeuds << "` | `" << (clock() - start) / (double) (CLOCKS_PER_SEC)
+            << "`" << endl;
     }
 }

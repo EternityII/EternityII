@@ -20,7 +20,7 @@ public:
 
     Generator(Jeu jeu);
 
-    void parcoursRowScan();
+    void parcoursValues();
 
 private:
 
@@ -55,7 +55,7 @@ private:
     static const int S = 2;
     static const int W = 3;
 
-    clock_t first_solution;
+    clock_t start;
 
     Jeu jeu;
 
@@ -69,7 +69,6 @@ private:
     int corolle_hamming;
 
     long long nb_noeuds;
-    ostringstream nb_noeuds_first;
     long long nb_solutions;
 
     void coordinatesCreator();
