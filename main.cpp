@@ -8,12 +8,13 @@ using namespace std;
 
 int main()
 {
+    cout << "# RowScan #" << endl << endl;
     for (int i = 4; i < 8; ++i) {
         ostringstream str;
         str << "assets/pieces_" << i << "x" << i << ".txt";
         FileIn file_in(str.str().c_str());
         Jeu jeu = file_in.initJeu();
         Generator generator(jeu);
-        generator.multipleGeneration();
+        generator.parcoursRowScan();
     }
 }

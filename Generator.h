@@ -16,17 +16,11 @@
 class Generator
 {
 public:
-    static const int PARCOURS_COROLLE = 0;
     static const int PARCOURS_ROW = 1;
-    static const int PARCOURS_DIAGONAL = 2;
-    static const int PARCOURS_SPIRALE_IN = 3;
-    static const int PARCOURS_MAX = 4;
 
     Generator(Jeu jeu);
 
-    void multipleGeneration();
-
-    void parcoursBruteForce(const int type_parcours);
+    void parcoursRowScan();
 
 private:
 
@@ -78,11 +72,7 @@ private:
     ostringstream nb_noeuds_first;
     long long nb_solutions;
 
-    void diagonalWalker(int &position_nb, int &x, int &y, const int orientation, const int &length);
-
-    void straightWalker(int &position_nb, int &x, int &y, const int orientation, const int &length);
-
-    void coordinatesCreator(int x, int y, const int type_parcours);
+    void coordinatesCreator();
 
     void addCoordinate(int &position_nb, const int &x, const int &y);
 
@@ -105,7 +95,9 @@ private:
     void pickOffPieceEvent();
 
     void solutionFoundEvent();
+
     void getPositionInformation(const int &position, int &position_type, int &coord_x, int &coord_y) const;
+
     void placerPieceRecursion(int &position, int coord_x, int coord_y, int position_type, Piece &piece_coin);
 };
 

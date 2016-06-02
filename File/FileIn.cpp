@@ -26,7 +26,7 @@ Jeu FileIn::initJeu()
         exit(EXIT_FAILURE);
     }
 
-    cout << "# Lecture Fichier " << path_file << endl << endl;
+    cout << "> Lecture Fichier `" << path_file << "`" << endl << endl;
 
     int couleur[4];
     int color = 0;

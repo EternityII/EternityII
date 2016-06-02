@@ -61,227 +61,37 @@ void Generator::addCoordinate(int &position_nb, const int &x, const int &y)
 }
 
 /**
- * Positionne les coordonnées en diagonale.
- *
- * @param int position_nb ordre de positionnement pour reformer la corolle.
- * @param int x, position x d'origine
- * @param int y, position y d'origine
- * @param int orientation direction de la diagonale.
- * @param int length longueur de la diagonale.
- */
-void Generator::diagonalWalker(int &position_nb, int &x, int &y, const int orientation, const int &length)
-{
-    if (position_nb < 0 || orientation < 0 || length < 0) {
-        perror("Invalid diagonalWalker values");
-        exit(EXIT_FAILURE);
-    }
-
-    int walker_x = x,
-        walker_y = y;
-    int to_x = 1,
-        to_y = 1;
-
-    if (orientation == SW) {
-        to_x = -1;
-    } else if (orientation == NE) {
-        to_y = -1;
-    } else if (orientation == NW) {
-        to_x = -1;
-        to_y = -1;
-    }
-
-    for (int i = 1; i <= length; ++i) {
-        walker_x = x + i * to_x;
-        walker_y = y + i * to_y;
-
-        addCoordinate(position_nb, walker_x, walker_y);
-    }
-
-    // Fin du parcours diagonal, passage des valeurs au parcours suivant
-    x = walker_x;
-    y = walker_y;
-}
-
-/**
- * Parcours le plateau en ligne droite et positionne les coordonnées
- *
- *
- * @param int position_nb ordre de positionnement pour reformer la corolle.
- * @param int x, position x d'origine
- * @param int y, position y d'origine
- * @param int orientation direction de parcours (N[ord], E[st], S[outh], W[est] ).
- * @param int length longueur de la diagonale.
- */
-void Generator::straightWalker(int &position_nb, int &x, int &y, const int orientation, const int &length)
-{
-    // Verification des parametres
-    if (position_nb < 0 || orientation < 0 || length < 0) {
-        perror("Invalid diagonalWalker values");
-        exit(EXIT_FAILURE);
-    }
-
-    int walker_x = x,
-        walker_y = y;
-
-    // walker ne bouge pas en x ni en y
-    int to_x = 0,
-        to_y = 0;
-
-    if (orientation == N) {
-        to_y = -1; // recule en y
-    } else if (orientation == E) {
-        to_x = 1; // avance en x
-    } else if (orientation == S) {
-        to_y = 1; // avance en y
-    } else if (orientation == W) {
-        to_x = -1; // recule en x
-    }
-
-    for (int i = 1; i <= length; ++i) {
-        // avance sur la longeur length desiree (peut etre egale a 1)
-        walker_x = x + i * to_x;
-        walker_y = y + i * to_y;
-
-        // ajoute la coordonee
-        addCoordinate(position_nb, walker_x, walker_y);
-    }
-
-    // on met a jour x et y
-    x = walker_x;
-    y = walker_y;
-
-}
-
-/**
  * Définit l'ordre de parcours de la corolle.
  *
  * @param int x coordonnée x d'origine
  * @param int y coordonnée y d'origine
  */
-void Generator::coordinatesCreator(int x, int y, const int type_parcours)
+void Generator::coordinatesCreator()
 {
     int position_nb = 0; // pièce en position 0, Initialisation du parcours
 
-    if (PARCOURS_COROLLE == type_parcours) {
-        addCoordinate(position_nb, x, y); // pièce initiale
-        y--;// HAMMING 1
-
-        for (int iteration = 1; iteration <= corolle_hamming; ++iteration) {  // HAMMING <= 1 ?
-
-            int walking_x = x, walking_y = y;
-            //placement de la pièce NORD qui va initialiser le parcours diagonal.
-            addCoordinate(position_nb, walking_x, walking_y);
-            diagonalWalker(position_nb, walking_x, walking_y, SE, iteration); // Génération des coordonnées vers le SE
-            diagonalWalker(position_nb, walking_x, walking_y, SW, iteration); // vers le SW
-            diagonalWalker(position_nb, walking_x, walking_y, NW, iteration); // vers le NW
-            diagonalWalker(position_nb, walking_x, walking_y, NE, iteration - 1); // vers le NE sans la dernière valeur
-            y--; //On décrémente la position y : on incrémente le hamming
+    for (int i = 0; i < jeu_size; ++i) {
+        for (int j = 0; j < jeu_size; ++j) {
+            addCoordinate(position_nb, i, j);
         }
-
-        corolle_size = position_nb; // Taille de la corolle
-    } else if (type_parcours == PARCOURS_ROW) {
-        // # creation du parcours horizontal
-        for (int i = 0; i < jeu_size; ++i) {
-            for (int j = 0; j < jeu_size; ++j) {
-                addCoordinate(position_nb, i, j);
-            }
-        }
-        corolle_size = jeu_size * jeu_size;
-    } else if (type_parcours == PARCOURS_DIAGONAL) {
-        // # creation du parcours diagonal
-
-        // premier partie
-        for (int i = 0; i < jeu_size; ++i) {
-            for (int xi = i, yi = 0; yi < jeu_size; --xi, ++yi) {
-                addCoordinate(position_nb, xi, yi);
-            }
-        }
-
-        // seconde partie
-        for (int i = 1; i < jeu_size; ++i) {
-            for (int xi = jeu_size - 1, yi = i; yi < jeu_size; --xi, ++yi) {
-                addCoordinate(position_nb, xi, yi);
-            }
-        }
-        corolle_size = jeu_size * jeu_size;
-    } else if (type_parcours == PARCOURS_SPIRALE_IN) {
-        //[reecriture des coordonnees d'origine] on part de
-        x = 0;
-        y = 0;
-
-        for (int iteration = jeu_size - 1; iteration > 0; iteration -= 2) {
-            addCoordinate(position_nb, x, y); // on ajoute la coordonnee initiale
-            straightWalker(position_nb, x, y, E, iteration); // Génération des coordonnées vers le E
-            straightWalker(position_nb, x, y, S, iteration); // vers le S
-            straightWalker(position_nb, x, y, W, iteration); // vers le W
-            straightWalker(position_nb, x, y, N, iteration - 1); // vers le N
-            x++;
-        }
-
-        if (jeu_size % 2 == 1) { // si impair, il reste un trou au milieu
-            addCoordinate(position_nb, x, y); // on ajoute la coordonnee finale
-        }
-        corolle_size = jeu_size * jeu_size;
     }
-    /* Non applicable a la fonction recursive
-     * else if (type_parcours == PARCOURS_SPIRALE_OUT) {
-        //[reecriture des coordonnees d'origine] on part du centre de la corolle
-        // on cherche le centre de la corolle
-        int size_begin;
 
-        if (corolle_size % 2 == 0) { // la corolle est paire
-            x = corolle_size / 2;
-            y = x;
+    corolle_size = jeu_size * jeu_size;
 
-            // on genere le petit carre de 2x2
-            addCoordinate(position_nb, x, y);
-            straightWalker(position_nb, x, y, E, 1); // Génération des coordonnées vers le E
-            straightWalker(position_nb, x, y, S, 1); // vers le S
-            straightWalker(position_nb, x, y, W, 1); // vers le W
-
-            size_begin = 3;
-        } else {
-            x = (corolle_size - 1) / 2;
-            y = x;
-            size_begin = 2;
-        }
-
-        if (corolle_size > size_begin) {
-            for (int size = size_begin; size < corolle_size; size += 2) {
-                straightWalker(position_nb, x, y, W, 1); // On passe a la taille superieure 4->6
-                straightWalker(position_nb, x, y, N, size - 1); // Génération des coordonnées vers le N
-                straightWalker(position_nb, x, y, E, size); // Génération des coordonnées vers le E
-                straightWalker(position_nb, x, y, S, size); // vers le S
-                straightWalker(position_nb, x, y, W, size); // vers le W
-            }
-        }
-        corolle_size = jeu_size * jeu_size;
-    }*/
 }
 
 /**
- * Initialise le parcoursBruteForce en position 0,0 en placant la premiere piece de bord
+ * Initialise le parcoursRowScan en position 0,0 en placant la premiere piece de bord
  *
  * @param int type_parcours le type de parcours à utiliser
  */
-void Generator::parcoursBruteForce(const int type_parcours)
+void Generator::parcoursRowScan()
 {
-    string nom_parcours = "inconnu";
 
-    if (type_parcours == PARCOURS_COROLLE) {
-        nom_parcours = "corolle";
-    } else if (type_parcours == PARCOURS_ROW) {
-        nom_parcours = "row";
-    } else if (type_parcours == PARCOURS_DIAGONAL) {
-        nom_parcours = "diagonal";
-    } else if (type_parcours == PARCOURS_SPIRALE_IN) {
-        nom_parcours = "spirale in";
-    }
-
-    cout << "#### parcoursBruteForce(" << nom_parcours << ")" << endl << endl;
+    cout << "### parcoursRowScan()" << endl << endl;
     // preparation de tous les elements utilises dans la recursivite
 
-    coordinatesCreator(0, 0, type_parcours); // crée les coordonnées
+    coordinatesCreator(); // crée les coordonnées
 
     cout << "Depart de la recursivite" << endl << endl;
     int position = 1; // initialisation du parcours
@@ -303,26 +113,11 @@ void Generator::parcoursBruteForce(const int type_parcours)
         << "| Premiere solution temps (sec) | `" << (first_solution - start) / (double) (CLOCKS_PER_SEC) << "`" << endl
         << nb_noeuds_first.str()
         << "| temps (sec) | `" << (clock() - start) / (double) (CLOCKS_PER_SEC) << "`" << endl;
+    cout << "| nb_noeuds | `" << nb_noeuds << "`" << endl;
+    cout << "| nb_solutions | `" << nb_solutions << "`" << endl << endl;
 
 }
 
-/*
-* Initialise la génération multiple de toutes les corolles possibles en fonction de la taille du jeu
-*/
-void Generator::multipleGeneration()
-{
-    cout << "### multipleGeneration()" << endl << endl;
-
-    for (int i = 1; i < PARCOURS_MAX; i++) {
-        nb_noeuds = 0;
-        nb_solutions = 0;
-
-        parcoursBruteForce(i); // lance le parcoursBruteForce
-
-        cout << "| nb_noeuds | `" << nb_noeuds << "`" << endl;
-        cout << "| nb_solutions | `" << nb_solutions << "`" << endl << endl;
-    }
-}
 
 /**
  * Compare deux bord de deux pièces
@@ -447,6 +242,7 @@ void Generator::generationRecursive(int &position)
         int coord_x;
         int coord_y;
         int position_type;
+
         getPositionInformation(position, position_type, coord_x, coord_y);
 
         if (position_type < POS_TYPE_COIN) { // si position est un coin
