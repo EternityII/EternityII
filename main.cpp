@@ -16,5 +16,7 @@ int main()
         Jeu jeu = file_in.initJeu();
         Generator generator(jeu);
         generator.parcoursRowScan();
+
+        cout << "---" << endl << endl;
     }
 }
