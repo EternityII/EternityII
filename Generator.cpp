@@ -62,6 +62,7 @@ void Generator::addCoordinate(int &position_nb, const int &x, const int &y)
 
 /**
  * Positionne les coordonnées en diagonale.
+ * en partant du point jusqu'a length - 1
  *
  * @param int position_nb ordre de positionnement pour reformer la corolle.
  * @param int x, position x d'origine
@@ -90,7 +91,7 @@ void Generator::diagonalWalker(int &position_nb, int &x, int &y, const int orien
         to_y = -1;
     }
 
-    for (int i = 1; i <= length; ++i) {
+    for (int i = 0; i < length; ++i) {
         walker_x = x + i * to_x;
         walker_y = y + i * to_y;
 
@@ -104,7 +105,7 @@ void Generator::diagonalWalker(int &position_nb, int &x, int &y, const int orien
 
 /**
  * Parcours le plateau en ligne droite et positionne les coordonnées
- *
+ * en partant du point (non compris) jusqu'a length du coup (0 non, 1 oui, 2 oui) si length = 2
  *
  * @param int position_nb ordre de positionnement pour reformer la corolle.
  * @param int x, position x d'origine
@@ -153,44 +154,29 @@ void Generator::straightWalker(int &position_nb, int &x, int &y, const int orien
 }
 
 /**
- * Définit l'ordre de parcours de la corolle.
+ * Définit l'ordre de parcours de la corolle. (si non dynamique)
  *
  * @param int x coordonnée x d'origine
  * @param int y coordonnée y d'origine
  */
-void Generator::coordinatesCreator(int x, int y, const int type_parcours)
+void Generator::coordinatesCreator()
 {
     int position_nb = 0; // pièce en position 0, Initialisation du parcours
 
-    if (PARCOURS_COROLLE == type_parcours) {
-        addCoordinate(position_nb, x, y); // pièce initiale
-        y--;// HAMMING 1
-
-        for (int iteration = 1; iteration <= corolle_hamming; ++iteration) {  // HAMMING <= 1 ?
-
-            int walking_x = x, walking_y = y;
-            //placement de la pièce NORD qui va initialiser le parcours diagonal.
-            addCoordinate(position_nb, walking_x, walking_y);
-            diagonalWalker(position_nb, walking_x, walking_y, SE, iteration); // Génération des coordonnées vers le SE
-            diagonalWalker(position_nb, walking_x, walking_y, SW, iteration); // vers le SW
-            diagonalWalker(position_nb, walking_x, walking_y, NW, iteration); // vers le NW
-            diagonalWalker(position_nb, walking_x, walking_y, NE, iteration - 1); // vers le NE sans la dernière valeur
-            y--; //On décrémente la position y : on incrémente le hamming
-        }
-
-        corolle_size = position_nb; // Taille de la corolle
-    } else if (type_parcours == PARCOURS_ROW) {
+    if (type_parcours == VAR_ROW) {
         // # creation du parcours horizontal
         for (int i = 0; i < jeu_size; ++i) {
             for (int j = 0; j < jeu_size; ++j) {
                 addCoordinate(position_nb, i, j);
             }
         }
-        corolle_size = jeu_size * jeu_size;
-    } else if (type_parcours == PARCOURS_DIAGONAL) {
+
+        taille_plateau = jeu_size * jeu_size;
+
+    } else if (type_parcours == VAR_DIAGONAL) {
         // # creation du parcours diagonal
 
-        // premier partie
+        // premiere partie
         for (int i = 0; i < jeu_size; ++i) {
             for (int xi = i, yi = 0; yi < jeu_size; --xi, ++yi) {
                 addCoordinate(position_nb, xi, yi);
@@ -203,11 +189,13 @@ void Generator::coordinatesCreator(int x, int y, const int type_parcours)
                 addCoordinate(position_nb, xi, yi);
             }
         }
-        corolle_size = jeu_size * jeu_size;
-    } else if (type_parcours == PARCOURS_SPIRALE_IN) {
-        //[reecriture des coordonnees d'origine] on part de
-        x = 0;
-        y = 0;
+
+        taille_plateau = jeu_size * jeu_size;
+
+    } else if (type_parcours == VAR_SPIRALE_IN) {
+        //on part de
+        int x = 0,
+            y = 0;
 
         for (int iteration = jeu_size - 1; iteration > 0; iteration -= 2) {
             addCoordinate(position_nb, x, y); // on ajoute la coordonnee initiale
@@ -215,95 +203,109 @@ void Generator::coordinatesCreator(int x, int y, const int type_parcours)
             straightWalker(position_nb, x, y, S, iteration); // vers le S
             straightWalker(position_nb, x, y, W, iteration); // vers le W
             straightWalker(position_nb, x, y, N, iteration - 1); // vers le N
-            x++;
+            x++; // réduction du carré
         }
 
         if (jeu_size % 2 == 1) { // si impair, il reste un trou au milieu
             addCoordinate(position_nb, x, y); // on ajoute la coordonnee finale
         }
-        corolle_size = jeu_size * jeu_size;
-    }
-    /* Non applicable a la fonction recursive
-     * else if (type_parcours == PARCOURS_SPIRALE_OUT) {
-        //[reecriture des coordonnees d'origine] on part du centre de la corolle
-        // on cherche le centre de la corolle
+        taille_plateau = jeu_size * jeu_size;
+
+    } else if (type_parcours == VAR_SPIRALE_OUT) {
+        // on cherche le centre du plateau
         int size_begin;
 
-        if (corolle_size % 2 == 0) { // la corolle est paire
-            x = corolle_size / 2;
-            y = x;
-
-            // on genere le petit carre de 2x2
-            addCoordinate(position_nb, x, y);
-            straightWalker(position_nb, x, y, E, 1); // Génération des coordonnées vers le E
-            straightWalker(position_nb, x, y, S, 1); // vers le S
-            straightWalker(position_nb, x, y, W, 1); // vers le W
-
-            size_begin = 3;
-        } else {
-            x = (corolle_size - 1) / 2;
-            y = x;
+        int x, y;
+        if (jeu_size % 2 == 0) { // le plateau est pair
+            x = jeu_size / 2;
+            size_begin = 1;
+        } else { // impair
+            x = (jeu_size - 1) / 2;
+            addCoordinate(position_nb, x, x);
             size_begin = 2;
         }
+        x--;
+        y = x;
 
-        if (corolle_size > size_begin) {
-            for (int size = size_begin; size < corolle_size; size += 2) {
-                straightWalker(position_nb, x, y, W, 1); // On passe a la taille superieure 4->6
-                straightWalker(position_nb, x, y, N, size - 1); // Génération des coordonnées vers le N
-                straightWalker(position_nb, x, y, E, size); // Génération des coordonnées vers le E
-                straightWalker(position_nb, x, y, S, size); // vers le S
-                straightWalker(position_nb, x, y, W, size); // vers le W
-            }
+        for (int size = size_begin; size < jeu_size; size += 2) {
+            straightWalker(position_nb, x, y, S, size);
+            straightWalker(position_nb, x, y, E, size);
+            straightWalker(position_nb, x, y, N, size);
+            straightWalker(position_nb, x, y, W, size);
+            x--;
+            y--;
         }
-        corolle_size = jeu_size * jeu_size;
-    }*/
+
+        taille_plateau = jeu_size * jeu_size - 1;
+    }
 }
 
+void Generator::parcoursBruteForce(const int type_parcours)
+{
+    this->type_parcours = type_parcours;
+
+    cout
+        << "| Type Parcours | Nombre de noeuds (first) | Temps first (sec) | Nombre de noeuds (all) | Temps all (sec) | Nombre de solutions"
+        << endl
+        << "| --- | ---: | ---: | ---: | ---:" << endl;
+
+    parcoursBruteForce();
+}
 /**
  * Initialise le parcoursBruteForce en position 0,0 en placant la premiere piece de bord
  *
  * @param int type_parcours le type de parcours à utiliser
  */
-void Generator::parcoursBruteForce(const int type_parcours)
+void Generator::parcoursBruteForce()
 {
-    string nom_parcours = "inconnu";
-
-    if (type_parcours == PARCOURS_COROLLE) {
-        nom_parcours = "corolle";
-    } else if (type_parcours == PARCOURS_ROW) {
-        nom_parcours = "row";
-    } else if (type_parcours == PARCOURS_DIAGONAL) {
-        nom_parcours = "diagonal";
-    } else if (type_parcours == PARCOURS_SPIRALE_IN) {
-        nom_parcours = "spirale in";
-    }
-
-    cout << "#### parcoursBruteForce(" << nom_parcours << ")" << endl << endl;
+    // cout << "#### parcoursBruteForce()" << endl << endl;
     // preparation de tous les elements utilises dans la recursivite
 
-    coordinatesCreator(0, 0, type_parcours); // crée les coordonnées
+    coordinatesCreator(); // crée les coordonnées
 
-    cout << "Depart de la recursivite" << endl << endl;
+    // cout << "Depart de la recursivite" << endl << endl;
     int position = 1; // initialisation du parcours
 
+    if (type_parcours == VAR_SPIRALE_OUT) {
+        position = 0;
+    }
+
+
+    nb_noeuds = 0;
+    nb_solutions = 0;
+
+    cout << "| " << getNomParcours();
+
+    start = clock(); // initialise le chronometre
+
     int x = 0, y = 0;
-
-    nb_noeuds_first.clear();
-    nb_noeuds_first.str("");
-
-    clock_t start = clock(); // initialise le chronometre
     jeu.getTabC()[0].setRotation(Piece::RIGHT); // Oriente la pièce 0
     putPiece(x, y, jeu.getTabC()[0]); // place la premiere pièce (pour eviter la duplication de solutions
 
-
     generationRecursive(position);
 
-    cout << "|  |  |" << endl
-        << "| --- | ---:" << endl
-        << "| Premiere solution temps (sec) | `" << (first_solution - start) / (double) (CLOCKS_PER_SEC) << "`" << endl
-        << nb_noeuds_first.str()
-        << "| temps (sec) | `" << (clock() - start) / (double) (CLOCKS_PER_SEC) << "`" << endl;
+    cout << " | `" << nb_noeuds << "` | `" << (clock() - start) / (double) (CLOCKS_PER_SEC)
+        << "` | `" << nb_solutions << "`" << endl;
+}
 
+string Generator::getNomParcours() const
+{
+    string nom_parcours = "inconnu";
+
+    if (type_parcours == VAR_ROW) {
+        nom_parcours = "row";
+    } else if (type_parcours == VAR_DIAGONAL) {
+        nom_parcours = "diagonal";
+    } else if (type_parcours == VAR_SPIRALE_IN) {
+        nom_parcours = "spirale_in";
+    } else if (type_parcours == VAR_SPIRALE_OUT) {
+        nom_parcours = "spirale_out";
+    } else if (type_parcours == VAR_DYNAMIQUE_OPTIMISTE) {
+        nom_parcours = "dynamique_optimiste";
+    } else if (type_parcours == VAR_DYNAMIQUE_PESSIMISTE) {
+        nom_parcours = "dynamique_pessimiste";
+    }
+    return nom_parcours;
 }
 
 /*
@@ -313,14 +315,13 @@ void Generator::multipleGeneration()
 {
     cout << "### multipleGeneration()" << endl << endl;
 
-    for (int i = 1; i < PARCOURS_MAX; i++) {
-        nb_noeuds = 0;
-        nb_solutions = 0;
-
-        parcoursBruteForce(i); // lance le parcoursBruteForce
-
-        cout << "| nb_noeuds | `" << nb_noeuds << "`" << endl;
-        cout << "| nb_solutions | `" << nb_solutions << "`" << endl << endl;
+    cout
+        << "| Type Parcours | Nombre de noeuds first | Temps first (sec) | Nombre de noeuds all | Temps all (sec) | Nombre de solutions"
+        << endl;
+    cout << "| --- | ---: | ---: | ---: | ---:" << endl;
+    for (int i = 1; i < VAR_DYNAMIQUE_OPTIMISTE; i++) {
+        type_parcours = i;
+        parcoursBruteForce(); // lance le parcoursBruteForce
     }
 }
 
@@ -443,11 +444,11 @@ void Generator::pickOffPiece(const int &numero_piece, const int &x, const int &y
  */
 void Generator::generationRecursive(int &position)
 {
-    if (position < corolle_size) { // si la corolle est incompleteint position_type;
+    if (position < taille_plateau) { // si la corolle est incompleteint position_type;
         int coord_x;
         int coord_y;
         int position_type;
-        getPositionInformation(position, position_type, coord_x, coord_y);
+        coordinateChooser(position, position_type, coord_x, coord_y);
 
         if (position_type < POS_TYPE_COIN) { // si position est un coin
             for (int numero_piece = 0; numero_piece < 4; numero_piece++) { // parcours des coins
@@ -504,10 +505,11 @@ void Generator::generationRecursive(int &position)
                 }
             }
         }
-    } else if (position == corolle_size) {
+    } else if (position == taille_plateau) {
         solutionFoundEvent();
     }
 }
+
 void Generator::placerPieceRecursion(int &position, int coord_x, int coord_y, int position_type, Piece &piece_coin)
 {
     if (canPutPiece(piece_coin, coord_x, coord_y, position_type)) { // vérifie si la piece est placable
@@ -517,7 +519,7 @@ void Generator::placerPieceRecursion(int &position, int coord_x, int coord_y, in
         pickOffPiece(piece_coin.getId(), coord_x, coord_y);
     }
 }
-void Generator::getPositionInformation(const int &position, int &position_type, int &coord_x, int &coord_y) const
+void Generator::coordinateChooser(const int &position, int &position_type, int &coord_x, int &coord_y) const
 {
     position_type = coordonnees[position][POS_TYPE];
     coord_x = coordonnees[position][POS_X];
@@ -550,7 +552,6 @@ void Generator::solutionFoundEvent()
     nb_solutions++;
 
     if (nb_solutions == 1) {
-        first_solution = clock();
-        nb_noeuds_first << "| nb_noeuds_first | `" << nb_noeuds << "`" << endl;
+        cout << " | `" << nb_noeuds << "` | `" << (clock() - start) / (double) (CLOCKS_PER_SEC) << "`" << flush;
     }
 }

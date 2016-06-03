@@ -16,52 +16,57 @@
 class Generator
 {
 public:
-    static const int PARCOURS_COROLLE = 0;
-    static const int PARCOURS_ROW = 1;
-    static const int PARCOURS_DIAGONAL = 2;
-    static const int PARCOURS_SPIRALE_IN = 3;
-    static const int PARCOURS_MAX = 4;
+    static const int VAR_ROW = 1;
+    static const int VAR_DIAGONAL = 2;
+    static const int VAR_SPIRALE_IN = 3;
+    static const int VAR_SPIRALE_OUT = 4;
+    static const int VAR_DYNAMIQUE_OPTIMISTE = 5;
+    static const int VAR_DYNAMIQUE_PESSIMISTE = 6;
+    static const int VAR_MAX = 7;
+
+    static const int VAL_NORMAL = 0;
+    static const int VAL_OPTIMISTE = 1;
+    static const int VAL_PESSIMISTE = 2;
 
     Generator(Jeu jeu);
 
     void multipleGeneration();
 
     void parcoursBruteForce(const int type_parcours);
-
 private:
 
     static const int POS_X = 0;
+
     static const int POS_Y = 1;
     static const int POS_TYPE = 2;
-
     static const int POS_TYPE_COIN_NW = 1;
+
     static const int POS_TYPE_COIN_NE = 2;
     static const int POS_TYPE_COIN_SE = 3;
     static const int POS_TYPE_COIN_SW = 4;
     static const int POS_TYPE_COIN = 5;
-
     static const int POS_TYPE_BORD = 10;
+
     static const int POS_TYPE_BORD_TOP = 11;
     static const int POS_TYPE_BORD_LEFT = 12;
     static const int POS_TYPE_BORD_BOTTOM = 13;
     static const int POS_TYPE_BORD_RIGHT = 14;
-
     static const int POS_TYPE_INTERIEUR = 6;
 
     static const int JEU_SIZE_MAX = 16;
-    static const int JEU_PIECES_MAX = 256;
 
+    static const int JEU_PIECES_MAX = 256;
     static const int SE = 0;
+
     static const int SW = 1;
     static const int NW = 2;
     static const int NE = 3;
-
     static const int N = 0;
+
     static const int E = 1;
     static const int S = 2;
     static const int W = 3;
-
-    clock_t first_solution;
+    clock_t start;
 
     Jeu jeu;
 
@@ -71,18 +76,19 @@ private:
     bool disponibles[JEU_PIECES_MAX];
     int coordonnees[100][3];
 
-    int corolle_size;
-    int corolle_hamming;
-
+    int taille_plateau;
     long long nb_noeuds;
-    ostringstream nb_noeuds_first;
+
     long long nb_solutions;
+    int type_parcours;
+
+    void parcoursBruteForce();
 
     void diagonalWalker(int &position_nb, int &x, int &y, const int orientation, const int &length);
 
     void straightWalker(int &position_nb, int &x, int &y, const int orientation, const int &length);
 
-    void coordinatesCreator(int x, int y, const int type_parcours);
+    void coordinatesCreator();
 
     void addCoordinate(int &position_nb, const int &x, const int &y);
 
@@ -101,12 +107,11 @@ private:
     void generationRecursive(int &position);
 
     void putPieceEvent();
-
     void pickOffPieceEvent();
-
     void solutionFoundEvent();
-    void getPositionInformation(const int &position, int &position_type, int &coord_x, int &coord_y) const;
+    void coordinateChooser(const int &position, int &position_type, int &coord_x, int &coord_y) const;
     void placerPieceRecursion(int &position, int coord_x, int coord_y, int position_type, Piece &piece_coin);
+    string getNomParcours() const;
 };
 
 
