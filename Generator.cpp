@@ -163,7 +163,7 @@ void Generator::coordinatesCreator()
 {
     int position_nb = 0; // pièce en position 0, Initialisation du parcours
 
-    if (type_parcours == VAR_ROW) {
+    if (type_parcours == PARCOURS_ROW) {
         // # creation du parcours horizontal
         for (int i = 0; i < jeu_size; ++i) {
             for (int j = 0; j < jeu_size; ++j) {
@@ -173,7 +173,7 @@ void Generator::coordinatesCreator()
 
         taille_plateau = jeu_size * jeu_size;
 
-    } else if (type_parcours == VAR_DIAGONAL) {
+    } else if (type_parcours == PARCOURS_DIAGONAL) {
         // # creation du parcours diagonal
 
         // premiere partie
@@ -192,7 +192,7 @@ void Generator::coordinatesCreator()
 
         taille_plateau = jeu_size * jeu_size;
 
-    } else if (type_parcours == VAR_SPIRALE_IN) {
+    } else if (type_parcours == PARCOURS_SPIRALE_IN) {
         //on part de
         int x = 0,
             y = 0;
@@ -211,7 +211,7 @@ void Generator::coordinatesCreator()
         }
         taille_plateau = jeu_size * jeu_size;
 
-    } else if (type_parcours == VAR_SPIRALE_OUT) {
+    } else if (type_parcours == PARCOURS_SPIRALE_OUT) {
         // on cherche le centre du plateau
         int size_begin;
 
@@ -240,9 +240,15 @@ void Generator::coordinatesCreator()
     }
 }
 
-void Generator::parcoursBruteForce(const int type_parcours)
+/**
+ * Initialise le parcours bruteforce en définissant le type de parcours et le choix de variable
+ *
+ * voir constantes PARCOURS_* et VAR_*
+ */
+void Generator::parcoursBruteForce(const int type_parcours, const int type_variable)
 {
     this->type_parcours = type_parcours;
+    this->type_variable = type_variable;
 
     cout
         << "| Type Parcours | Nombre de noeuds (first) | Temps first (sec) | Nombre de noeuds (all) | Temps all (sec) | Nombre de solutions"
@@ -266,10 +272,9 @@ void Generator::parcoursBruteForce()
     // cout << "Depart de la recursivite" << endl << endl;
     int position = 1; // initialisation du parcours
 
-    if (type_parcours == VAR_SPIRALE_OUT) {
+    if (type_parcours == PARCOURS_SPIRALE_OUT) {
         position = 0;
     }
-
 
     nb_noeuds = 0;
     nb_solutions = 0;
@@ -292,17 +297,17 @@ string Generator::getNomParcours() const
 {
     string nom_parcours = "inconnu";
 
-    if (type_parcours == VAR_ROW) {
+    if (type_parcours == PARCOURS_ROW) {
         nom_parcours = "row";
-    } else if (type_parcours == VAR_DIAGONAL) {
+    } else if (type_parcours == PARCOURS_DIAGONAL) {
         nom_parcours = "diagonal";
-    } else if (type_parcours == VAR_SPIRALE_IN) {
+    } else if (type_parcours == PARCOURS_SPIRALE_IN) {
         nom_parcours = "spirale_in";
-    } else if (type_parcours == VAR_SPIRALE_OUT) {
+    } else if (type_parcours == PARCOURS_SPIRALE_OUT) {
         nom_parcours = "spirale_out";
-    } else if (type_parcours == VAR_DYNAMIQUE_OPTIMISTE) {
+    } else if (type_parcours == PARCOURS_DYNAMIQUE_OPTIMISTE) {
         nom_parcours = "dynamique_optimiste";
-    } else if (type_parcours == VAR_DYNAMIQUE_PESSIMISTE) {
+    } else if (type_parcours == PARCOURS_DYNAMIQUE_PESSIMISTE) {
         nom_parcours = "dynamique_pessimiste";
     }
     return nom_parcours;
@@ -319,7 +324,7 @@ void Generator::multipleGeneration()
         << "| Type Parcours | Nombre de noeuds first | Temps first (sec) | Nombre de noeuds all | Temps all (sec) | Nombre de solutions"
         << endl;
     cout << "| --- | ---: | ---: | ---: | ---:" << endl;
-    for (int i = 1; i < VAR_DYNAMIQUE_OPTIMISTE; i++) {
+    for (int i = 0; i < PARCOURS_DYNAMIQUE_OPTIMISTE; i++) {
         type_parcours = i;
         parcoursBruteForce(); // lance le parcoursBruteForce
     }
@@ -519,11 +524,22 @@ void Generator::placerPieceRecursion(int &position, int coord_x, int coord_y, in
         pickOffPiece(piece_coin.getId(), coord_x, coord_y);
     }
 }
+
+/**
+ * définit position_type, coord_x et coord_y suivant la stratégie choisie
+ */
 void Generator::coordinateChooser(const int &position, int &position_type, int &coord_x, int &coord_y) const
 {
-    position_type = coordonnees[position][POS_TYPE];
-    coord_x = coordonnees[position][POS_X];
-    coord_y = coordonnees[position][POS_Y];
+    if (type_parcours == PARCOURS_DYNAMIQUE_OPTIMISTE) {
+
+    } else if (type_parcours == PARCOURS_DYNAMIQUE_PESSIMISTE) {
+
+    } else {
+        position_type = coordonnees[position][POS_TYPE];
+        coord_x = coordonnees[position][POS_X];
+        coord_y = coordonnees[position][POS_Y];
+    }
+
 }
 
 // Evenements
