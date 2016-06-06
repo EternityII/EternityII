@@ -323,11 +323,13 @@ void Generator::multipleGeneration()
     cout
         << "| Type Parcours | Nombre de noeuds first | Temps first (sec) | Nombre de noeuds all | Temps all (sec) | Nombre de solutions"
         << endl;
-    cout << "| --- | ---: | ---: | ---: | ---:" << endl;
+    cout << "| --- | ---: | ---: | ---: | ---: | ---:" << endl;
     for (int i = 0; i < PARCOURS_DYNAMIQUE_OPTIMISTE; i++) {
         type_parcours = i;
         parcoursBruteForce(); // lance le parcoursBruteForce
     }
+
+    cout << endl;
 }
 
 /**
