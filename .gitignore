@@ -157,8 +157,6 @@ tramp
 .cask/
 
 ### Linux template
-*~
-
 # KDE directory preferences
 .directory
 
@@ -184,18 +182,3 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-
-# Fortran module files
-*.mod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
