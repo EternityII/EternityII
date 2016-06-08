@@ -6,7 +6,19 @@
 
 class Normal: public ValueInterface
 {
+public:
+    Normal()
+    { }
 
+    void initialize(GameData &gameData)
+    {
+
+    }
+
+    ValueData next(VariableData &variableData)
+    {
+
+    }
 };
 
 #endif //ETERNITYII_NORMAL_H

@@ -1,9 +1,6 @@
-//
-// Created by stardisblue on 07/06/16.
-//
+#ifndef ETERNITYII_VARDATA_H
+#define ETERNITYII_VARDATA_H
 
-#ifndef ETERNITYII_VARSTRUCT_H
-#define ETERNITYII_VARSTRUCT_H
 
 #include "ValidData.h"
 /**
@@ -29,4 +26,4 @@ struct VariableData: public ValidData
     }
 };
 
-#endif //ETERNITYII_VARSTRUCT_H
+#endif //ETERNITYII_VARDATA_H

@@ -1,11 +1,7 @@
-//
-// Created by stardisblue on 06/06/16.
-//
-
 #include "Solver.h"
 
-Solver::Solver(PathFinder &pathFinder1, DataManager &dataManager1)
-    : dataManager(dataManager1), pathFinder(pathFinder1)
+Solver::Solver(PathFinder &pathFinder, DataManager &dataManager)
+    : pathFinder(pathFinder), dataManager(dataManager)
 { }
 
 void Solver::resolve()
@@ -33,8 +29,8 @@ void Solver::resolve(VariableData &variableData, int &depth)
             dataManager.accept(variableData, valueData);
             resolve(++depth);
             dataManager.rollback(depth);
-            dataManager.discard(variableData, valueData);
         }
+        dataManager.discard(variableData, valueData);
         resolve(variableData, depth);
     }
 }
@@ -52,4 +48,5 @@ bool Solver::isValid(ValueData &valueData)
 bool Solver::isPossible(VariableData &data, ValueData &valueData)
 {
     //TODO :
+    return false;
 }

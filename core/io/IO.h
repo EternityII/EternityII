@@ -1,7 +1,6 @@
-#ifndef ETERNITYII_IOINTERFACE_H
-#define ETERNITYII_IOINTERFACE_H
+#ifndef ETERNITYII_IO_H
+#define ETERNITYII_IO_H
 
-#include <memory>
 #include <fstream>
 
 using namespace std;
@@ -69,4 +68,4 @@ public:
     unique_ptr<fstream> file;
 };
 
-#endif //ETERNITYII_IOINTERFACE_H
+#endif //ETERNITYII_IO_H

@@ -1,13 +1,12 @@
-#ifndef ETERNITYII_ITERATORMANAGER_H
-#define ETERNITYII_ITERATORMANAGER_H
+#ifndef ETERNITYII_PATHFINDER_H
+#define ETERNITYII_PATHFINDER_H
 
-#include <vector>
-#include <bits/unique_ptr.h>
 
+#include <memory>
+#include "pathfinder/VariableInterface.h"
+#include "pathfinder/ValueInterface.h"
 #include "structures/ValueData.h"
 #include "structures/VariableData.h"
-#include "pathfinder/ValueInterface.h"
-#include "pathfinder/VariableInterface.h"
 
 using namespace std;
 
@@ -18,7 +17,11 @@ public:
      * @param valueInterface, value strategy
      * @param variableInterface, variable strategy
      */
-    PathFinder(ValueInterface &valueInterface, VariableInterface &variableInterface);
+    PathFinder();
+
+    void set(unique_ptr<VariableInterface> variableInterface);
+
+    void set(unique_ptr<ValueInterface> valueInterface);
 
     /**
      * @param variableData the variable to look at
@@ -35,9 +38,9 @@ public:
     VariableData nextVariable(int &depth);
 
 private:
-    VariableInterface &variableInterface;
-    ValueInterface &valueInterface;
+    unique_ptr<VariableInterface> variableInterface;
+    unique_ptr<ValueInterface> valueInterface;
 };
 
 
-#endif //ETERNITYII_ITERATORMANAGER_H
+#endif //ETERNITYII_PATHFINDER_H

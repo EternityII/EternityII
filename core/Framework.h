@@ -1,14 +1,13 @@
 #ifndef ETERNITYII_FRAMEWORKMANAGER_H
 #define ETERNITYII_FRAMEWORKMANAGER_H
 
-#include <string>
-#include "io/IO.h"
-#include "structures/GameData.h"
-#include "iterations/VariableInterface.h"
-#include "data/DataTypeInterface.h"
+
+#include <memory>
 #include "DataManager.h"
 #include "PathFinder.h"
 #include "Solver.h"
+#include "structures/GameData.h"
+#include "io/IO.h"
 #include "pathfinder/ValueInterface.h"
 #include "pathfinder/VariableInterface.h"
 
@@ -25,9 +24,9 @@ public:
 private:
     DataManager dataManager;
 
-    shared_ptr<PathFinder> pathFinder;
+    PathFinder pathFinder;
 
-    shared_ptr<Solver> solver;
+    unique_ptr<Solver> solver;
 
     GameData game;
 
@@ -41,12 +40,12 @@ private:
     /**
      * Creates the Value strategy
      */
-    ValueInterface createValue(int &value);
+    unique_ptr<ValueInterface> createValue(int &value);
 
     /**
      * Creates the Value strategy
      */
-    VariableInterface createVariable(int &variable);
+    unique_ptr<VariableInterface> createVariable(int &variable);
 };
 
 

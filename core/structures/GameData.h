@@ -1,6 +1,5 @@
-#ifndef ETERNITYII_GAMESTRUCT_H
-#define ETERNITYII_GAMESTRUCT_H
-
+#ifndef ETERNITYII_GAMEDATA_H
+#define ETERNITYII_GAMEDATA_H
 
 #include <vector>
 #include <memory>
@@ -41,4 +40,4 @@ struct GameData
 };
 
 
-#endif //ETERNITYII_GAMESTRUCT_H
+#endif //ETERNITYII_GAMEDATA_H

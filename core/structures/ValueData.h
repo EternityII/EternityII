@@ -1,12 +1,8 @@
-//
-// Created by stardisblue on 07/06/16.
-//
+#ifndef ETERNITYII_VALUEDATA_H
+#define ETERNITYII_VALUEDATA_H
 
-#ifndef ETERNITYII_VALUESTRUCT_H
-#define ETERNITYII_VALUESTRUCT_H
 
 #include "ValidData.h"
-
 /**
  * Informations sur la piece a poser
  */
@@ -24,4 +20,4 @@ struct ValueData: public ValidData
 
 };
 
-#endif //ETERNITYII_VALUESTRUCT_H
+#endif //ETERNITYII_VALUEDATA_H

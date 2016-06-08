@@ -2,8 +2,8 @@
 // Created by stardisblue on 06/06/16.
 //
 
-#ifndef ETERNITYII_PIECESTRUCT_H
-#define ETERNITYII_PIECESTRUCT_H
+#ifndef ETERNITYII_PIECEDATA_H
+#define ETERNITYII_PIECEDATA_H
 
 #include <vector>
 
@@ -22,4 +22,4 @@ struct PieceData
     }
 };
 
-#endif //ETERNITYII_PIECESTRUCT_H
+#endif //ETERNITYII_PIECEDATA_H

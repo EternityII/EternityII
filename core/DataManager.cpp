@@ -1,10 +1,6 @@
-//
-// Created by stardisblue on 07/06/16.
-//
-
 #include "DataManager.h"
 
-void DataManager::add(DataTypeInterface &dataType)
+void DataManager::add(shared_ptr<DataTypeInterface> dataType)
 {
     datatypes.push_back(dataType);
 }
@@ -28,6 +24,11 @@ void DataManager::rollback(int &depth)
 {
     //TODO:
     for (int i = 0; i < datatypes.size(); ++i) {
-        datatypes[depth].rollback(depth);
+        datatypes[depth]->rollback(depth);
     }
+}
+
+void DataManager::initialize(shared_ptr<DataBridge> dataBridge)
+{
+    this->dataBridge = dataBridge;
 }

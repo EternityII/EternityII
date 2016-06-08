@@ -1,6 +1,6 @@
-#include <iostream>
 #include "Framework.h"
-
+#include "../pathfinder/variables/Rowscan.h"
+#include "../pathfinder/values/Normal.h"
 
 void Framework::bootstrap(string &filename, int &variable, int &value)
 {
@@ -8,12 +8,14 @@ void Framework::bootstrap(string &filename, int &variable, int &value)
 
     import(io);
 
-    ValueInterface valueInterface = createValue(value);
-    VariableInterface variableInterface = createVariable(variable);
+    pathFinder.set(move(createValue(value)));
+    pathFinder.set(move(createVariable(variable)));
 
-    pathFinder = make_shared(new PathFinder(valueInterface, variableInterface));
-    solver = make_shared(new Solver(*pathFinder, dataManager));
+    shared_ptr<DataBridge> dataBridge = make_shared<DataBridge>(game);
 
+    dataManager.initialize(dataBridge);
+
+    solver = make_unique<Solver>(pathFinder, dataManager);
 }
 
 /**
@@ -74,12 +76,14 @@ void Framework::import(IO &io)
     }
 }
 
-ValueInterface Framework::createValue(int &value)
+unique_ptr<ValueInterface> Framework::createValue(int &value)
 {
-    return ValueInterface();
+    unique_ptr<ValueInterface> valueInterface = make_unique<Normal>();
+    return move(valueInterface);
 }
 
-VariableInterface Framework::createVariable(int &variable)
+unique_ptr<VariableInterface> Framework::createVariable(int &variable)
 {
-    return VariableInterface();
+    unique_ptr<VariableInterface> variableInterface = make_unique<Rowscan>();
+    return move(variableInterface);
 }

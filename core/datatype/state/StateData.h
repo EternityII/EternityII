@@ -5,7 +5,13 @@
 
 struct StateData
 {
-    virtual StateData(GameData &gameData) = 0;
+    StateData()
+    { }
+
+    StateData(StateData &stateData)
+    { }
+
+    virtual void initialize(const GameData &gameData) = 0;
 };
 
 #endif //ETERNITYII_STATEDATA_H

@@ -6,6 +6,9 @@
 class Rowscan: public VariableInterface
 {
 public:
+    Rowscan()
+    { }
+
     void initialize(GameData &gameData)
     {
         variableDatas.resize(gameData.piecesQte);

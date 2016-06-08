@@ -1,19 +1,13 @@
-//
-// Created by stardisblue on 06/06/16.
-//
-
-#ifndef ETERNITYII_RESOLUTION_H
-#define ETERNITYII_RESOLUTION_H
+#ifndef ETERNITYII_SOLVER_H
+#define ETERNITYII_SOLVER_H
 
 
 #include "PathFinder.h"
 #include "DataManager.h"
-#include "structures/ValueData.h"
-#include "structures/VariableData.h"
 class Solver
 {
 public:
-    Solver(PathFinder &pathFinder1, DataManager &dataManager1);
+    Solver(PathFinder &pathFinder, DataManager &dataManager);
 
     /**
      * Begin the resolution process
@@ -41,4 +35,4 @@ private:
 };
 
 
-#endif //ETERNITYII_RESOLUTION_H
+#endif //ETERNITYII_SOLVER_H

@@ -1,19 +1,21 @@
-//
-// Created by stardisblue on 07/06/16.
-//
-
 #ifndef ETERNITYII_DATAMANAGER_H
 #define ETERNITYII_DATAMANAGER_H
 
+#include <memory>
 
+#include "datatype/DataBridge.h"
+#include "datatype/DataTypeInterface.h"
 #include "structures/VariableData.h"
 #include "structures/ValueData.h"
-#include "datatype/DataTypeInterface.h"
 class DataManager
 {
 public:
+    DataManager()
+    { }
 
-    void add(DataTypeInterface &dataType);
+    void initialize(shared_ptr<DataBridge> dataBridge);
+
+    void add(shared_ptr<DataTypeInterface> dataType);
 
     void remove(int dataTypeIndex);
 
@@ -24,7 +26,9 @@ public:
     void rollback(int &depth);
 
 private:
-    vector<DataTypeInterface> datatypes;
+    shared_ptr<DataBridge> dataBridge;
+
+    vector<shared_ptr<DataTypeInterface>> datatypes;
 };
 
 

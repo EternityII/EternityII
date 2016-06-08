@@ -11,6 +11,4 @@ public:
 
     virtual VariableData next(int &depth) = 0;
 };
-
-
 #endif //ETERNITYII_VARIABLEINTERFACE_H

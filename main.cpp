@@ -1,5 +1,4 @@
 #include <string>
-
 #include "core/Framework.h"
 
 using namespace std;
