@@ -26,7 +26,7 @@ private:
 
     PathFinder pathFinder;
 
-    unique_ptr<Solver> solver;
+    Solver solver;
 
     GameData game;
 

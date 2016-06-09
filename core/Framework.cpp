@@ -11,11 +11,11 @@ void Framework::bootstrap(string &filename, int &variable, int &value)
     pathFinder.set(move(createValue(value)));
     pathFinder.set(move(createVariable(variable)));
 
-    shared_ptr<DataBridge> dataBridge = make_shared<DataBridge>(game);
+    unique_ptr<DataBridge> dataBridge = make_unique<DataBridge>();
+    dataBridge->initialize(game);
 
-    dataManager.initialize(dataBridge);
-
-    solver = make_unique<Solver>(pathFinder, dataManager);
+    dataManager.initialize(move(dataBridge));
+    solver.initialize(pathFinder, dataManager);
 }
 
 /**

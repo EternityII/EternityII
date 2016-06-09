@@ -8,9 +8,12 @@
 class DataBridge: public DataTypeInterface
 {
 public:
-    DataBridge(const GameData &game);
+    DataBridge()
+    { };
 
     DataBridge(DataBridge &dataBridge);
+
+    void initialize(const GameData &gameData);
 
     /**
      * When a Value is accepted as a possibility (accepted) for the Variable
@@ -35,7 +38,6 @@ public:
     {
 
     };
-
 private:
     DataBridgeStateData actualState;
 };

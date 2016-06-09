@@ -1,8 +1,15 @@
 #include "Solver.h"
 
-Solver::Solver(PathFinder &pathFinder, DataManager &dataManager)
-    : pathFinder(pathFinder), dataManager(dataManager)
-{ }
+Solver::Solver()
+{
+
+}
+
+void Solver::initialize(PathFinder &pathFinder, DataManager &dataManager)
+{
+    this->pathFinder = &pathFinder;
+    this->dataManager = &dataManager;
+}
 
 void Solver::resolve()
 {
@@ -13,7 +20,7 @@ void Solver::resolve()
 
 void Solver::resolve(int &depth)
 {
-    VariableData variableData = pathFinder.nextVariable(depth);
+    VariableData variableData = pathFinder->nextVariable(depth);
 
     if (isValid(variableData)) {
         resolve(variableData, depth);
@@ -22,15 +29,15 @@ void Solver::resolve(int &depth)
 
 void Solver::resolve(VariableData &variableData, int &depth)
 {
-    ValueData valueData = pathFinder.nextValue(variableData);
+    ValueData valueData = pathFinder->nextValue(variableData);
 
     if (isValid(valueData)) {
         if (isPossible(variableData, valueData)) {
-            dataManager.accept(variableData, valueData);
+            dataManager->accept(variableData, valueData);
             resolve(++depth);
-            dataManager.rollback(depth);
+            dataManager->rollback(depth);
         }
-        dataManager.discard(variableData, valueData);
+        dataManager->discard(variableData, valueData);
         resolve(variableData, depth);
     }
 }

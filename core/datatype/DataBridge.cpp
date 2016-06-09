@@ -1,6 +1,6 @@
 #include "DataBridge.h"
 
-DataBridge::DataBridge(const GameData &game)
+void DataBridge::initialize(const GameData &game)
 {
     // initial optimisation
     actualState.initialize(game);
@@ -37,6 +37,7 @@ DataBridge::DataBridge(const GameData &game)
     }
 
 }
+
 DataBridge::DataBridge(DataBridge &dataBridge)
 {
     actualState = dataBridge.actualState;

@@ -1,13 +1,16 @@
 #ifndef ETERNITYII_SOLVER_H
 #define ETERNITYII_SOLVER_H
 
+#include <memory>
 
 #include "PathFinder.h"
 #include "DataManager.h"
 class Solver
 {
 public:
-    Solver(PathFinder &pathFinder, DataManager &dataManager);
+    Solver();
+
+    void initialize(PathFinder &pathFinder, DataManager &dataManager);
 
     /**
      * Begin the resolution process
@@ -16,9 +19,9 @@ public:
 
 private:
 
-    PathFinder &pathFinder;
+    PathFinder *pathFinder;
 
-    DataManager &dataManager;
+    DataManager *dataManager;
 
     /**
      * Recursive resolution method
@@ -30,7 +33,6 @@ private:
     bool isValid(ValueData &valueData);
 
     bool isValid(VariableData &variableData);
-
     bool isPossible(VariableData &data, ValueData &valueData);
 };
 

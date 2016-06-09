@@ -3,6 +3,7 @@
 
 #include "../structures/ValueData.h"
 #include "../structures/VariableData.h"
+#include "../structures/GameData.h"
 
 class DataTypeInterface
 {
@@ -12,6 +13,8 @@ public:
 
     DataTypeInterface(DataTypeInterface &dataTypeInterface)
     { }
+
+    virtual void initialize(const GameData &gameData) = 0;
     /**
      * When a Piece is put on the plate
      */

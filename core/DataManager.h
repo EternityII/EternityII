@@ -13,7 +13,7 @@ public:
     DataManager()
     { }
 
-    void initialize(shared_ptr<DataBridge> dataBridge);
+    void initialize(unique_ptr<DataBridge> dataBridge);
 
     void add(shared_ptr<DataTypeInterface> dataType);
 
@@ -26,7 +26,7 @@ public:
     void rollback(int &depth);
 
 private:
-    shared_ptr<DataBridge> dataBridge;
+    unique_ptr<DataBridge> dataBridge;
 
     vector<shared_ptr<DataTypeInterface>> datatypes;
 };

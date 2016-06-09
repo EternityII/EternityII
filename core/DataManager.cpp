@@ -28,7 +28,7 @@ void DataManager::rollback(int &depth)
     }
 }
 
-void DataManager::initialize(shared_ptr<DataBridge> dataBridge)
+void DataManager::initialize(unique_ptr<DataBridge> dataBridge)
 {
-    this->dataBridge = dataBridge;
+    this->dataBridge = move(dataBridge);
 }
