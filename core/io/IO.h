@@ -2,6 +2,7 @@
 #define ETERNITYII_IO_H
 
 #include <fstream>
+#include <memory>
 
 using namespace std;
 
