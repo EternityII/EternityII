@@ -18,37 +18,28 @@ void PieceCaseSolver::resolve(int &depth)
     //Exist in this scope
     unique_ptr<DataInterface> dataptr = move(pathFinder->nextVariable(depth));
     // Casted to use it
-    CaseVariableData *caseVariableData = (CaseVariableData *) dataptr.get();
+    CaseData *caseData = (CaseData *) dataptr.get();
 
-    if (isValid(*caseVariableData)) {
-        resolve(*caseVariableData, depth);
+    if (caseData->valid) {
+        resolve(*caseData, depth);
     }
 }
 
-void PieceCaseSolver::resolve(CaseVariableData &caseVariableData, int &depth)
+void PieceCaseSolver::resolve(CaseData &caseData, int &depth)
 {
     // Existance of the data
-    unique_ptr<DataInterface> dataptr = move(pathFinder->nextValue(caseVariableData));
+    unique_ptr<DataInterface> dataptr = move(pathFinder->nextValue(caseData));
     // Casted to use it
-    PieceValueData *pieceValueData = (PieceValueData *) dataptr.get();
+    PieceData *pieceData = (PieceData *) dataptr.get();
 
     // TODO LOGIC
-    if (isValid(*pieceValueData)) {
-        pieceCaseConstraint->accept(caseVariableData, *pieceValueData, depth);
+    if (pieceData->valid) {
+        pieceCaseConstraint->accept(caseData, *pieceData, depth);
         ++depth;
+        cout << depth << endl;
         resolve(depth);
         --depth;
         pieceCaseConstraint->rollback(depth);
-        pieceCaseConstraint->discard(caseVariableData, *pieceValueData, depth);
+        pieceCaseConstraint->discard(caseData, *pieceData, depth);
     }
-}
-
-bool PieceCaseSolver::isValid(CaseVariableData &caseVariableData)
-{
-    return caseVariableData.isValid();
-}
-
-bool PieceCaseSolver::isValid(PieceValueData &pieceValueData)
-{
-    return pieceValueData.isValid();
 }

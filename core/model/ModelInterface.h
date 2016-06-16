@@ -9,6 +9,11 @@ class ModelInterface: public ObservableInterface
 public:
     virtual void initialize(GameImportData &gameImportData) = 0;
 
+    /**
+     * @param int const &depth, the depth
+     *
+     * Rolls back the model to depth
+     */
     virtual void rollback(const int &depth) = 0;
 };
 

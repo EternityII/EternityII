@@ -13,7 +13,7 @@ class PieceNormalValue: public ValueInterface
     unique_ptr<DataInterface> next(DataInterface &dataInterface)
     {
         //TODO
-        unique_ptr<PieceValueData> pieceData = make_unique<PieceValueData>(true);
+        unique_ptr<PieceData> pieceData = make_unique<PieceData>(true);
         pieceData->id = 1;
         pieceData->rotation = 5;
 

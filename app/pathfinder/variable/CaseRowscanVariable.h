@@ -14,7 +14,7 @@ class CaseRowscanVariable: public VariableInterface
     {
         //TODO
         // For test sake
-        unique_ptr<CaseVariableData> caseData = make_unique<CaseVariableData>(true);
+        unique_ptr<CaseData> caseData = make_unique<CaseData>(true);
         caseData->x = 10;
         caseData->y = 50;
         return move(caseData);

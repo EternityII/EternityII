@@ -1,9 +1,9 @@
-#ifndef ETERNITYII_PIECEVALUEDATA_H
-#define ETERNITYII_PIECEVALUEDATA_H
+#ifndef ETERNITYII_PIECEDATA_H
+#define ETERNITYII_PIECEDATA_H
 
 #include "../../../core/data/DataInterface.h"
 
-class PieceValueData: public DataInterface
+class PieceData: public DataInterface
 {
 public:
     /**
@@ -15,18 +15,18 @@ public:
      */
     int rotation;
 
-    PieceValueData()
+    PieceData()
         : DataInterface()
     { }
 
-    PieceValueData(bool valid)
+    PieceData(bool valid)
         : DataInterface(valid)
     { }
 
-    PieceValueData(int id, int rotation)
+    PieceData(int id, int rotation)
         : id(id), rotation(rotation)
     { }
 
 };
 
-#endif //ETERNITYII_PIECEVALUEDATA_H
+#endif //ETERNITYII_PIECEDATA_H

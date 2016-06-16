@@ -1,21 +1,21 @@
 #include "PieceCaseConstraint.h"
 
-void PieceCaseConstraint::accepted(CaseVariableData &caseVariableData)
+void PieceCaseConstraint::accepted(CaseData &caseData)
 {
     //TODO
 }
 
-void PieceCaseConstraint::accepted(PieceValueData &pieceValueData)
+void PieceCaseConstraint::accepted(PieceData &pieceData)
 {
     //TODO
 }
 
-void PieceCaseConstraint::discarded(CaseVariableData &caseVariableData)
+void PieceCaseConstraint::discarded(CaseData &caseData)
 {
     //TODO
 }
 
-void PieceCaseConstraint::discarded(PieceValueData &pieceValueData)
+void PieceCaseConstraint::discarded(PieceData &pieceData)
 {
     //TODO
 }
@@ -25,11 +25,12 @@ void PieceCaseConstraint::rollback(const int &depth)
     //TODO
 }
 
-void PieceCaseConstraint::accept(CaseVariableData &caseVariableData, PieceValueData &pieceValueData, const int &depth)
+void PieceCaseConstraint::accept(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
     //TODO
 }
-void PieceCaseConstraint::discard(CaseVariableData &caseVariableData, PieceValueData &pieceValueData, const int &depth)
+
+void PieceCaseConstraint::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
     //TODO
 }

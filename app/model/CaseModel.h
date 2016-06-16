@@ -23,11 +23,11 @@ public:
 
     void initialize(GameImportData &gameImportData);
 
-    void rollback(const int &depth);
-
     void accept(DataInterface &dataInterface);
 
     void discard(DataInterface &dataInterface);
+
+    void rollback(const int &depth);
 };
 
 

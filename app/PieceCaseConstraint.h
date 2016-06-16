@@ -5,8 +5,8 @@
 #include "../core/ConstraintInterface.h"
 #include "model/PieceModel.h"
 #include "model/CaseModel.h"
-#include "data/variable/CaseVariableData.h"
-#include "data/value/PieceValueData.h"
+#include "data/variable/CaseData.h"
+#include "data/value/PieceData.h"
 
 
 class PieceCaseConstraint: public ConstraintInterface
@@ -15,18 +15,55 @@ protected:
     PieceModel *first;
     CaseModel *second;
 public:
-    void accept(CaseVariableData &caseVariableData, PieceValueData &pieceValueData, const int &depth);
+    /**
+     * @param CaseData &caseData, the variable to apply
+     * @param PieceData &pieceData, the value to apply
+     *
+     * applies the data for this constraint
+     */
+    void accept(CaseData &caseData, PieceData &pieceData, const int &depth);
 
-    void discard(CaseVariableData &caseVariableData, PieceValueData &pieceValueData, const int &depth);
+    /**
+     * @param CaseData &caseData, the variable to apply
+     * @param PieceData &pieceData, the value to apply
+     *
+     * discards this variable<->value association
+     */
+    void discard(CaseData &caseData, PieceData &pieceData, const int &depth);
 
-    void accepted(CaseVariableData &caseVariableData);
+    /**
+     * @param CaseData &pieceData, variable data
+     *
+     * propagates (applies) the data to PieceModel from CaseData
+     */
+    void accepted(CaseData &caseData);
 
-    void accepted(PieceValueData &pieceValueData);
+    /**
+     * @param PieceData &pieceData, value data
+     *
+     * propagates (applies) the data to CaseModel from PieceData
+     */
+    void accepted(PieceData &pieceData);
 
-    void discarded(CaseVariableData &caseVariableData);
+    /**
+     * @param CaseData &caseData, variable data
+     *
+     * propagates (applies) the data to PieceModel from CaseData
+     */
+    void discarded(CaseData &caseData);
 
-    void discarded(PieceValueData &pieceValueData);
+    /**
+     * @param PieceData &pieceData, value data
+     *
+     * propagates (discards) the data to CaseModel from PieceData
+     */
+    void discarded(PieceData &pieceData);
 
+    /**
+     * @param  int const &depth
+     *
+     * Rollback the table to depth
+     */
     void rollback(const int &depth);
 };
 
