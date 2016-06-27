@@ -25,7 +25,7 @@ private:
 
     vector<unique_ptr<ConstraintInterface>> constraints;
 
-    vector<unique_ptr<ModelInterface>> modeles;
+    vector<unique_ptr<ModelInterface>> models;
 
     /**
      * @param io, the file which contains the game data

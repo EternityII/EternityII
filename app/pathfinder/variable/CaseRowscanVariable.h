@@ -19,6 +19,12 @@ class CaseRowscanVariable: public VariableInterface
         caseData->y = 50;
         return caseData;
     }
+
+    const bool hasNext(int &depth)
+    {
+        //TODO
+        return false;
+    }
 };
 
 #endif //ETERNITYII_CASEROWSCANVARIABLE_H

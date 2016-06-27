@@ -8,31 +8,39 @@ void Framework::bootstrap(string &filename, int &variable, int &value)
 
     import(io);
 
+    // Creating the solver
     solver = make_unique<PieceCaseSolver>();
 
+    // Setting up the PathFinder
     pathFinder.set(move(createValue(value)));
     pathFinder.set(move(createVariable(variable)));
 
+    // Initializing the models
     unique_ptr<PieceModel> pieceModel = make_unique<PieceModel>();
     unique_ptr<CaseModel> caseModel = make_unique<CaseModel>();
 
+    // Creating the constraint
     unique_ptr<PieceCaseConstraint> pieceCaseConstraint = make_unique<PieceCaseConstraint>();
 
     pieceCaseConstraint->setFirst(*pieceModel);
     pieceCaseConstraint->setSecond(*caseModel);
 
+    // initializing the solver
     solver->initialize(pathFinder, *pieceCaseConstraint);
 
+    // storing the constraints
     constraints.push_back(move(pieceCaseConstraint));
 
-    modeles.push_back(move(pieceModel));
-    modeles.push_back(move(caseModel));
+    // storing the models
+    models.push_back(move(pieceModel));
+    models.push_back(move(caseModel));
 
-    for (int i = 0; i < modeles.size(); ++i) {
-        modeles[i]->initialize(game);
+    // initializing the models ... akward
+    for (int i = 0; i < models.size(); ++i) {
+        models[i]->initialize(game);
     }
 
-    //dataManager.initialize();
+    // go go power rangers !!
     solver->resolve();
 }
 

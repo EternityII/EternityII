@@ -6,6 +6,8 @@
 
 class ModelInterface: public ObservableInterface
 {
+protected:
+    int actualDepth;
 public:
     virtual void initialize(GameImportData &gameImportData) = 0;
 

@@ -19,6 +19,12 @@ class PieceNormalValue: public ValueInterface
 
         return pieceData;
     }
+
+    const bool hasNext(DataInterface &dataInterface)
+    {
+        //TODO
+        return false;
+    }
 };
 
 

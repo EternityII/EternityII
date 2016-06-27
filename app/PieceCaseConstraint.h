@@ -34,28 +34,28 @@ public:
     /**
      * @param CaseData &pieceData, variable data
      *
-     * propagates (applies) the data to PieceModel from CaseData
+     * propagates (applies) the data to PieceModel from CaseModel
      */
     void accepted(CaseData &caseData);
 
     /**
      * @param PieceData &pieceData, value data
      *
-     * propagates (applies) the data to CaseModel from PieceData
+     * propagates (applies) the data to CaseModel from PieceModel
      */
     void accepted(PieceData &pieceData);
 
     /**
      * @param CaseData &caseData, variable data
      *
-     * propagates (applies) the data to PieceModel from CaseData
+     * propagates (applies) the data to PieceModel from CaseModel
      */
     void discarded(CaseData &caseData);
 
     /**
      * @param PieceData &pieceData, value data
      *
-     * propagates (discards) the data to CaseModel from PieceData
+     * propagates (discards) the data to CaseModel from PieceModel
      */
     void discarded(PieceData &pieceData);
 
