@@ -10,14 +10,14 @@ class CaseRowscanVariable: public VariableInterface
         //TODO
     }
 
-    unique_ptr<DataInterface> next(int &depth)
+    DataInterface *next(int &depth)
     {
         //TODO
         // For test sake
-        unique_ptr<CaseData> caseData = make_unique<CaseData>(true);
+        CaseData *caseData = new CaseData(true);
         caseData->x = 10;
         caseData->y = 50;
-        return move(caseData);
+        return caseData;
     }
 };
 

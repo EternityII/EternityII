@@ -12,7 +12,9 @@ protected:
 public:
     virtual void initialize(GameImportData &gameImportData) = 0;
 
-    virtual unique_ptr<DataInterface> next(DataInterface &dataInterface) = 0;
+    virtual DataInterface *next(DataInterface &dataInterface) = 0;
+
+    virtual const bool hasNext(DataInterface &dataInterface) = 0;
 };
 
 #endif //ETERNITYII_VALUEINTERFACE_H

@@ -15,31 +15,33 @@ void PieceCaseSolver::resolve()
 
 void PieceCaseSolver::resolve(int &depth)
 {
-    //Exist in this scope
-    unique_ptr<DataInterface> dataptr = move(pathFinder->nextVariable(depth));
-    // Casted to use it
-    CaseData *caseData = (CaseData *) dataptr.get();
+    while (pathFinder->hasNextVariable(depth)) {
+        CaseData *caseData = static_cast<CaseData *>(pathFinder->nextVariable(depth));
 
-    if (caseData->valid) {
-        resolve(*caseData, depth);
+        if (caseData->valid) {
+            resolve(*caseData, depth);
+        }
+
+        delete caseData;
     }
 }
 
 void PieceCaseSolver::resolve(CaseData &caseData, int &depth)
 {
-    // Existance of the data
-    unique_ptr<DataInterface> dataptr = move(pathFinder->nextValue(caseData));
-    // Casted to use it
-    PieceData *pieceData = (PieceData *) dataptr.get();
+    while (pathFinder->hasNextValue(caseData)) {
 
-    // TODO LOGIC
-    if (pieceData->valid) {
-        pieceCaseConstraint->accept(caseData, *pieceData, depth);
-        ++depth;
-        cout << depth << endl;
-        resolve(depth);
-        --depth;
-        pieceCaseConstraint->rollback(depth);
-        pieceCaseConstraint->discard(caseData, *pieceData, depth);
+        PieceData *pieceData = static_cast<PieceData *>(pathFinder->nextValue(caseData));
+
+        if (pieceData->valid) {
+            pieceCaseConstraint->accept(caseData, *pieceData, depth);
+            ++depth;
+            cout << depth << endl;
+            resolve(depth);
+            --depth; // end of recursivity, rolling back to depth
+            pieceCaseConstraint->rollback(depth);
+            pieceCaseConstraint->discard(caseData, *pieceData, depth);
+        }
+
+        delete pieceData;
     }
 }

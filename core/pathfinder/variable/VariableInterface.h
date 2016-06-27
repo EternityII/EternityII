@@ -11,6 +11,8 @@ protected:
 public:
     virtual void initialize(GameImportData &gameData) = 0;
 
-    virtual unique_ptr<DataInterface> next(int &depth) = 0;
+    virtual DataInterface *next(int &depth) = 0;
+
+    virtual const bool hasNext(int &depth) = 0;
 };
 #endif //ETERNITYII_VARIABLEINTERFACE_H

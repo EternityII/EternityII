@@ -10,15 +10,14 @@ class PieceNormalValue: public ValueInterface
         //TODO
     }
 
-    unique_ptr<DataInterface> next(DataInterface &dataInterface)
+    DataInterface *next(DataInterface &dataInterface)
     {
         //TODO
-        unique_ptr<PieceData> pieceData = make_unique<PieceData>(true);
+        PieceData *pieceData = new PieceData(true);
         pieceData->id = 1;
         pieceData->rotation = 5;
 
-        return move(pieceData);
-
+        return pieceData;
     }
 };
 
