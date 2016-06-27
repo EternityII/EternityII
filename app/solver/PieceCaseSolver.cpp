@@ -15,15 +15,13 @@ void PieceCaseSolver::resolve()
 
 void PieceCaseSolver::resolve(int &depth)
 {
-    while (pathFinder->hasNextVariable(depth)) {
-        CaseData *caseData = static_cast<CaseData *>(pathFinder->nextVariable(depth));
+    CaseData *caseData = static_cast<CaseData *>(pathFinder->nextVariable(depth));
 
-        if (caseData->valid) {
-            resolve(*caseData, depth);
-        }
-
-        delete caseData;
+    if (caseData->valid) {
+        resolve(*caseData, depth);
     }
+
+    delete caseData;
 }
 
 void PieceCaseSolver::resolve(CaseData &caseData, int &depth)

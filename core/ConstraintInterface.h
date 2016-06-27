@@ -27,6 +27,8 @@ public:
         second->add(*this);
     }
 
+    virtual ~ConstraintInterface()
+    { };
 protected:
     ModelInterface *first;
     ModelInterface *second;

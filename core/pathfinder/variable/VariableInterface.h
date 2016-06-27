@@ -14,5 +14,8 @@ public:
     virtual DataInterface *next(int &depth) = 0;
 
     virtual const bool hasNext(int &depth) = 0;
+
+    virtual ~VariableInterface()
+    { };
 };
 #endif //ETERNITYII_VARIABLEINTERFACE_H

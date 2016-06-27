@@ -15,6 +15,9 @@ public:
     virtual DataInterface *next(DataInterface &dataInterface) = 0;
 
     virtual const bool hasNext(DataInterface &dataInterface) = 0;
+
+    virtual ~ValueInterface()
+    { };
 };
 
 #endif //ETERNITYII_VALUEINTERFACE_H

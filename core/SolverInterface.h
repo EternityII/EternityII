@@ -11,6 +11,9 @@ public:
     virtual void initialize(PathFinder &pathFinder, ConstraintInterface &constraintInterface) = 0;
 
     virtual void resolve() = 0;
+
+    virtual ~SolverInterface()
+    { };
 };
 
 

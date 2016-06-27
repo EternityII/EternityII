@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "ObserverInterface.h"
+#include "../app/data/variable/CaseData.h"
 
 using namespace std;
 
@@ -22,9 +23,12 @@ public:
         observers.erase(observers.begin() + observerIndex);
     };
 
-    virtual void accept(DataInterface &dataInterface) = 0;
+    virtual void accept(DataInterface &dataInterface, const int &depth) = 0;
 
-    virtual void discard(DataInterface &dataInterface) = 0;
+    virtual void discard(DataInterface &dataInterface, const int &depth) = 0;
+
+    virtual ~ObservableInterface()
+    { };
 };
 
 

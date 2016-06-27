@@ -17,6 +17,9 @@ public:
      * Rolls back the model to depth
      */
     virtual void rollback(const int &depth) = 0;
+
+    virtual ~ModelInterface()
+    { };
 };
 
 

@@ -17,6 +17,9 @@ public:
     DataInterface(bool valid)
         : valid(valid)
     { }
+
+    virtual ~DataInterface()
+    { }
 };
 
 #endif //ETERNITYII_DATAINTERFACE_H

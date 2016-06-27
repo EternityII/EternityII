@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "../../core/model/ModelInterface.h"
+#include "../data/variable/CaseData.h"
 
 using namespace std;
 
@@ -23,9 +24,9 @@ public:
 
     void initialize(GameImportData &gameImportData);
 
-    void accept(DataInterface &dataInterface);
+    void accept(DataInterface &dataInterface, const int &depth);
 
-    void discard(DataInterface &dataInterface);
+    void discard(DataInterface &dataInterface, const int &depth);
 
     void rollback(const int &depth);
 };

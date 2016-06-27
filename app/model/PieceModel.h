@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "../../core/model/ModelInterface.h"
+#include "../data/value/PieceData.h"
 
 using namespace std;
 
@@ -26,9 +27,9 @@ public:
 
     void rollback(const int &depth);
 
-    void accept(DataInterface &dataInterface);
+    void accept(DataInterface &dataInterface, const int &depth);
 
-    void discard(DataInterface &dataInterface);
+    void discard(DataInterface &dataInterface, const int &depth);
 };
 
 

@@ -27,10 +27,12 @@ void PieceCaseConstraint::rollback(const int &depth)
 
 void PieceCaseConstraint::accept(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
-    //TODO
+    //first->accept(pieceData, depth);
+    second->accept(caseData, depth);
 }
 
 void PieceCaseConstraint::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
-    //TODO
+    first->discard(pieceData, depth);
+    second->discard(caseData, depth);
 }

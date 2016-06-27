@@ -2,18 +2,15 @@
 #define ETERNITYII_PIECECASECONSTRAINT_H
 
 
-#include "../core/ConstraintInterface.h"
-#include "model/PieceModel.h"
-#include "model/CaseModel.h"
-#include "data/variable/CaseData.h"
-#include "data/value/PieceData.h"
+#include "../../core/ConstraintInterface.h"
+#include "../model/PieceModel.h"
+#include "../model/CaseModel.h"
+#include "../data/variable/CaseData.h"
+#include "../data/value/PieceData.h"
 
 
 class PieceCaseConstraint: public ConstraintInterface
 {
-protected:
-    PieceModel *first;
-    CaseModel *second;
 public:
     /**
      * @param CaseData &caseData, the variable to apply

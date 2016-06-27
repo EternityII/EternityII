@@ -4,7 +4,7 @@
 #include "../../core/SolverInterface.h"
 #include "../data/variable/CaseData.h"
 #include "../data/value/PieceData.h"
-#include "../PieceCaseConstraint.h"
+#include "../constraint/PieceCaseConstraint.h"
 
 class PieceCaseSolver: public SolverInterface
 {
