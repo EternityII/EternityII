@@ -1,17 +1,17 @@
 #ifndef ETERNITYII_VARIABLEINTERFACE_H
 #define ETERNITYII_VARIABLEINTERFACE_H
 
-#include "../../../app/io/GameImportData.h"
-#include "../../data/DataInterface.h"
+#include "../../model/ModelInterface.h"
 
+template<class VarD, class ValD>
 class VariableInterface
 {
 protected:
-    ModelInterface *modelInterface;
+    ModelInterface<VarD, ValD> *modelInterface;
 public:
     virtual void initialize(GameImportData &gameData) = 0;
 
-    virtual DataInterface *next(int &depth) = 0;
+    virtual VarD *next(int &depth) = 0;
 
     virtual const bool hasNext(int &depth) = 0;
 

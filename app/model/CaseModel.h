@@ -4,31 +4,53 @@
 #include <vector>
 #include "../../core/model/ModelInterface.h"
 #include "../data/variable/CaseData.h"
+#include "../data/value/PieceData.h"
 
 using namespace std;
 
-class CaseModel: public ModelInterface
+class CaseModel: public ModelInterface<CaseData, PieceData>
 {
+    int size;
+
     vector<vector<vector<int>>> piecesQteHistory;
 
-    vector<vector<vector<vector<vector<bool>>>>> piecesPossibleHistory;
+    vector<vector<vector<bool>>> isAvailableHistory;
 
-    vector<vector<vector<int>>> isAvailableHistory;
+    vector<vector<vector<vector<vector<bool>>>>> casePiecesHistory;
+
 
 public:
+
     vector<vector<int>> piecesQte;
 
-    vector<vector<vector<vector<bool>>>> piecesPossible;
+    vector<vector<bool>> isAvailable;
 
-    vector<vector<int>> isAvailable;
+    vector<vector<vector<vector<bool>>>> casePieces;
 
     void initialize(GameImportData &gameImportData);
 
-    void accept(DataInterface &dataInterface, const int &depth);
+    /**
+     * @param CaseData dataInterface, the case which was accepted
+     * @param const int &depth,
+     *
+     * Informs the all the constraints about the change
+     */
+    void accept(CaseData &caseData, const int &depth);
 
-    void discard(DataInterface &dataInterface, const int &depth);
+    void accept(PieceData &pieceData, const int &depth);
 
-    void rollback(const int &depth);
+    void discard(PieceData &pieceData, const int &depth);
+
+    void discard(CaseData &caseData, const int &depth);
+
+    /**
+     * @param CaseData dataInterface, the case which was discarded
+     * @param const int &depth, depth
+     *
+     * Informs the all the constraints about the change
+     */
+
+    void rollback(const int &from, const int &to);
 };
 
 

@@ -1,7 +1,6 @@
 #ifndef ETERNITYII_GAMEIMPORTDATA_H
 #define ETERNITYII_GAMEIMPORTDATA_H
 
-#include <vector>
 #include <memory>
 #include "PieceImportData.h"
 
@@ -13,7 +12,7 @@ public:
     /**
      * Nombre de pièces
      */
-    int piecesQte;
+    int depth;
 
     /**
      * Taille du plateau
@@ -33,9 +32,9 @@ public:
     void setSize(int &i)
     {
         size = i;
-        piecesQte = i * i;
+        depth = i * i;
 
-        pieces.resize(piecesQte);
+        pieces.resize(depth);
     }
 };
 

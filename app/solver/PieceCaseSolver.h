@@ -1,16 +1,18 @@
 #ifndef ETERNITYII_DEFAULTSOLVER_H
 #define ETERNITYII_DEFAULTSOLVER_H
 
+#include <iostream>
 #include "../../core/SolverInterface.h"
-#include "../data/variable/CaseData.h"
-#include "../data/value/PieceData.h"
-#include "../constraint/PieceCaseConstraint.h"
+#include "../constraint/CasePieceConstraint.h"
 
-class PieceCaseSolver: public SolverInterface
+using namespace std;
+
+class PieceCaseSolver: public SolverInterface<CaseModel, PieceModel, CaseData, PieceData>
 {
 public:
 
-    void initialize(PathFinder &pathFinder, ConstraintInterface &constraintInterface);
+    void initialize(PathFinder<CaseData, PieceData> &pathFinder,
+        ConstraintInterface<CaseModel, PieceModel, CaseData, PieceData> &constraintInterface);
 
     /**
      * Begin the resolution process
@@ -18,9 +20,9 @@ public:
     void resolve();
 
 private:
-    PathFinder *pathFinder;
+    PathFinder<CaseData, PieceData> *pathFinder;
 
-    PieceCaseConstraint *pieceCaseConstraint;
+    CasePieceConstraint *pieceCaseConstraint;
 
     /**
      * Recursive resolution method

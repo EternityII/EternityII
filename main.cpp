@@ -1,26 +1,10 @@
 #include <string>
+#include "app/model/CaseModel.h"
+#include "app/model/PieceModel.h"
 #include "Framework.h"
 
 using namespace std;
 
-template<typename Derived, typename Base, typename Del>
-std::unique_ptr<Derived, Del>
-static_unique_ptr_cast(std::unique_ptr<Base, Del> &&p)
-{
-    auto d = static_cast<Derived *>(p.release());
-    return std::unique_ptr<Derived, Del>(d, std::move(p.get_deleter()));
-}
-
-template<typename Derived, typename Base, typename Del>
-std::unique_ptr<Derived, Del>
-dynamic_unique_ptr_cast(std::unique_ptr<Base, Del> &&p)
-{
-    if (Derived *result = dynamic_cast<Derived *>(p.get())) {
-        p.release();
-        return std::unique_ptr<Derived, Del>(result, std::move(p.get_deleter()));
-    }
-    return std::unique_ptr<Derived, Del>(nullptr, p.get_deleter());
-}
 
 int main(int argc, const char *argv[])
 {
@@ -28,6 +12,6 @@ int main(int argc, const char *argv[])
     int variable = 0;
     int value = 0;
 
-    Framework framework;
+    Framework<CaseModel, PieceModel, CaseData, PieceData> framework;
     framework.bootstrap(filename, variable, value);
 }

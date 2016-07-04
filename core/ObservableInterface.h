@@ -2,18 +2,18 @@
 #define ETERNITYII_OBSERVABLEINTERFACE_H
 
 #include <vector>
-
 #include "ObserverInterface.h"
-#include "../app/data/variable/CaseData.h"
 
 using namespace std;
 
+template<class VarD, class ValD>
 class ObservableInterface
 {
-    vector<ObserverInterface *> observers;
+protected:
+    vector<ObserverInterface<VarD, ValD> *> observers;
 
 public:
-    void add(ObserverInterface &observer)
+    void add(ObserverInterface<VarD, ValD> &observer)
     {
         observers.push_back(&observer);
     };
@@ -23,9 +23,12 @@ public:
         observers.erase(observers.begin() + observerIndex);
     };
 
-    virtual void accept(DataInterface &dataInterface, const int &depth) = 0;
+    /**
+     * Informs the all the constraints about the change
+     */
+    //virtual void accept(DataInterface &dataInterface, const int &depth){ };
 
-    virtual void discard(DataInterface &dataInterface, const int &depth) = 0;
+    //virtual void discard(DataInterface &dataInterface, const int &depth){ };
 
     virtual ~ObservableInterface()
     { };

@@ -2,14 +2,12 @@
 #define ETERNITYII_PATHFINDER_H
 
 #include <memory>
-
-#include "../data/DataInterface.h"
-#include "value/ValueInterface.h"
 #include "variable/VariableInterface.h"
-#include "../../app/data/variable/CaseData.h"
+#include "value/ValueInterface.h"
 
 using namespace std;
 
+template<class VarD, class ValD>
 class PathFinder
 {
 public:
@@ -17,31 +15,51 @@ public:
      * @param valueInterface, value strategy
      * @param variableInterface, variable strategy
      */
-    PathFinder();
+    PathFinder()
+    { };
 
-    void set(unique_ptr<VariableInterface> variableInterface);
+    void set(unique_ptr<VariableInterface<VarD, ValD>> variableInterface)
+    {
+        this->variableInterface = move(variableInterface);
+    }
 
-    void set(unique_ptr<ValueInterface> valueInterface);
+    void set(unique_ptr<ValueInterface<VarD, ValD>> valueInterface)
+    {
+        this->valueInterface = move(valueInterface);
+    }
 
     /**
      * @param variableData the variable to look at
      *
      * Gets the next Value depending of the variableData
      */
-    DataInterface *nextValue(DataInterface &dataInterface);
+    ValD *nextValue(VarD &variableData)
+    {
+        return valueInterface->next(variableData);
+    }
 
     /**
      * @param depth the actual depth in the recursion
      *
-     * Gets the next Variable depending of the depth
+     * Gets the next VarM depending of the depth
      */
-    DataInterface *nextVariable(int &depth);
+    VarD *nextVariable(int &depth)
+    {
+        return variableInterface->next(depth);
+    };
 
-    const bool hasNextVariable(int &depth);
-    const bool hasNextValue(DataInterface &dataInterface);
+    const bool hasNextVariable(int &depth)
+    {
+        return variableInterface->hasNext(depth);
+    }
+
+    const bool hasNextValue(VarD &variableData)
+    {
+        return valueInterface->hasNext(variableData);
+    }
 private:
-    unique_ptr<VariableInterface> variableInterface;
-    unique_ptr<ValueInterface> valueInterface;
+    unique_ptr<VariableInterface<VarD, ValD>> variableInterface;
+    unique_ptr<ValueInterface<VarD, ValD>> valueInterface;
 };
 
 

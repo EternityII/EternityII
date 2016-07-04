@@ -3,20 +3,20 @@
 
 #include "../../../core/pathfinder/variable/VariableInterface.h"
 
-class CaseRowscanVariable: public VariableInterface
+class CaseRowscanVariable: public VariableInterface<CaseData, PieceData>
 {
     void initialize(GameImportData &gameData)
     {
         //TODO
     }
 
-    DataInterface *next(int &depth)
+    CaseData *next(int &depth)
     {
         //TODO
         // For test sake
         CaseData *caseData = new CaseData(true);
-        caseData->x = 10;
-        caseData->y = 50;
+        caseData->x = 2;
+        caseData->y = 2;
         return caseData;
     }
 

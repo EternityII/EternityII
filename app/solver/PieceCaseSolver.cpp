@@ -1,9 +1,10 @@
 #include "PieceCaseSolver.h"
 
-void PieceCaseSolver::initialize(PathFinder &pathFinder, ConstraintInterface &constraintInterface)
+void PieceCaseSolver::initialize(PathFinder<CaseData, PieceData> &pathFinder,
+    ConstraintInterface<CaseModel, PieceModel, CaseData, PieceData> &constraintInterface)
 {
     this->pathFinder = &pathFinder;
-    this->pieceCaseConstraint = (PieceCaseConstraint *) &constraintInterface;
+    this->pieceCaseConstraint = (CasePieceConstraint *) &constraintInterface;
 }
 
 void PieceCaseSolver::resolve()
@@ -15,7 +16,7 @@ void PieceCaseSolver::resolve()
 
 void PieceCaseSolver::resolve(int &depth)
 {
-    CaseData *caseData = static_cast<CaseData *>(pathFinder->nextVariable(depth));
+    CaseData *caseData = pathFinder->nextVariable(depth);
 
     if (caseData->valid) {
         resolve(*caseData, depth);
@@ -28,7 +29,7 @@ void PieceCaseSolver::resolve(CaseData &caseData, int &depth)
 {
     while (pathFinder->hasNextValue(caseData)) {
 
-        PieceData *pieceData = static_cast<PieceData *>(pathFinder->nextValue(caseData));
+        PieceData *pieceData = pathFinder->nextValue(caseData);
 
         if (pieceData->valid) {
             pieceCaseConstraint->accept(caseData, *pieceData, depth);

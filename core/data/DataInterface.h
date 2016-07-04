@@ -1,10 +1,6 @@
 #ifndef ETERNITYII_DATAINTERFACE_H
 #define ETERNITYII_DATAINTERFACE_H
 
-#include <iostream>
-
-using namespace std;
-
 class DataInterface
 {
 public:
