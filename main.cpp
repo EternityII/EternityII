@@ -1,6 +1,4 @@
 #include <string>
-#include "app/model/CaseModel.h"
-#include "app/model/PieceModel.h"
 #include "Framework.h"
 
 using namespace std;
@@ -12,6 +10,6 @@ int main(int argc, const char *argv[])
     int variable = 0;
     int value = 0;
 
-    Framework<CaseModel, PieceModel, CaseData, PieceData> framework;
+    Framework framework;
     framework.bootstrap(filename, variable, value);
 }

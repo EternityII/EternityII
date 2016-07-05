@@ -1,22 +1,16 @@
 #ifndef ETERNITYII_OBSERVERINTERFACE_H
 #define ETERNITYII_OBSERVERINTERFACE_H
 
-template<class VarD, class ValD>
 class ObserverInterface
 {
 public:
-    virtual void accept(VarD &caseData, ValD &pieceData, const int &depth) = 0;
+    //virtual void accept(DataInterface &varData, DataInterface &valData, const int &depth) = 0;
 
-    virtual void discard(VarD &caseData, ValD &pieceData, const int &depth) = 0;
+    //virtual void accepted(DataInterface &valData, const int &depth) = 0;
 
-    virtual void accepted(ValD &pieceData, const int &depth) = 0;
+    //virtual void discard(DataInterface &varData, DataInterface &valData, const int &depth) = 0;
 
-    virtual void accepted(VarD &pieceData, const int &depth) = 0;
-
-    virtual void discarded(VarD &caseData, const int &depth) = 0;
-
-    virtual void discarded(ValD &caseData, const int &depth) = 0;
-
+    //virtual void discarded(DataInterface &varData, const int &depth) = 0;
     virtual ~ObserverInterface()
     { }
 };

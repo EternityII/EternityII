@@ -9,7 +9,7 @@
 
 using namespace std;
 
-class PieceModel: public ModelInterface<CaseData, PieceData>
+class PieceModel: public ModelInterface
 {
     int nbPieces;
     int size;
@@ -29,11 +29,12 @@ public:
 
     void initialize(GameImportData &gameImportData);
 
-    void accept(CaseData &caseData, const int &depth);
+    void accepted(CaseData &caseData, const int &depth);
 
     void accept(PieceData &pieceData, const int &depth);
 
     void discard(CaseData &caseData, const int &depth);
+
     void discard(PieceData &pieceData, const int &depth);
 
     void rollback(const int &from, const int &to);

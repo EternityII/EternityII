@@ -2,8 +2,9 @@
 #define ETERNITYII_CASEROWSCANVARIABLE_H
 
 #include "../../../core/pathfinder/variable/VariableInterface.h"
+#include "../../data/variable/CaseData.h"
 
-class CaseRowscanVariable: public VariableInterface<CaseData, PieceData>
+class CaseRowscanVariable: public VariableInterface
 {
     void initialize(GameImportData &gameData)
     {

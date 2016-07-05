@@ -7,12 +7,12 @@
 
 using namespace std;
 
-class PieceCaseSolver: public SolverInterface<CaseModel, PieceModel, CaseData, PieceData>
+class CasePieceSolver: public SolverInterface
 {
 public:
 
-    void initialize(PathFinder<CaseData, PieceData> &pathFinder,
-        ConstraintInterface<CaseModel, PieceModel, CaseData, PieceData> &constraintInterface);
+    void initialize(PathFinder &pathFinder,
+        ConstraintInterface &constraintInterface);
 
     /**
      * Begin the resolution process
@@ -20,7 +20,7 @@ public:
     void resolve();
 
 private:
-    PathFinder<CaseData, PieceData> *pathFinder;
+    PathFinder *pathFinder;
 
     CasePieceConstraint *pieceCaseConstraint;
 

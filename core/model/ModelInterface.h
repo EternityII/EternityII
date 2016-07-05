@@ -3,21 +3,13 @@
 
 #include "../../app/io/GameImportData.h"
 #include "../ObservableInterface.h"
+#include "../data/DataInterface.h"
 
-template<class VarD, class ValD>
-class ModelInterface: public ObservableInterface<VarD, ValD>
+class ModelInterface: public ObservableInterface
 {
 protected:
 public:
     virtual void initialize(GameImportData &gameImportData) = 0;
-
-    virtual void accept(VarD &dataInterface, const int &depth) = 0;
-
-    virtual void accept(ValD &dataInterface, const int &depth) = 0;
-
-    virtual void discard(VarD &dataInterface, const int &depth) = 0;
-
-    virtual void discard(ValD &dataInterface, const int &depth) = 0;
 
     /**
      * @param int const &depth, the depth

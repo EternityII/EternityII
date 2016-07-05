@@ -4,10 +4,10 @@
 #include <memory>
 #include "variable/VariableInterface.h"
 #include "value/ValueInterface.h"
+#include "../../app/data/variable/CaseData.h"
 
 using namespace std;
 
-template<class VarD, class ValD>
 class PathFinder
 {
 public:
@@ -18,12 +18,12 @@ public:
     PathFinder()
     { };
 
-    void set(unique_ptr<VariableInterface<VarD, ValD>> variableInterface)
+    void set(unique_ptr<VariableInterface> variableInterface)
     {
         this->variableInterface = move(variableInterface);
     }
 
-    void set(unique_ptr<ValueInterface<VarD, ValD>> valueInterface)
+    void set(unique_ptr<ValueInterface> valueInterface)
     {
         this->valueInterface = move(valueInterface);
     }
@@ -33,7 +33,7 @@ public:
      *
      * Gets the next Value depending of the variableData
      */
-    ValD *nextValue(VarD &variableData)
+    DataInterface *nextValue(DataInterface &variableData)
     {
         return valueInterface->next(variableData);
     }
@@ -43,7 +43,7 @@ public:
      *
      * Gets the next VarM depending of the depth
      */
-    VarD *nextVariable(int &depth)
+    DataInterface *nextVariable(int &depth)
     {
         return variableInterface->next(depth);
     };
@@ -53,13 +53,13 @@ public:
         return variableInterface->hasNext(depth);
     }
 
-    const bool hasNextValue(VarD &variableData)
+    const bool hasNextValue(DataInterface &variableData)
     {
         return valueInterface->hasNext(variableData);
     }
 private:
-    unique_ptr<VariableInterface<VarD, ValD>> variableInterface;
-    unique_ptr<ValueInterface<VarD, ValD>> valueInterface;
+    unique_ptr<VariableInterface> variableInterface;
+    unique_ptr<ValueInterface> valueInterface;
 };
 
 

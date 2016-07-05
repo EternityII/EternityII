@@ -37,11 +37,11 @@ void PieceModel::accept(PieceData &pieceData, const int &depth)
         isAvailable[pieceData.id][pieceData.rotation] = false;
         isAvailableHistory[pieceData.id][pieceData.rotation][depth] = true;
 
-        dynamic_cast<CasePieceConstraint *>(observers[0])->accepted(pieceData, depth);
+        static_cast<CasePieceConstraint *>(observers[0])->accepted(pieceData, depth);
     }
 }
 
-void PieceModel::accept(CaseData &caseData, const int &depth)
+void PieceModel::accepted(CaseData &caseData, const int &depth)
 {
     // it's a consequence of the update of caseData, so we do it without checking anything
     for (int nPiece = 0; nPiece < nbPieces; ++nPiece) {

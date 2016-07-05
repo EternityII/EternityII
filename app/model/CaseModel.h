@@ -8,7 +8,7 @@
 
 using namespace std;
 
-class CaseModel: public ModelInterface<CaseData, PieceData>
+class CaseModel: public ModelInterface
 {
     int size;
 
@@ -39,9 +39,9 @@ public:
 
     void accept(PieceData &pieceData, const int &depth);
 
-    void discard(PieceData &pieceData, const int &depth);
-
     void discard(CaseData &caseData, const int &depth);
+
+    void discard(PieceData &pieceData, const int &depth);
 
     /**
      * @param CaseData dataInterface, the case which was discarded

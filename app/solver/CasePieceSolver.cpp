@@ -1,22 +1,22 @@
-#include "PieceCaseSolver.h"
+#include "CasePieceSolver.h"
 
-void PieceCaseSolver::initialize(PathFinder<CaseData, PieceData> &pathFinder,
-    ConstraintInterface<CaseModel, PieceModel, CaseData, PieceData> &constraintInterface)
+void CasePieceSolver::initialize(PathFinder &pathFinder,
+    ConstraintInterface &constraintInterface)
 {
     this->pathFinder = &pathFinder;
-    this->pieceCaseConstraint = (CasePieceConstraint *) &constraintInterface;
+    this->pieceCaseConstraint = dynamic_cast<CasePieceConstraint *>(&constraintInterface);
 }
 
-void PieceCaseSolver::resolve()
+void CasePieceSolver::resolve()
 {
     int depth = 0;
 
     resolve(depth);
 }
 
-void PieceCaseSolver::resolve(int &depth)
+void CasePieceSolver::resolve(int &depth)
 {
-    CaseData *caseData = pathFinder->nextVariable(depth);
+    CaseData *caseData = static_cast<CaseData *>(pathFinder->nextVariable(depth));
 
     if (caseData->valid) {
         resolve(*caseData, depth);
@@ -25,11 +25,11 @@ void PieceCaseSolver::resolve(int &depth)
     delete caseData;
 }
 
-void PieceCaseSolver::resolve(CaseData &caseData, int &depth)
+void CasePieceSolver::resolve(CaseData &caseData, int &depth)
 {
     while (pathFinder->hasNextValue(caseData)) {
 
-        PieceData *pieceData = pathFinder->nextValue(caseData);
+        PieceData *pieceData = static_cast<PieceData *>(pathFinder->nextValue(caseData));
 
         if (pieceData->valid) {
             pieceCaseConstraint->accept(caseData, *pieceData, depth);

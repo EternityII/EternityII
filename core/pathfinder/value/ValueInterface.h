@@ -3,17 +3,16 @@
 
 #include "../../model/ModelInterface.h"
 
-template<class VarD, class ValD>
 class ValueInterface
 {
 protected:
-    ModelInterface<VarD, ValD> *modelInterface;
+    ModelInterface *modelInterface;
 public:
     virtual void initialize(GameImportData &gameImportData) = 0;
 
-    virtual ValD *next(VarD &dataInterface) = 0;
+    virtual DataInterface *next(DataInterface &dataInterface) = 0;
 
-    virtual const bool hasNext(VarD &dataInterface) = 0;
+    virtual const bool hasNext(DataInterface &dataInterface) = 0;
 
     virtual ~ValueInterface()
     { };

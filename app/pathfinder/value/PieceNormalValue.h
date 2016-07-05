@@ -5,14 +5,14 @@
 #include "../../data/variable/CaseData.h"
 #include "../../data/value/PieceData.h"
 
-class PieceNormalValue: public ValueInterface<CaseData, PieceData>
+class PieceNormalValue: public ValueInterface
 {
     void initialize(GameImportData &gameData)
     {
         //TODO
     }
 
-    PieceData *next(CaseData &dataInterface)
+    DataInterface *next(DataInterface &dataInterface)
     {
         //TODO
         PieceData *pieceData = new PieceData(true);
@@ -22,7 +22,7 @@ class PieceNormalValue: public ValueInterface<CaseData, PieceData>
         return pieceData;
     }
 
-    const bool hasNext(CaseData &dataInterface)
+    const bool hasNext(DataInterface &dataInterface)
     {
         //TODO
         return true;

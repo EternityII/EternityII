@@ -2,9 +2,9 @@
 #define ETERNITYII_CONSTRAINTINTERFACE_H
 
 #include "ObserverInterface.h"
+#include "model/ModelInterface.h"
 
-template<class VarM, class ValM, class VarD, class ValD>
-class ConstraintInterface: public ObserverInterface<VarD, ValD>
+class ConstraintInterface: public ObserverInterface
 {
 public:
 
@@ -13,14 +13,14 @@ public:
      */
     virtual void rollback(const int &depth) = 0;
 
-    virtual void setFirst(VarM &modelInterface)
+    virtual void setFirst(ModelInterface &modelInterface)
     {
         this->first = &modelInterface;
 
         first->add(*this);
     }
 
-    virtual void setSecond(ValM &modelInterface)
+    virtual void setSecond(ModelInterface &modelInterface)
     {
         this->second = &modelInterface;
 
@@ -29,9 +29,10 @@ public:
 
     virtual ~ConstraintInterface()
     { };
+
 protected:
-    VarM *first;
-    ValM *second;
+    ModelInterface *first;
+    ModelInterface *second;
 };
 
 #endif //ETERNITYII_CONSTRAINTINTERFACE_H

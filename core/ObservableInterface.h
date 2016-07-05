@@ -6,14 +6,13 @@
 
 using namespace std;
 
-template<class VarD, class ValD>
 class ObservableInterface
 {
 protected:
-    vector<ObserverInterface<VarD, ValD> *> observers;
+    vector<ObserverInterface *> observers;
 
 public:
-    void add(ObserverInterface<VarD, ValD> &observer)
+    void add(ObserverInterface &observer)
     {
         observers.push_back(&observer);
     };
@@ -27,8 +26,10 @@ public:
      * Informs the all the constraints about the change
      */
     //virtual void accept(DataInterface &dataInterface, const int &depth){ };
+    //virtual void accepted(DataInterface &dataInterface, const int &depth){ };
 
     //virtual void discard(DataInterface &dataInterface, const int &depth){ };
+    //virtual void discarded(DataInterface &dataInterface, const int &depth){ };
 
     virtual ~ObservableInterface()
     { };

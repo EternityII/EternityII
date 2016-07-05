@@ -5,9 +5,16 @@
 #include "../model/CaseModel.h"
 #include "../model/PieceModel.h"
 
-class CasePieceConstraint: public ConstraintInterface<CaseModel, PieceModel, CaseData, PieceData>
+class CasePieceConstraint: public ConstraintInterface
 {
+    CaseModel *_first;
+    PieceModel *_second;
 public:
+
+    void setFirst(CaseModel &modelInterface);
+
+    void setSecond(PieceModel &modelInterface);
+
     /**
      * @param CaseData &caseData, the variable to apply
      * @param PieceData &pieceData, the value to apply
