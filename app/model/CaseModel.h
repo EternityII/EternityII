@@ -10,16 +10,14 @@ using namespace std;
 
 class CaseModel: public ModelInterface
 {
-    int size;
-
     vector<vector<vector<int>>> piecesQteHistory;
 
     vector<vector<vector<bool>>> isAvailableHistory;
 
     vector<vector<vector<vector<vector<bool>>>>> casePiecesHistory;
 
-
 public:
+    int size;
 
     vector<vector<int>> piecesQte;
 
@@ -39,9 +37,7 @@ public:
 
     void accept(PieceData &pieceData, const int &depth);
 
-    void discard(CaseData &caseData, const int &depth);
-
-    void discard(PieceData &pieceData, const int &depth);
+    void discard(CaseData &caseData, PieceData &pieceData, const int &depth);
 
     /**
      * @param CaseData dataInterface, the case which was discarded

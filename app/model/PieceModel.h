@@ -11,19 +11,20 @@ using namespace std;
 
 class PieceModel: public ModelInterface
 {
-    int nbPieces;
-    int size;
-
     vector<vector<vector<int>>> casesQteHistory;
 
-    vector<vector<vector<bool>>> isAvailableHistory;
+    vector<vector<bool>> isAvailableHistory;
 
     vector<vector<vector<vector<vector<bool>>>>> pieceCasesHistory;
 
 public:
+    int size;
+
+    int nbPieces;
+
     vector<vector<int>> casesQte;
 
-    vector<vector<bool>> isAvailable;
+    vector<bool> isAvailable;
 
     vector<vector<vector<vector<bool>>>> pieceCases;
 
@@ -33,9 +34,7 @@ public:
 
     void accept(PieceData &pieceData, const int &depth);
 
-    void discard(CaseData &caseData, const int &depth);
-
-    void discard(PieceData &pieceData, const int &depth);
+    void discard(CaseData &caseData, PieceData &pieceData, const int &depth);
 
     void rollback(const int &from, const int &to);
 };

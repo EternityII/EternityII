@@ -18,6 +18,12 @@ public:
     PathFinder()
     { };
 
+    void initialize(ModelInterface &variableModel, ModelInterface &valueModel)
+    {
+        this->variableInterface->initialize(variableModel);
+        this->valueInterface->initialize(valueModel);
+    }
+
     void set(unique_ptr<VariableInterface> variableInterface)
     {
         this->variableInterface = move(variableInterface);
@@ -53,9 +59,9 @@ public:
         return variableInterface->hasNext(depth);
     }
 
-    const bool hasNextValue(DataInterface &variableData)
+    const bool hasNextValue(DataInterface &variableData, const int &depth)
     {
-        return valueInterface->hasNext(variableData);
+        return valueInterface->hasNext(variableData, depth);
     }
 private:
     unique_ptr<VariableInterface> variableInterface;

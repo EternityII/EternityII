@@ -2,29 +2,19 @@
 
 void CasePieceConstraint::accepted(CaseData &caseData, const int &depth)
 {
-    // TODO : notify PieceModel that the case is not available anymore
+    // notify PieceModel that the case is not available anymore
     _second->accepted(caseData, depth);
 }
 
 void CasePieceConstraint::accepted(PieceData &pieceData, const int &depth)
 {
-    //TODO : notify CaseModel that the piece is not available anymore
+    // notify CaseModel that the piece is not available anymore
     _first->accept(pieceData, depth);
 }
 
-void CasePieceConstraint::discarded(CaseData &caseData, const int &depth)
+void CasePieceConstraint::rollback(const int &from, const int &to)
 {
-    _first->discard(caseData, depth);
-}
-
-void CasePieceConstraint::discarded(PieceData &pieceData, const int &depth)
-{
-    _first->discard(pieceData, depth);
-}
-
-void CasePieceConstraint::rollback(const int &depth)
-{
-    //TODO
+    // nothing to do, not used
 }
 
 void CasePieceConstraint::accept(CaseData &caseData, PieceData &pieceData, const int &depth)
@@ -35,12 +25,12 @@ void CasePieceConstraint::accept(CaseData &caseData, PieceData &pieceData, const
 
 void CasePieceConstraint::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
-    _first->discard(caseData, depth);
-    _second->discard(pieceData, depth);
+    _first->discard(caseData, pieceData, depth);
+    _second->discard(caseData, pieceData, depth);
 }
 void CasePieceConstraint::setFirst(CaseModel &modelInterface)
 {
-    this->_first =  &modelInterface;
+    this->_first = &modelInterface;
 
     _first->add(*this);
 }

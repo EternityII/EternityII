@@ -6,24 +6,30 @@
 
 class CaseRowscanVariable: public VariableInterface
 {
-    void initialize(GameImportData &gameData)
+    CaseModel *_modelInterface;
+public:
+    void initialize(ModelInterface &modelInterface) override
     {
-        //TODO
+        this->_modelInterface = static_cast<CaseModel *>(&modelInterface);
     }
 
-    CaseData *next(int &depth)
+    CaseData *next(int &depth) override
     {
-        //TODO
-        // For test sake
-        CaseData *caseData = new CaseData(true);
-        caseData->x = 2;
-        caseData->y = 2;
+        CaseData *caseData;
+
+        int y = depth / _modelInterface->size;
+        int x = depth % _modelInterface->size;
+        caseData = new CaseData(x, y);
+        if (!_modelInterface->isAvailable[x][y]) {
+            caseData->valid = false;
+        }
+
         return caseData;
     }
 
-    const bool hasNext(int &depth)
+    const bool hasNext(int &depth) override
     {
-        //TODO
+        //because if has not next then it's impossible
         return false;
     }
 };

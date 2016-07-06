@@ -4,30 +4,32 @@
 void CaseModel::initialize(GameImportData &gameImportData)
 {
     size = gameImportData.size;
+    int depth = gameImportData.depth;
 
     // setting up max values
 
     piecesQte.resize(size,
-        vector<int>(size, gameImportData.depth));
-    piecesQteHistory.resize(size,
+        vector<int>(size, depth * 4));
+    piecesQteHistory.resize(depth,
         vector<vector<int>>(size,
-            vector<int>(gameImportData.depth, 0)));
+            vector<int>(size, 0)));
 
-    isAvailable.resize(size, vector<bool>(size, true));
-    isAvailableHistory.resize(size,
+    isAvailable.resize(size,
+        vector<bool>(size, true));
+    isAvailableHistory.resize(depth,
         vector<vector<bool>>(size,
-            vector<bool>(gameImportData.depth, true)));
+            vector<bool>(size, false)));
 
     // [x][y][n°piece][rotation]
     casePieces.resize(size,
         vector<vector<vector<bool>>>(size,
-            vector<vector<bool>>(gameImportData.depth,
+            vector<vector<bool>>(depth,
                 vector<bool>(4, true))));
-    casePiecesHistory.resize(size,
+    casePiecesHistory.resize(depth,
         vector<vector<vector<vector<bool>>>>(size,
-            vector<vector<vector<bool>>>(gameImportData.depth,
-                vector<vector<bool>>(4,
-                    vector<bool>(gameImportData.depth, true)))));
+            vector<vector<vector<bool>>>(size,
+                vector<vector<bool>>(depth,
+                    vector<bool>(4, false)))));
 }
 
 void CaseModel::accept(CaseData &caseData, const int &depth)
@@ -49,25 +51,22 @@ void CaseModel::accept(PieceData &pieceData, const int &depth)
             // if the case has the piece in it's domain
             if (casePieces[x][y][pieceData.id][pieceData.rotation]) {
                 --piecesQte[x][y];
-                --piecesQteHistory[x][y][depth];
+                --piecesQteHistory[depth][x][y];
                 // not anymore
                 casePieces[x][y][pieceData.id][pieceData.rotation] = false;
-                casePiecesHistory[x][y][pieceData.id][pieceData.rotation][depth] = true;
+                casePiecesHistory[depth][x][y][pieceData.id][pieceData.rotation] = true;
             }
         }
     }
 }
 
-void CaseModel::discard(PieceData &pieceData, const int &depth)
+void CaseModel::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
-    // TODO : don't know what todo yet
-}
+    casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation] = false;
+    casePiecesHistory[depth][caseData.x][caseData.y][pieceData.id][pieceData.rotation] = true;
 
-void CaseModel::discard(CaseData &caseData, const int &depth)
-{
-    // you can't discard a piece because it means that it [the puzzle] doesn't work
-    // You do nothing John Sand
-    // DO NOT TOUCH ... yet
+    --piecesQte[caseData.x][caseData.y];
+    --piecesQteHistory[depth][caseData.x][caseData.y];
 }
 
 void CaseModel::rollback(const int &from, const int &to)
@@ -78,20 +77,20 @@ void CaseModel::rollback(const int &from, const int &to)
         for (int x = 0; x < size; ++x) {
             for (int y = 0; y < size; ++y) {
 
-                if (piecesQteHistory[x][y][depth] != 0) { // minimizing operations
-                    piecesQte[x][y] -= piecesQteHistory[x][y][depth];
-                    piecesQteHistory[x][y][depth] = 0;
+                if (piecesQteHistory[depth][x][y] != 0) { // minimizing operations
+                    piecesQte[x][y] -= piecesQteHistory[depth][x][y];
+                    piecesQteHistory[depth][x][y] = 0;
                 }
-                if (isAvailableHistory[x][y][depth]) { // if the history has changed
-                    isAvailable[x][y] = !isAvailable[x][y];
-                    isAvailableHistory[x][y][depth] = false;
+                if (isAvailableHistory[depth][x][y]) { // if the history has changed
+                    isAvailable[x][y] = true;
+                    isAvailableHistory[depth][x][y] = false;
                 }
 
                 for (int nPieces = 0; nPieces < size * size; ++nPieces) {
                     for (int rotation = 0; rotation < 4; ++rotation) {
-                        if (casePiecesHistory[x][y][nPieces][rotation][depth]) {
-                            casePieces[x][y][nPieces][rotation] = !casePieces[x][y][nPieces][rotation];
-                            casePiecesHistory[x][y][nPieces][rotation][depth] = false; // cleaning the depth
+                        if (casePiecesHistory[depth][x][y][nPieces][rotation]) {
+                            casePieces[x][y][nPieces][rotation] = true;
+                            casePiecesHistory[depth][x][y][nPieces][rotation] = false; // cleaning the depth
                         }
                     }
                 }

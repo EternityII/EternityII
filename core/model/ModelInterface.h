@@ -1,13 +1,12 @@
 #ifndef ETERNITYII_MODELINTERFACE_H
 #define ETERNITYII_MODELINTERFACE_H
 
-#include "../../app/io/GameImportData.h"
 #include "../ObservableInterface.h"
 #include "../data/DataInterface.h"
+#include "../io/data/GameImportData.h"
 
 class ModelInterface: public ObservableInterface
 {
-protected:
 public:
     virtual void initialize(GameImportData &gameImportData) = 0;
 

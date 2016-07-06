@@ -7,11 +7,10 @@
 class ConstraintInterface: public ObserverInterface
 {
 public:
-
     /**
      * When the iteration is rolledback to depth
      */
-    virtual void rollback(const int &depth) = 0;
+    virtual void rollback(const int &from, const int &to) = 0;
 
     virtual void setFirst(ModelInterface &modelInterface)
     {

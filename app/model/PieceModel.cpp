@@ -9,13 +9,12 @@ void PieceModel::initialize(GameImportData &gameImportData)
     casesQte.resize(nbPieces,
         vector<int>(4, nbPieces));
     casesQteHistory.resize(nbPieces,
-        vector<vector<int>>(4,
-            vector<int>(nbPieces, 0)));
+        vector<vector<int >>(nbPieces,
+            vector<int>(4, 0)));
 
-    isAvailable.resize(nbPieces, vector<bool>(4, true));
+    isAvailable.resize(nbPieces, true);
     isAvailableHistory.resize(nbPieces,
-        vector<vector<bool>>(4,
-            vector<bool>(nbPieces, false)));
+        vector<bool>(nbPieces, false));
 
     // [n°piece][rotation][x][y]
     pieceCases.resize(nbPieces,
@@ -24,18 +23,18 @@ void PieceModel::initialize(GameImportData &gameImportData)
                 vector<bool>(size, true))));
 
     pieceCasesHistory.resize(nbPieces,
-        vector<vector<vector<vector<bool>>>>(4,
-            vector<vector<vector<bool>>>(size,
-                vector<vector<bool>>(size,
-                    vector<bool>(nbPieces, true)))));
+        vector<vector<vector<vector<bool >> >>(nbPieces,
+            vector<vector<vector<bool >>>(4,
+                vector<vector<bool >>(size,
+                    vector<bool>(size, false)))));
 
 }
 
 void PieceModel::accept(PieceData &pieceData, const int &depth)
 {
-    if (isAvailable[pieceData.id][pieceData.rotation]) {
-        isAvailable[pieceData.id][pieceData.rotation] = false;
-        isAvailableHistory[pieceData.id][pieceData.rotation][depth] = true;
+    if (isAvailable[pieceData.id]) {
+        isAvailable[pieceData.id] = false;
+        isAvailableHistory[depth][pieceData.id] = true;
 
         static_cast<CasePieceConstraint *>(observers[0])->accepted(pieceData, depth);
     }
@@ -49,23 +48,27 @@ void PieceModel::accepted(CaseData &caseData, const int &depth)
             // if the piece has the case in it's domain
             if (pieceCases[nPiece][rotation][caseData.x][caseData.y]) {
                 --casesQte[nPiece][rotation];
-                --casesQteHistory[nPiece][rotation][depth];
+                --casesQteHistory[depth][nPiece][rotation];
                 //not anymore
                 pieceCases[nPiece][rotation][caseData.x][caseData.y] = false;
-                pieceCasesHistory[nPiece][rotation][caseData.x][caseData.y][depth] = true;
+                pieceCasesHistory[depth][nPiece][rotation][caseData.x][caseData.y] = true;
             }
         }
     }
 }
 
-void PieceModel::discard(PieceData &pieceData, const int &depth)
+void PieceModel::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
-    // TODO
-}
+    pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y] = false;
+    pieceCasesHistory[depth][pieceData.id][pieceData.rotation][caseData.x][caseData.y] = true;
 
-void PieceModel::discard(CaseData &caseData, const int &depth)
-{
-    // TODO
+    --casesQte[pieceData.id][pieceData.rotation];
+    --casesQteHistory[depth][pieceData.id][pieceData.rotation];
+
+    if (isAvailableHistory[depth][pieceData.id]) {
+        isAvailable[pieceData.id] = true;
+        isAvailableHistory[depth][pieceData.id] = false;
+    }
 }
 
 void PieceModel::rollback(const int &from, const int &to)
@@ -74,25 +77,25 @@ void PieceModel::rollback(const int &from, const int &to)
         // they see me rolling ... back
         for (int nPiece = 0; nPiece < nbPieces; ++nPiece) {
             for (int rotation = 0; rotation < 4; ++rotation) {
-                if (casesQteHistory[nPiece][rotation][depth] != 0) {
-                    casesQte[nPiece][rotation] -= casesQteHistory[nPiece][rotation][depth];
-                    casesQteHistory[nPiece][rotation][depth] = 0;
+                if (casesQteHistory[depth][nPiece][rotation] != 0) {
+                    casesQte[nPiece][rotation] -= casesQteHistory[depth][nPiece][rotation];
+                    casesQteHistory[depth][nPiece][rotation] = 0;
                 }
 
-                if (isAvailableHistory[nPiece][rotation][depth]) {
-                    isAvailable[nPiece][rotation] = !isAvailable[nPiece][rotation];
-                    isAvailableHistory[nPiece][rotation][depth] = false;
-                }
 
                 for (int x = 0; x < size; ++x) {
                     for (int y = 0; y < size; ++y) {
-                        if (pieceCasesHistory[nPiece][rotation][x][y][depth]) {
-                            pieceCases[nPiece][rotation][x][y] = !pieceCases[nPiece][rotation][x][y];
-                            pieceCasesHistory[nPiece][rotation][x][y][depth] = false;
+                        if (pieceCasesHistory[depth][nPiece][rotation][x][y]) {
+                            pieceCases[nPiece][rotation][x][y] = true;
+                            pieceCasesHistory[depth][nPiece][rotation][x][y] = false;
                         }
                     }
                 }
+            }
 
+            if (isAvailableHistory[depth][nPiece]) {
+                isAvailable[nPiece] = true;
+                isAvailableHistory[depth][nPiece] = false;
             }
         }
 

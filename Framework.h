@@ -9,6 +9,7 @@
 #include "app/solver/CasePieceSolver.h"
 #include "app/pathfinder/value/PieceNormalValue.h"
 #include "app/pathfinder/variable/CaseRowscanVariable.h"
+#include "core/io/data/GameImportData.h"
 
 using namespace std;
 

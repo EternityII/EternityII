@@ -26,10 +26,9 @@ public:
      * Informs the all the constraints about the change
      */
     //virtual void accept(DataInterface &dataInterface, const int &depth){ };
-    //virtual void accepted(DataInterface &dataInterface, const int &depth){ };
+    //virtual void accepted(DataInterface &dataInterface, const int &depth){};
 
-    //virtual void discard(DataInterface &dataInterface, const int &depth){ };
-    //virtual void discarded(DataInterface &dataInterface, const int &depth){ };
+    //virtual void discard(DataInterface &dataInterface,DataInterface &dataInterface, const int &depth){ };
 
     virtual ~ObservableInterface()
     { };

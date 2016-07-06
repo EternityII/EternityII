@@ -36,6 +36,9 @@ public:
 
         pieces.resize(depth);
     }
+
+    ~GameImportData()
+    { }
 };
 
 

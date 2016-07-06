@@ -9,7 +9,10 @@ class VariableInterface
 protected:
     ModelInterface *modelInterface;
 public:
-    virtual void initialize(GameImportData &gameData) = 0;
+    virtual void initialize(ModelInterface &modelInterface)
+    {
+        this->modelInterface = &modelInterface;
+    };
 
     virtual DataInterface *next(int &depth) = 0;
 

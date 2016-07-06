@@ -19,6 +19,8 @@ void Framework::bootstrap(string &filename, int &variable, int &value)
     unique_ptr<PieceModel> pieceModel = make_unique<PieceModel>();
     unique_ptr<CaseModel> caseModel = make_unique<CaseModel>();
 
+    pathFinder.initialize(*caseModel, *pieceModel);
+
     // Creating the constraint
     unique_ptr<CasePieceConstraint> casePieceConstraint = make_unique<CasePieceConstraint>();
 
@@ -26,7 +28,7 @@ void Framework::bootstrap(string &filename, int &variable, int &value)
     casePieceConstraint->setSecond(*pieceModel);
 
     // initializing the solver
-    solver->initialize(pathFinder, *casePieceConstraint);
+    solver->initialize(pathFinder, *casePieceConstraint, models, *game);
 
     // storing the constraints
     constraints.push_back(move(casePieceConstraint));
@@ -50,7 +52,7 @@ void Framework::import(IO &io)
 
     // taille du jeu
     io >> current_number;
-    game.setSize(current_number);
+    game->setSize(current_number);
 
     // nombre de couleurs;
     io >> current_number;
@@ -65,7 +67,7 @@ void Framework::import(IO &io)
         }
     }
 
-    for (int id = 0; id < game.depth; ++id) {
+    for (int id = 0; id < game->depth; ++id) {
         unique_ptr<PieceImportData> piece = make_unique<PieceImportData>();
         int zero_count = 0;
 
@@ -94,7 +96,7 @@ void Framework::import(IO &io)
         // DEBUG :
         // cout << endl;
 
-        game.pieces[id] = move(piece);
+        game->pieces[id] = move(piece);
     }
 }
 unique_ptr<ValueInterface> Framework::createValue(int &value)

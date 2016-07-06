@@ -17,6 +17,9 @@ public:
     {
         colors.resize(4, vector<int>(4, 0));
     }
+
+    ~PieceImportData()
+    { }
 };
 
 #endif //ETERNITYII_PIECEIMPORTDATA_H
