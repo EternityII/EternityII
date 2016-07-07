@@ -11,6 +11,8 @@ void Framework::bootstrap(string &filename, int &variable, int &value)
     // Creating the solver
     solver = make_unique<CasePieceSolver>();
 
+    eventManager = make_unique<EventManager>();
+
     // Setting up the PathFinder
     pathFinder.set(move(createValue(value)));
     pathFinder.set(move(createVariable(variable)));
@@ -19,6 +21,9 @@ void Framework::bootstrap(string &filename, int &variable, int &value)
     unique_ptr<PieceModel> pieceModel = make_unique<PieceModel>();
     unique_ptr<CaseModel> caseModel = make_unique<CaseModel>();
 
+    pieceModel->addEventManager(*eventManager);
+    caseModel->addEventManager(*eventManager);
+
     pathFinder.initialize(*caseModel, *pieceModel);
 
     // Creating the constraint
@@ -26,6 +31,7 @@ void Framework::bootstrap(string &filename, int &variable, int &value)
 
     casePieceConstraint->setFirst(*caseModel);
     casePieceConstraint->setSecond(*pieceModel);
+    casePieceConstraint->add(*eventManager);
 
     // initializing the solver
     solver->initialize(pathFinder, *casePieceConstraint, models, *game);

@@ -1,12 +1,20 @@
 #ifndef ETERNITYII_OBSERVERINTERFACE_H
 #define ETERNITYII_OBSERVERINTERFACE_H
 
+#include "event/EventManager.h"
 class ObserverInterface
 {
+protected:
+    EventManager *eventManager;
 public:
+
+    void add(EventManager &eventManager)
+    {
+        this->eventManager = &eventManager;
+    }
     //virtual void accept(DataInterface &varData, DataInterface &valData, const int &depth) = 0;
 
-    //virtual void accepted(DataInterface &valData, const int &depth) = 0;
+    //virtual void callback(DataInterface &valData, const int &depth) = 0;
 
     //virtual void discard(DataInterface &varData, DataInterface &valData, const int &depth) = 0;
 

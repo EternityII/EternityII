@@ -9,7 +9,7 @@ void CasePieceConstraint::accepted(CaseData &caseData, const int &depth)
 void CasePieceConstraint::accepted(PieceData &pieceData, const int &depth)
 {
     // notify CaseModel that the piece is not available anymore
-    _first->accept(pieceData, depth);
+    _first->accepted(pieceData, depth);
 }
 
 void CasePieceConstraint::rollback(const int &from, const int &to)
@@ -21,6 +21,10 @@ void CasePieceConstraint::accept(CaseData &caseData, PieceData &pieceData, const
 {
     _first->accept(caseData, depth); // CaseModel
     _second->accept(pieceData, depth); // PieceModel
+
+    while (!eventManager->empty()) {
+        eventManager->pop();
+    }
 }
 
 void CasePieceConstraint::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
@@ -28,12 +32,14 @@ void CasePieceConstraint::discard(CaseData &caseData, PieceData &pieceData, cons
     _first->discard(caseData, pieceData, depth);
     _second->discard(caseData, pieceData, depth);
 }
+
 void CasePieceConstraint::setFirst(CaseModel &modelInterface)
 {
     this->_first = &modelInterface;
 
     _first->add(*this);
 }
+
 void CasePieceConstraint::setSecond(PieceModel &modelInterface)
 {
     this->_second = &modelInterface;

@@ -28,6 +28,8 @@ private:
 
     unique_ptr<GameImportData> game;
 
+    unique_ptr<EventManager> eventManager;
+
     vector<unique_ptr<ConstraintInterface>> constraints;
 
     vector<unique_ptr<ModelInterface>> models;

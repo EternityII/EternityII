@@ -1,9 +1,10 @@
 #ifndef ETERNITYII_MODELINTERFACE_H
 #define ETERNITYII_MODELINTERFACE_H
 
+
 #include "../ObservableInterface.h"
-#include "../data/DataInterface.h"
 #include "../io/data/GameImportData.h"
+#include "../event/TypedElement.h"
 
 class ModelInterface: public ObservableInterface
 {

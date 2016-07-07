@@ -36,7 +36,12 @@ void PieceModel::accept(PieceData &pieceData, const int &depth)
         isAvailable[pieceData.id] = false;
         isAvailableHistory[depth][pieceData.id] = true;
 
-        static_cast<CasePieceConstraint *>(observers[0])->accepted(pieceData, depth);
+        addAcceptedEvent<CasePieceConstraint, PieceData>(
+            static_cast<CasePieceConstraint &>(*observers[0]),
+            pieceData,
+            depth);
+
+        //static_cast<CasePieceConstraint *>(observers[0])->accepted(pieceData, depth);
     }
 }
 
@@ -44,14 +49,16 @@ void PieceModel::accepted(CaseData &caseData, const int &depth)
 {
     // it's a consequence of the update of caseData, so we do it without checking anything
     for (int nPiece = 0; nPiece < nbPieces; ++nPiece) {
-        for (int rotation = 0; rotation < 4; ++rotation) {
-            // if the piece has the case in it's domain
-            if (pieceCases[nPiece][rotation][caseData.x][caseData.y]) {
-                --casesQte[nPiece][rotation];
-                --casesQteHistory[depth][nPiece][rotation];
-                //not anymore
-                pieceCases[nPiece][rotation][caseData.x][caseData.y] = false;
-                pieceCasesHistory[depth][nPiece][rotation][caseData.x][caseData.y] = true;
+        if (isAvailable[nPiece]) { // if the piece is available
+            for (int rotation = 0; rotation < 4; ++rotation) {
+                // if the piece has the case in it's domain
+                if (pieceCases[nPiece][rotation][caseData.x][caseData.y]) {
+                    --casesQte[nPiece][rotation];
+                    --casesQteHistory[depth][nPiece][rotation];
+                    //not anymore
+                    pieceCases[nPiece][rotation][caseData.x][caseData.y] = false;
+                    pieceCasesHistory[depth][nPiece][rotation][caseData.x][caseData.y] = true;
+                }
             }
         }
     }

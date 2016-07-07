@@ -39,22 +39,30 @@ void CaseModel::accept(CaseData &caseData, const int &depth)
         isAvailable[caseData.x][caseData.y] = false; // the case is not available anymore
         isAvailableHistory[depth][caseData.x][caseData.y] = true;// the history has changed !!!
 
-        dynamic_cast<CasePieceConstraint *>(observers[0])->accepted(caseData, depth);
+
+        addAcceptedEvent<CasePieceConstraint, CaseData>(
+            static_cast<CasePieceConstraint &>(*observers[0]),
+            caseData,
+            depth);
     }
 }
 
-void CaseModel::accept(PieceData &pieceData, const int &depth)
+void CaseModel::accepted(PieceData &pieceData, const int &depth)
 {
     // it's a consequence of the update of pieceData, so we do it without checking anything
     for (int x = 0; x < size; ++x) {
         for (int y = 0; y < size; ++y) {
-            // if the case has the piece in it's domain
-            if (casePieces[x][y][pieceData.id][pieceData.rotation]) {
-                --piecesQte[x][y];
-                --piecesQteHistory[depth][x][y];
-                // not anymore
-                casePieces[x][y][pieceData.id][pieceData.rotation] = false;
-                casePiecesHistory[depth][x][y][pieceData.id][pieceData.rotation] = true;
+            // if the case has the piece in it's domain and if it's available
+            if (isAvailable[x][y]) {
+                for (int rotation = 0; rotation < 4; ++rotation) {
+                    if (casePieces[x][y][pieceData.id][rotation]) {
+                        --piecesQte[x][y];
+                        --piecesQteHistory[depth][x][y];
+                        // not anymore
+                        casePieces[x][y][pieceData.id][pieceData.rotation] = false;
+                        casePiecesHistory[depth][x][y][pieceData.id][pieceData.rotation] = true;
+                    }
+                }
             }
         }
     }
