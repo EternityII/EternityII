@@ -66,19 +66,6 @@ void PieceModel::accepted(CaseData &caseData, const int &depth)
 
 void PieceModel::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
-    // TODO
-    if (isAvailableHistory[depth][pieceData.id]) {
-        isAvailable[pieceData.id] = true;
-        isAvailableHistory[depth][pieceData.id] = false;
-    }
-
-    addDiscardedEvent<CasePieceConstraint, PieceData>(
-        static_cast<CasePieceConstraint &>(*observers[0]),
-        pieceData,
-        depth
-    );
-
-
     pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y] = false;
     pieceCasesHistory[depth][pieceData.id][pieceData.rotation][caseData.x][caseData.y] = true;
 
@@ -91,34 +78,30 @@ void PieceModel::discarded(CaseData &caseData, const int &depth)
     // TODO
 }
 
-void PieceModel::rollback(const int &from, const int &to)
+void PieceModel::rollback(const int &depth)
 {
-    // they see me rolling ... back
-    for (int depth = from; depth > to; --depth) {
-        for (int nPiece = 0; nPiece < nbPieces; ++nPiece) {
-            for (int rotation = 0; rotation < 4; ++rotation) {
+    for (int nPiece = 0; nPiece < nbPieces; ++nPiece) {
+        for (int rotation = 0; rotation < 4; ++rotation) {
 
-                if (casesQteHistory[depth][nPiece][rotation] != 0) {
-                    casesQte[nPiece][rotation] -= casesQteHistory[depth][nPiece][rotation];
-                    casesQteHistory[depth][nPiece][rotation] = 0;
-                }
+            if (casesQteHistory[depth][nPiece][rotation] != 0) {
+                casesQte[nPiece][rotation] -= casesQteHistory[depth][nPiece][rotation];
+                casesQteHistory[depth][nPiece][rotation] = 0;
+            }
 
 
-                for (int x = 0; x < size; ++x) {
-                    for (int y = 0; y < size; ++y) {
-                        if (pieceCasesHistory[depth][nPiece][rotation][x][y]) {
-                            pieceCases[nPiece][rotation][x][y] = true;
-                            pieceCasesHistory[depth][nPiece][rotation][x][y] = false;
-                        }
+            for (int x = 0; x < size; ++x) {
+                for (int y = 0; y < size; ++y) {
+                    if (pieceCasesHistory[depth][nPiece][rotation][x][y]) {
+                        pieceCases[nPiece][rotation][x][y] = true;
+                        pieceCasesHistory[depth][nPiece][rotation][x][y] = false;
                     }
                 }
             }
-
-            if (isAvailableHistory[depth][nPiece]) {
-                isAvailable[nPiece] = true;
-                isAvailableHistory[depth][nPiece] = false;
-            }
         }
 
+        if (isAvailableHistory[depth][nPiece]) {
+            isAvailable[nPiece] = true;
+            isAvailableHistory[depth][nPiece] = false;
+        }
     }
 }

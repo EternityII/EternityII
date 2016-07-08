@@ -38,7 +38,7 @@ public:
 
     void discarded(CaseData &caseData, const int &depth);
 
-    void rollback(const int &from, const int &to);
+    void rollback(const int &depth);
 };
 
 

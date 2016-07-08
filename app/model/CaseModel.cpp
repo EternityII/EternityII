@@ -70,18 +70,6 @@ void CaseModel::accepted(PieceData &pieceData, const int &depth)
 
 void CaseModel::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
-    // TODO
-    if (isAvailableHistory[depth][caseData.x][caseData.y]) {
-        // now it's available again
-        isAvailable[caseData.x][caseData.y] = true;
-        isAvailableHistory[depth][caseData.x][caseData.y] = false;
-    }
-
-    addDiscardedEvent<CasePieceConstraint, CaseData>(
-        static_cast<CasePieceConstraint &>(*observers[0]),
-        caseData,
-        depth);
-
     casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation] = false;
     casePiecesHistory[depth][caseData.x][caseData.y][pieceData.id][pieceData.rotation] = true;
 
@@ -94,29 +82,25 @@ void CaseModel::discarded(PieceData &pieceData, const int &depth)
 // TODO
 }
 
-void CaseModel::rollback(const int &from, const int &to)
+void CaseModel::rollback(const int &depth)
 {
-    for (int depth = from; depth > to; --depth) {
-        // they see me rolling ... back
+    for (int x = 0; x < size; ++x) {
+        for (int y = 0; y < size; ++y) {
 
-        for (int x = 0; x < size; ++x) {
-            for (int y = 0; y < size; ++y) {
+            if (piecesQteHistory[depth][x][y] != 0) { // minimizing operations
+                piecesQte[x][y] -= piecesQteHistory[depth][x][y];
+                piecesQteHistory[depth][x][y] = 0;
+            }
+            if (isAvailableHistory[depth][x][y]) { // if the history has changed
+                isAvailable[x][y] = true;
+                isAvailableHistory[depth][x][y] = false;
+            }
 
-                if (piecesQteHistory[depth][x][y] != 0) { // minimizing operations
-                    piecesQte[x][y] -= piecesQteHistory[depth][x][y];
-                    piecesQteHistory[depth][x][y] = 0;
-                }
-                if (isAvailableHistory[depth][x][y]) { // if the history has changed
-                    isAvailable[x][y] = true;
-                    isAvailableHistory[depth][x][y] = false;
-                }
-
-                for (int nPieces = 0; nPieces < size * size; ++nPieces) {
-                    for (int rotation = 0; rotation < 4; ++rotation) {
-                        if (casePiecesHistory[depth][x][y][nPieces][rotation]) {
-                            casePieces[x][y][nPieces][rotation] = true;
-                            casePiecesHistory[depth][x][y][nPieces][rotation] = false; // cleaning the depth
-                        }
+            for (int nPieces = 0; nPieces < size * size; ++nPieces) {
+                for (int rotation = 0; rotation < 4; ++rotation) {
+                    if (casePiecesHistory[depth][x][y][nPieces][rotation]) {
+                        casePieces[x][y][nPieces][rotation] = true;
+                        casePiecesHistory[depth][x][y][nPieces][rotation] = false; // cleaning the depth
                     }
                 }
             }

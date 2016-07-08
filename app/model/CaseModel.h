@@ -41,14 +41,7 @@ public:
 
     void discarded(PieceData &pieceData, const int &depth);
 
-    /**
-     * @param CaseData dataInterface, the case which was discarded
-     * @param const int &depth, depth
-     *
-     * Informs the all the constraints about the change
-     */
-
-    void rollback(const int &from, const int &to);
+    void rollback(const int &depth);
 };
 
 

@@ -16,7 +16,15 @@ public:
      *
      * Rolls back the model to depth
      */
-    virtual void rollback(const int &from, const int &to) = 0;
+    void rollback(const int &from, const int &to)
+    {
+        for (int depth = from; depth > to; --depth) {
+            // they see me rolling ... back
+            rollback(depth);
+        }
+    };
+
+    virtual void rollback(const int &depth) = 0;
 
     virtual ~ModelInterface()
     { };

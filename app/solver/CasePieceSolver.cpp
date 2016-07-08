@@ -34,6 +34,11 @@ void CasePieceSolver::resolve(int &depth)
     }
 
     delete caseData;
+
+    // end of recursivity, rolling back to depth
+    for (int model = 0; model < models->size(); ++model) {
+        models->operator[](model)->rollback(depth);
+    }
 }
 
 void CasePieceSolver::resolve(CaseData &caseData, int &depth)
@@ -48,9 +53,11 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
             cout << depth << " " << pieceData->id << ":" << pieceData->rotation << endl;
             ++depth;
             resolve(depth);
-            --depth; // end of recursivity, rolling back to depth
+            --depth;
+            // end of recursivity, rolling back to the beginning of the current depth
+            // TODO : fine tune this thing
             for (int model = 0; model < models->size(); ++model) {
-                models->operator[](model)->rollback(depth + 1, depth);
+                models->operator[](model)->rollback(depth);
             }
             popPiece(caseData, *pieceData);
         }

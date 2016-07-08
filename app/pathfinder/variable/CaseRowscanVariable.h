@@ -16,6 +16,10 @@ public:
     CaseData *next(int &depth) override
     {
         CaseData *caseData;
+        if (depth >= _modelInterface->size * _modelInterface->size) {
+            caseData = new CaseData(false);
+            return caseData;
+        }
 
         int y = depth / _modelInterface->size;
         int x = depth % _modelInterface->size;
