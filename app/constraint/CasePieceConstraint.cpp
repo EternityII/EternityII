@@ -23,7 +23,7 @@ void CasePieceConstraint::accept(CaseData &caseData, PieceData &pieceData, const
     _second->accept(pieceData, depth); // PieceModel
 
     while (!eventManager->empty()) {
-        eventManager->pop();
+        eventManager->process();
     }
 }
 
@@ -31,6 +31,10 @@ void CasePieceConstraint::discard(CaseData &caseData, PieceData &pieceData, cons
 {
     _first->discard(caseData, pieceData, depth);
     _second->discard(caseData, pieceData, depth);
+
+    while (!eventManager->empty()) {
+        eventManager->process();
+    }
 }
 
 void CasePieceConstraint::discarded(CaseData &caseData, const int &depth)

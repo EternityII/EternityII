@@ -13,7 +13,7 @@ class PieceModel: public ModelInterface
 {
     vector<vector<vector<int>>> casesQteHistory;
 
-    vector<vector<bool>> isAvailableHistory;
+    vector<vector<bool>> availableHistory;
 
     vector<vector<vector<vector<vector<bool>>>>> pieceCasesHistory;
 
@@ -24,7 +24,7 @@ public:
 
     vector<vector<int>> casesQte;
 
-    vector<bool> isAvailable;
+    vector<bool> available;
 
     vector<vector<vector<vector<bool>>>> pieceCases;
 
@@ -38,6 +38,11 @@ public:
 
     void discarded(CaseData &caseData, const int &depth);
 
+    /**
+    * @param int const &depth, the depth to rollback
+    *
+    * Roll backs the given depth
+    */
     void rollback(const int &depth);
 };
 

@@ -21,7 +21,7 @@ public:
         elements.push(move(element));
     }
 
-    void pop()
+    void process()
     {
         if (!elements.empty()) {
             elements.front()->execute();

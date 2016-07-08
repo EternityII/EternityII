@@ -12,8 +12,8 @@ void PieceModel::initialize(GameImportData &gameImportData)
         vector<vector<int >>(nbPieces,
             vector<int>(4, 0)));
 
-    isAvailable.resize(nbPieces, true);
-    isAvailableHistory.resize(nbPieces,
+    available.resize(nbPieces, true);
+    availableHistory.resize(nbPieces,
         vector<bool>(nbPieces, false));
 
     // [n°piece][rotation][x][y]
@@ -32,9 +32,9 @@ void PieceModel::initialize(GameImportData &gameImportData)
 
 void PieceModel::accept(PieceData &pieceData, const int &depth)
 {
-    if (isAvailable[pieceData.id]) {
-        isAvailable[pieceData.id] = false;
-        isAvailableHistory[depth][pieceData.id] = true;
+    if (available[pieceData.id]) {
+        available[pieceData.id] = false;
+        availableHistory[depth][pieceData.id] = true;
 
         addAcceptedEvent<CasePieceConstraint, PieceData>(
             static_cast<CasePieceConstraint &>(*observers[0]),
@@ -49,7 +49,7 @@ void PieceModel::accepted(CaseData &caseData, const int &depth)
 {
     // it's a consequence of the update of caseData, so we do it without checking anything
     for (int nPiece = 0; nPiece < nbPieces; ++nPiece) {
-        if (isAvailable[nPiece]) { // if the piece is available
+        if (available[nPiece]) { // if the piece is available
             for (int rotation = 0; rotation < 4; ++rotation) {
                 // if the piece has the case in it's domain
                 if (pieceCases[nPiece][rotation][caseData.x][caseData.y]) {
@@ -71,6 +71,10 @@ void PieceModel::discard(CaseData &caseData, PieceData &pieceData, const int &de
 
     --casesQte[pieceData.id][pieceData.rotation];
     --casesQteHistory[depth][pieceData.id][pieceData.rotation];
+
+    addDiscardedEvent<CasePieceConstraint, PieceData>(static_cast<CasePieceConstraint &>(*observers[0]),
+        pieceData,
+        depth);
 }
 
 void PieceModel::discarded(CaseData &caseData, const int &depth)
@@ -99,9 +103,9 @@ void PieceModel::rollback(const int &depth)
             }
         }
 
-        if (isAvailableHistory[depth][nPiece]) {
-            isAvailable[nPiece] = true;
-            isAvailableHistory[depth][nPiece] = false;
+        if (availableHistory[depth][nPiece]) {
+            available[nPiece] = true;
+            availableHistory[depth][nPiece] = false;
         }
     }
 }

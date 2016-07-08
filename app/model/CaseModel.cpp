@@ -14,9 +14,9 @@ void CaseModel::initialize(GameImportData &gameImportData)
         vector<vector<int>>(size,
             vector<int>(size, 0)));
 
-    isAvailable.resize(size,
+    available.resize(size,
         vector<bool>(size, true));
-    isAvailableHistory.resize(depth,
+    availableHistory.resize(depth,
         vector<vector<bool>>(size,
             vector<bool>(size, false)));
 
@@ -35,9 +35,9 @@ void CaseModel::initialize(GameImportData &gameImportData)
 void CaseModel::accept(CaseData &caseData, const int &depth)
 {
     // only update if it's not already done
-    if (isAvailable[caseData.x][caseData.y]) {
-        isAvailable[caseData.x][caseData.y] = false; // the case is not available anymore
-        isAvailableHistory[depth][caseData.x][caseData.y] = true;// the history has changed !!!
+    if (available[caseData.x][caseData.y]) {
+        available[caseData.x][caseData.y] = false; // the case is not available anymore
+        availableHistory[depth][caseData.x][caseData.y] = true;// the history has changed !!!
 
 
         addAcceptedEvent<CasePieceConstraint, CaseData>(
@@ -53,7 +53,7 @@ void CaseModel::accepted(PieceData &pieceData, const int &depth)
     for (int x = 0; x < size; ++x) {
         for (int y = 0; y < size; ++y) {
             // if the case has the piece in it's domain and if it's available
-            if (isAvailable[x][y]) {
+            if (available[x][y]) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
                     if (casePieces[x][y][pieceData.id][rotation]) {
                         --piecesQte[x][y];
@@ -75,6 +75,10 @@ void CaseModel::discard(CaseData &caseData, PieceData &pieceData, const int &dep
 
     --piecesQte[caseData.x][caseData.y];
     --piecesQteHistory[depth][caseData.x][caseData.y];
+
+    addDiscardedEvent<CasePieceConstraint, CaseData>(static_cast<CasePieceConstraint &>(*observers[0]),
+        caseData,
+        depth);
 }
 
 void CaseModel::discarded(PieceData &pieceData, const int &depth)
@@ -91,9 +95,9 @@ void CaseModel::rollback(const int &depth)
                 piecesQte[x][y] -= piecesQteHistory[depth][x][y];
                 piecesQteHistory[depth][x][y] = 0;
             }
-            if (isAvailableHistory[depth][x][y]) { // if the history has changed
-                isAvailable[x][y] = true;
-                isAvailableHistory[depth][x][y] = false;
+            if (availableHistory[depth][x][y]) { // if the history has changed
+                available[x][y] = true;
+                availableHistory[depth][x][y] = false;
             }
 
             for (int nPieces = 0; nPieces < size * size; ++nPieces) {

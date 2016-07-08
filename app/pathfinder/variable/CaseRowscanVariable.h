@@ -24,7 +24,7 @@ public:
         int y = depth / _modelInterface->size;
         int x = depth % _modelInterface->size;
         caseData = new CaseData(x, y);
-        if (!_modelInterface->isAvailable[x][y]) {
+        if (!_modelInterface->available[x][y]) {
             caseData->valid = false;
         }
 

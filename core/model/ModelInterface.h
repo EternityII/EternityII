@@ -12,18 +12,26 @@ public:
     virtual void initialize(GameImportData &gameImportData) = 0;
 
     /**
-     * @param int const &depth, the depth
+     * Will rollback from "fromDept" to the depth "toDept"
      *
-     * Rolls back the model to depth
+     * !!! Will not rollback depth "toDepth"
+     *
+     * @param int const &fromDept, the depth to rollback fromDept
+     * @param int const &toDepth, the depth to rollback toDepth
      */
-    void rollback(const int &from, const int &to)
+    void rollback(const int &fromDept, const int &toDepth)
     {
-        for (int depth = from; depth > to; --depth) {
+        for (int depth = fromDept; depth > toDepth; --depth) {
             // they see me rolling ... back
             rollback(depth);
         }
     };
 
+    /**
+     * Roll backs the given depth
+     *
+     * @param int const &depth, the depth to rollback
+     */
     virtual void rollback(const int &depth) = 0;
 
     virtual ~ModelInterface()

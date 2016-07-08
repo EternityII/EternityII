@@ -27,7 +27,7 @@ public :
     {
         CaseData caseData = static_cast<CaseData &>(dataInterface);
         for (int nPiece = 0; nPiece < _modelInterface->nbPieces; ++nPiece) {
-            if (_modelInterface->isAvailable[nPiece]) {
+            if (_modelInterface->available[nPiece]) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
                     if (_modelInterface->pieceCases[nPiece][rotation][caseData.x][caseData.y]) {
                         pieceIterator = nPiece;

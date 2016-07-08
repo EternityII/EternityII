@@ -12,7 +12,7 @@ class CaseModel: public ModelInterface
 {
     vector<vector<vector<int>>> piecesQteHistory;
 
-    vector<vector<vector<bool>>> isAvailableHistory;
+    vector<vector<vector<bool>>> availableHistory;
 
     vector<vector<vector<vector<vector<bool>>>>> casePiecesHistory;
 
@@ -21,14 +21,14 @@ public:
 
     vector<vector<int>> piecesQte;
 
-    vector<vector<bool>> isAvailable;
+    vector<vector<bool>> available;
 
     vector<vector<vector<vector<bool>>>> casePieces;
 
     void initialize(GameImportData &gameImportData);
 
     /**
-     * @param CaseData dataInterface, the case which was accepted
+     * @param CaseData caseData, the case which was accepted
      * @param const int &depth,
      *
      * Informs the all the constraints about the change
@@ -41,6 +41,11 @@ public:
 
     void discarded(PieceData &pieceData, const int &depth);
 
+/**
+     * Roll backs the given depth
+     *
+     * @param int const &depth, the depth to rollback
+     */
     void rollback(const int &depth);
 };
 
