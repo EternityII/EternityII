@@ -51,6 +51,8 @@ public:
      * Rollback the table to depth
      */
     void rollback(const int &from, const int &to);
+    void discarded(PieceData &pieceData, const int &depth);
+    void discarded(CaseData &caseData, const int &depth);
 };
 
 

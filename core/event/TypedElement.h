@@ -8,17 +8,19 @@
 #include <functional>
 #include "Element.h"
 
+using namespace std;
+
 template<class Data>
 class TypedElement: public Element
 {
-    std::function<void()> function;
+    unique_ptr<std::function<void()>> funct;
     Data *data;
     int depth;
 
 public:
-    TypedElement(std::function<void()> &callback)
+    TypedElement(unique_ptr<std::function<void()>> callback)
     {
-        this->function = callback;
+        this->funct = move(callback);
     }
 
     ~TypedElement()
@@ -28,7 +30,7 @@ public:
 
     void execute()
     {
-        this->function();
+        this->funct->operator()();
     }
 
 };

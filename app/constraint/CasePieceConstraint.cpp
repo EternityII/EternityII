@@ -33,6 +33,16 @@ void CasePieceConstraint::discard(CaseData &caseData, PieceData &pieceData, cons
     _second->discard(caseData, pieceData, depth);
 }
 
+void CasePieceConstraint::discarded(CaseData &caseData, const int &depth)
+{
+    _second->discarded(caseData, depth);
+}
+
+void CasePieceConstraint::discarded(PieceData &pieceData, const int &depth)
+{
+    _first->discarded(pieceData, depth);
+}
+
 void CasePieceConstraint::setFirst(CaseModel &modelInterface)
 {
     this->_first = &modelInterface;

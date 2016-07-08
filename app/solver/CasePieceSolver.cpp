@@ -45,8 +45,8 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
         if (isPossible(caseData, *pieceData)) {
             putPiece(caseData, *pieceData);
             pieceCaseConstraint->accept(caseData, *pieceData, depth);
+            cout << depth << " " << pieceData->id << ":" << pieceData->rotation << endl;
             ++depth;
-            cout << depth << endl;
             resolve(depth);
             --depth; // end of recursivity, rolling back to depth
             for (int model = 0; model < models->size(); ++model) {

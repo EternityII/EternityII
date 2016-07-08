@@ -30,11 +30,13 @@ public:
 
     void initialize(GameImportData &gameImportData);
 
-    void accepted(CaseData &caseData, const int &depth);
-
     void accept(PieceData &pieceData, const int &depth);
 
+    void accepted(CaseData &caseData, const int &depth);
+
     void discard(CaseData &caseData, PieceData &pieceData, const int &depth);
+
+    void discarded(CaseData &caseData, const int &depth);
 
     void rollback(const int &from, const int &to);
 };

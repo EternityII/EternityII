@@ -24,9 +24,19 @@ public:
     template<typename O, typename D>
     void addAcceptedEvent(O &obj, D &data, const int &depth)
     {
-        function<void()> callback =
-            bind(static_cast<void (O::*)(D &, const int &)>(&O::accepted), obj, data, depth);
-        eventManager->add(make_unique<TypedElement<D>>(callback));
+        unique_ptr<std::function<void()>> callback =
+            make_unique<std::function<void()>>(
+                bind(static_cast<void (O::*)(D &, const int &)>(&O::accepted), obj, data, depth));
+        eventManager->add(make_unique<TypedElement<D>>(move(callback)));
+    }
+
+    template<typename O, typename D>
+    void addDiscardedEvent(O &obj, D &data, const int &depth)
+    {
+        unique_ptr<std::function<void()>> callback =
+            make_unique<std::function<void()>>(
+                bind(static_cast<void (O::*)(D &, const int &)>(&O::discarded), obj, data, depth));
+        eventManager->add(make_unique<TypedElement<D>>(move(callback)));
     }
 
     void add(ObserverInterface &observer)

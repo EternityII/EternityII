@@ -66,24 +66,38 @@ void PieceModel::accepted(CaseData &caseData, const int &depth)
 
 void PieceModel::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
+    // TODO
+    if (isAvailableHistory[depth][pieceData.id]) {
+        isAvailable[pieceData.id] = true;
+        isAvailableHistory[depth][pieceData.id] = false;
+    }
+
+    addDiscardedEvent<CasePieceConstraint, PieceData>(
+        static_cast<CasePieceConstraint &>(*observers[0]),
+        pieceData,
+        depth
+    );
+
+
     pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y] = false;
     pieceCasesHistory[depth][pieceData.id][pieceData.rotation][caseData.x][caseData.y] = true;
 
     --casesQte[pieceData.id][pieceData.rotation];
     --casesQteHistory[depth][pieceData.id][pieceData.rotation];
+}
 
-    if (isAvailableHistory[depth][pieceData.id]) {
-        isAvailable[pieceData.id] = true;
-        isAvailableHistory[depth][pieceData.id] = false;
-    }
+void PieceModel::discarded(CaseData &caseData, const int &depth)
+{
+    // TODO
 }
 
 void PieceModel::rollback(const int &from, const int &to)
 {
+    // they see me rolling ... back
     for (int depth = from; depth > to; --depth) {
-        // they see me rolling ... back
         for (int nPiece = 0; nPiece < nbPieces; ++nPiece) {
             for (int rotation = 0; rotation < 4; ++rotation) {
+
                 if (casesQteHistory[depth][nPiece][rotation] != 0) {
                     casesQte[nPiece][rotation] -= casesQteHistory[depth][nPiece][rotation];
                     casesQteHistory[depth][nPiece][rotation] = 0;

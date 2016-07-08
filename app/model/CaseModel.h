@@ -39,6 +39,8 @@ public:
 
     void discard(CaseData &caseData, PieceData &pieceData, const int &depth);
 
+    void discarded(PieceData &pieceData, const int &depth);
+
     /**
      * @param CaseData dataInterface, the case which was discarded
      * @param const int &depth, depth

@@ -70,11 +70,28 @@ void CaseModel::accepted(PieceData &pieceData, const int &depth)
 
 void CaseModel::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
+    // TODO
+    if (isAvailableHistory[depth][caseData.x][caseData.y]) {
+        // now it's available again
+        isAvailable[caseData.x][caseData.y] = true;
+        isAvailableHistory[depth][caseData.x][caseData.y] = false;
+    }
+
+    addDiscardedEvent<CasePieceConstraint, CaseData>(
+        static_cast<CasePieceConstraint &>(*observers[0]),
+        caseData,
+        depth);
+
     casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation] = false;
     casePiecesHistory[depth][caseData.x][caseData.y][pieceData.id][pieceData.rotation] = true;
 
     --piecesQte[caseData.x][caseData.y];
     --piecesQteHistory[depth][caseData.x][caseData.y];
+}
+
+void CaseModel::discarded(PieceData &pieceData, const int &depth)
+{
+// TODO
 }
 
 void CaseModel::rollback(const int &from, const int &to)
