@@ -15,24 +15,11 @@ public:
      * @param valueInterface, value strategy
      * @param variableInterface, variable strategy
      */
-    PathFinder()
-    { };
-
-    void initialize(ModelInterface &variableModel, ModelInterface &valueModel)
-    {
-        this->variableInterface->initialize(variableModel);
-        this->valueInterface->initialize(valueModel);
-    }
-
-    void set(unique_ptr<VariableInterface> variableInterface)
+    PathFinder(unique_ptr<VariableInterface> variableInterface, unique_ptr<ValueInterface> valueInterface)
     {
         this->variableInterface = move(variableInterface);
-    }
-
-    void set(unique_ptr<ValueInterface> valueInterface)
-    {
         this->valueInterface = move(valueInterface);
-    }
+    };
 
     /**
      * @param variableData the variable to look at

@@ -7,14 +7,34 @@
 
 class SolverInterface
 {
-public:
+protected:
+    PathFinder *pathFinder;
 
-    virtual void initialize
+    vector<unique_ptr<ModelInterface>> *models;
+
+    GameImportData *game;
+
+    ConstraintInterface *constraintInterface;
+
+    SolverInterface(PathFinder &pathFinder, vector<unique_ptr<ModelInterface>> &models, GameImportData &gameImportData)
+    {
+        this->pathFinder = &pathFinder;
+        this->models = &models;
+        this->game = &gameImportData;
+    }
+
+public:
+    SolverInterface
         (PathFinder &pathFinder,
             ConstraintInterface &constraintInterface,
             vector<unique_ptr<ModelInterface>> &models,
-            GameImportData &gameImportData) =
-        0;
+            GameImportData &gameImportData)
+    {
+        this->pathFinder = &pathFinder;
+        this->models = &models;
+        this->game = &gameImportData;
+        this->constraintInterface = &constraintInterface;
+    };
 
     virtual void resolve() = 0;
 

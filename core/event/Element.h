@@ -1,7 +1,3 @@
-//
-// Created by stardisblue on 07/07/16.
-//
-
 #ifndef ETERNITYII_ELEMENT_H
 #define ETERNITYII_ELEMENT_H
 

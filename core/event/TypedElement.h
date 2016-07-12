@@ -6,6 +6,7 @@
 #define ETERNITYII_TYPEDELEMENTS_H
 
 #include <functional>
+#include <memory>
 #include "Element.h"
 
 using namespace std;
@@ -13,7 +14,7 @@ using namespace std;
 template<class Data>
 class TypedElement: public Element
 {
-    unique_ptr<std::function<void()>> funct;
+    std::unique_ptr<std::function<void()>> funct;
     Data *data;
     int depth;
 

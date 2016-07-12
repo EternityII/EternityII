@@ -8,7 +8,7 @@ class CaseRowscanVariable: public VariableInterface
 {
     CaseModel *_modelInterface;
 public:
-    void initialize(ModelInterface &modelInterface) override
+    CaseRowscanVariable(ModelInterface &modelInterface)
     {
         this->_modelInterface = static_cast<CaseModel *>(&modelInterface);
     }
@@ -23,8 +23,8 @@ public:
 
         int y = depth / _modelInterface->size;
         int x = depth % _modelInterface->size;
-        caseData = new CaseData(x, y);
-        if (!_modelInterface->available[x][y]) {
+        caseData = new CaseData(y, x);
+        if (!_modelInterface->available[y][x]) {
             caseData->valid = false;
         }
 

@@ -22,7 +22,7 @@ public:
     void bootstrap(string &filename, int &variable, int &value);
 
 private:
-    PathFinder pathFinder;
+    unique_ptr<PathFinder> pathFinder;
 
     unique_ptr<SolverInterface> solver;
 
@@ -35,10 +35,6 @@ private:
     vector<unique_ptr<ModelInterface>> models;
 
     void import(IO &io);
-
-    unique_ptr<ValueInterface> createValue(int &value);
-
-    unique_ptr<VariableInterface> createVariable(int &variable);
 
 };
 

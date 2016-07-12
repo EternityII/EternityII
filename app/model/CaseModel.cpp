@@ -1,7 +1,9 @@
+#include <complex>
 #include "CaseModel.h"
 #include "../constraint/CasePieceConstraint.h"
 
-void CaseModel::initialize(GameImportData &gameImportData)
+CaseModel::CaseModel(GameImportData &gameImportData, EventManager &eventManager)
+    : ModelInterface(eventManager)
 {
     size = gameImportData.size;
     int depth = gameImportData.depth;
@@ -10,15 +12,18 @@ void CaseModel::initialize(GameImportData &gameImportData)
 
     piecesQte.resize(size,
         vector<int>(size, depth * 4));
+
     piecesQteHistory.resize(depth,
-        vector<vector<int>>(size,
-            vector<int>(size, 0)));
+        vector<vector<vector<int>>>(2,
+            vector<vector<int>>(size,
+                vector<int>(size, 0))));
 
     available.resize(size,
         vector<bool>(size, true));
     availableHistory.resize(depth,
-        vector<vector<bool>>(size,
-            vector<bool>(size, false)));
+        vector<vector<vector<bool>>>(2,
+            vector<vector<bool>>(size,
+                vector<bool>(size, false))));
 
     // [x][y][n°piece][rotation]
     casePieces.resize(size,
@@ -26,10 +31,11 @@ void CaseModel::initialize(GameImportData &gameImportData)
             vector<vector<bool>>(depth,
                 vector<bool>(4, true))));
     casePiecesHistory.resize(depth,
-        vector<vector<vector<vector<bool>>>>(size,
-            vector<vector<vector<bool>>>(size,
-                vector<vector<bool>>(depth,
-                    vector<bool>(4, false)))));
+        vector<vector<vector<vector<vector<bool>>>>>(2,
+            vector<vector<vector<vector<bool>>>>(size,
+                vector<vector<vector<bool>>>(size,
+                    vector<vector<bool>>(depth,
+                        vector<bool>(4, false))))));
 }
 
 void CaseModel::accept(CaseData &caseData, const int &depth)
@@ -37,12 +43,11 @@ void CaseModel::accept(CaseData &caseData, const int &depth)
     // only update if it's not already done
     if (available[caseData.x][caseData.y]) {
         available[caseData.x][caseData.y] = false; // the case is not available anymore
-        availableHistory[depth][caseData.x][caseData.y] = true;// the history has changed !!!
+        availableHistory[depth][ACCEPT][caseData.x][caseData.y] = true;// the history has changed !!!
 
 
         addAcceptedEvent<CasePieceConstraint, CaseData>(
-            static_cast<CasePieceConstraint &>(*observers[0]),
-            caseData,
+            static_cast<CasePieceConstraint &>(*observers[0]), caseData,
             depth);
     }
 }
@@ -57,10 +62,10 @@ void CaseModel::accepted(PieceData &pieceData, const int &depth)
                 for (int rotation = 0; rotation < 4; ++rotation) {
                     if (casePieces[x][y][pieceData.id][rotation]) {
                         --piecesQte[x][y];
-                        --piecesQteHistory[depth][x][y];
+                        --piecesQteHistory[depth][ACCEPT][x][y];
                         // not anymore
                         casePieces[x][y][pieceData.id][pieceData.rotation] = false;
-                        casePiecesHistory[depth][x][y][pieceData.id][pieceData.rotation] = true;
+                        casePiecesHistory[depth][ACCEPT][x][y][pieceData.id][pieceData.rotation] = true;
                     }
                 }
             }
@@ -71,14 +76,15 @@ void CaseModel::accepted(PieceData &pieceData, const int &depth)
 void CaseModel::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
     casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation] = false;
-    casePiecesHistory[depth][caseData.x][caseData.y][pieceData.id][pieceData.rotation] = true;
+    casePiecesHistory[depth][DISCARD][caseData.x][caseData.y][pieceData.id][pieceData.rotation] = true;
 
     --piecesQte[caseData.x][caseData.y];
-    --piecesQteHistory[depth][caseData.x][caseData.y];
+    --piecesQteHistory[depth][DISCARD][caseData.x][caseData.y];
 
-    addDiscardedEvent<CasePieceConstraint, CaseData>(static_cast<CasePieceConstraint &>(*observers[0]),
+    /* Does nothing for the moment
+     * addDiscardedEvent<CasePieceConstraint, CaseData>(static_cast<CasePieceConstraint &>(*observers[0]),
         caseData,
-        depth);
+        depth);*/
 }
 
 void CaseModel::discarded(PieceData &pieceData, const int &depth)
@@ -88,23 +94,50 @@ void CaseModel::discarded(PieceData &pieceData, const int &depth)
 
 void CaseModel::rollback(const int &depth)
 {
+    rollbackPartial(depth);
+
     for (int x = 0; x < size; ++x) {
         for (int y = 0; y < size; ++y) {
-
-            if (piecesQteHistory[depth][x][y] != 0) { // minimizing operations
-                piecesQte[x][y] -= piecesQteHistory[depth][x][y];
-                piecesQteHistory[depth][x][y] = 0;
+            if (piecesQteHistory[depth][DISCARD][x][y] != 0) { // minimizing operations
+                piecesQte[x][y] -= piecesQteHistory[depth][1][x][y];
+                piecesQteHistory[depth][DISCARD][x][y] = 0;
             }
-            if (availableHistory[depth][x][y]) { // if the history has changed
+            if (availableHistory[depth][DISCARD][x][y]) { // if the history has changed
                 available[x][y] = true;
-                availableHistory[depth][x][y] = false;
+                availableHistory[depth][DISCARD][x][y] = false;
             }
 
             for (int nPieces = 0; nPieces < size * size; ++nPieces) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
-                    if (casePiecesHistory[depth][x][y][nPieces][rotation]) {
+                    if (casePiecesHistory[depth][DISCARD][x][y][nPieces][rotation]) {
                         casePieces[x][y][nPieces][rotation] = true;
-                        casePiecesHistory[depth][x][y][nPieces][rotation] = false; // cleaning the depth
+                        casePiecesHistory[depth][DISCARD][x][y][nPieces][rotation] = false; // cleaning the depth
+                    }
+                }
+            }
+        }
+    }
+}
+
+void CaseModel::rollbackPartial(const int &depth)
+{
+    for (int x = 0; x < size; ++x) {
+        for (int y = 0; y < size; ++y) {
+
+            if (piecesQteHistory[depth][ACCEPT][x][y] != 0) { // minimizing operations
+                piecesQte[x][y] -= piecesQteHistory[depth][1][x][y];
+                piecesQteHistory[depth][ACCEPT][x][y] = 0;
+            }
+            if (availableHistory[depth][ACCEPT][x][y]) { // if the history has changed
+                available[x][y] = true;
+                availableHistory[depth][ACCEPT][x][y] = false;
+            }
+
+            for (int nPieces = 0; nPieces < size * size; ++nPieces) {
+                for (int rotation = 0; rotation < 4; ++rotation) {
+                    if (casePiecesHistory[depth][ACCEPT][x][y][nPieces][rotation]) {
+                        casePieces[x][y][nPieces][rotation] = true;
+                        casePiecesHistory[depth][ACCEPT][x][y][nPieces][rotation] = false; // cleaning the depth
                     }
                 }
             }

@@ -11,6 +11,11 @@ class PieceNormalValue: public ValueInterface
     int pieceIterator = 0;
     int rotationIterator = 0;
 public :
+    PieceNormalValue(ModelInterface &modelInterface)
+    {
+        this->_modelInterface = static_cast<PieceModel *>(&modelInterface);
+    }
+
     void initialize(ModelInterface &modelInterface) override
     {
         this->_modelInterface = static_cast<PieceModel *>(&modelInterface);

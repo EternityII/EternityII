@@ -7,24 +7,21 @@
 class ConstraintInterface: public ObserverInterface
 {
 public:
+
+    ConstraintInterface(ModelInterface &firstModel, ModelInterface &secondModel, EventManager &eventManager)
+        : ObserverInterface(eventManager)
+    {
+        this->first = &firstModel;
+        this->second = &secondModel;
+        first->add(*this);
+        second->add(*this);
+
+    }
+
     /**
      * When the iteration is rolledback to depth
      */
     virtual void rollback(const int &from, const int &to) = 0;
-
-    virtual void setFirst(ModelInterface &modelInterface)
-    {
-        this->first = &modelInterface;
-
-        first->add(*this);
-    }
-
-    virtual void setSecond(ModelInterface &modelInterface)
-    {
-        this->second = &modelInterface;
-
-        second->add(*this);
-    }
 
     virtual ~ConstraintInterface()
     { };
@@ -32,6 +29,11 @@ public:
 protected:
     ModelInterface *first;
     ModelInterface *second;
+
+    ConstraintInterface(EventManager &eventManager)
+        : ObserverInterface(eventManager)
+    { };
+
 };
 
 #endif //ETERNITYII_CONSTRAINTINTERFACE_H

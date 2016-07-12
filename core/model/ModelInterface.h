@@ -8,8 +8,17 @@
 
 class ModelInterface: public ObservableInterface
 {
+protected:
+    const int DISCARD = 0;
+    const int ACCEPT = 1;
+
+    ModelInterface(EventManager &eventManager)
+        : ObservableInterface(eventManager)
+    { }
 public:
-    virtual void initialize(GameImportData &gameImportData) = 0;
+    ModelInterface(GameImportData &gameImportData, EventManager &eventManager)
+        : ObservableInterface(eventManager)
+    { };
 
     /**
      * Will rollback from "fromDept" to the depth "toDept"
@@ -33,6 +42,8 @@ public:
      * @param int const &depth, the depth to rollback
      */
     virtual void rollback(const int &depth) = 0;
+
+    virtual void rollbackPartial(const int &depth) = 0;
 
     virtual ~ModelInterface()
     { };

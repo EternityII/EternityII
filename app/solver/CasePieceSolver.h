@@ -11,7 +11,7 @@ class CasePieceSolver: public SolverInterface
 {
 public:
 
-    void initialize(PathFinder &pathFinder,
+    CasePieceSolver(PathFinder &pathFinder,
         ConstraintInterface &constraintInterface,
         vector<unique_ptr<ModelInterface>> &models,
         GameImportData &gameImportData);
@@ -22,15 +22,9 @@ public:
     void resolve();
 
 private:
-    PathFinder *pathFinder;
+    CasePieceConstraint *_constraintInterface;
 
-    vector<unique_ptr<ModelInterface>> *models;
-
-    CasePieceConstraint *pieceCaseConstraint;
-
-    GameImportData *game;
-
-    vector<vector<vector<int>>> plateau;
+    vector<vector<PieceData>> plateau;
 
     /**
      * Recursive resolution method

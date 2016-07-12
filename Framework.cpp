@@ -8,49 +8,51 @@ void Framework::bootstrap(string &filename, int &variable, int &value)
 
     import(io);
 
-    // Creating the solver
-    solver = make_unique<CasePieceSolver>();
 
+
+    /*
+     * Event Manager
+     */
     eventManager = make_unique<EventManager>();
 
-    // Setting up the PathFinder
-    pathFinder.set(move(createValue(value)));
-    pathFinder.set(move(createVariable(variable)));
+    /*
+     * Setting up the Models
+     */
+    unique_ptr<PieceModel> pieceModel = make_unique<PieceModel>(*game, *eventManager);
+    unique_ptr<CaseModel> caseModel = make_unique<CaseModel>(*game, *eventManager);
 
-    // Initializing the models
-    unique_ptr<PieceModel> pieceModel = make_unique<PieceModel>();
-    unique_ptr<CaseModel> caseModel = make_unique<CaseModel>();
+    /*
+     * Value Variable Choices
+     */
+    unique_ptr<VariableInterface>
+        variableInterface = make_unique<CaseRowscanVariable>(*pieceModel); // creating variable
+    unique_ptr<ValueInterface> valueInterface = make_unique<PieceNormalValue>(*caseModel); // Creating value
 
-    pieceModel->addEventManager(*eventManager);
-    caseModel->addEventManager(*eventManager);
+    /*
+     * PathFinder
+     */
+    pathFinder = make_unique<PathFinder>(move(variableInterface), move(valueInterface));
 
-    pathFinder.initialize(*caseModel, *pieceModel);
+    /*
+     * Constraints
+     */
+    unique_ptr<CasePieceConstraint>
+        casePieceConstraint = make_unique<CasePieceConstraint>(*caseModel, *pieceModel, *eventManager);
 
-    // Creating the constraint
-    unique_ptr<CasePieceConstraint> casePieceConstraint = make_unique<CasePieceConstraint>();
+    /*
+     * Solver
+     */
+    solver = make_unique<CasePieceSolver>(*pathFinder, *casePieceConstraint, models, *game);
 
-    casePieceConstraint->setFirst(*caseModel);
-    casePieceConstraint->setSecond(*pieceModel);
-    casePieceConstraint->add(*eventManager);
-
-    // initializing the solver
-    solver->initialize(pathFinder, *casePieceConstraint, models, *game);
-
-    // storing the constraints
+    /*
+     * Storing
+     */
     constraints.push_back(move(casePieceConstraint));
 
-    // storing the models
     models.push_back(move(pieceModel));
     models.push_back(move(caseModel));
-
-    // initializing the models ... akward
-    for (int i = 0; i < models.size(); ++i) {
-        models[i]->initialize(*game);
-    }
-
-    // go go power rangers !!
-    solver->resolve();
 }
+
 void Framework::import(IO &io)
 {
     int current_number;
@@ -103,23 +105,5 @@ void Framework::import(IO &io)
         // cout << endl;
 
         game->pieces[id] = move(piece);
-    }
-}
-unique_ptr<ValueInterface> Framework::createValue(int &value)
-{
-    if (false) {
-    } else {
-        unique_ptr<ValueInterface> valueInterface = make_unique<PieceNormalValue>();
-        return move(valueInterface);
-    }
-}
-unique_ptr<VariableInterface> Framework::createVariable(int &variable)
-{
-    if (false) {
-
-    } else {
-        unique_ptr<VariableInterface>
-            variableInterface = make_unique<CaseRowscanVariable>();
-        return move(variableInterface);
     }
 }

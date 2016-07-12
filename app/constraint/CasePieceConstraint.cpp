@@ -1,5 +1,15 @@
 #include "CasePieceConstraint.h"
 
+CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel, PieceModel &pieceModel, EventManager &eventManager)
+    : ConstraintInterface(eventManager)
+{
+    this->_first = &caseModel;
+    this->_second = &pieceModel;
+    _first->add(*this);
+    _second->add(*this);
+
+}
+
 void CasePieceConstraint::accepted(CaseData &caseData, const int &depth)
 {
     // notify PieceModel that the case is not available anymore
@@ -41,22 +51,7 @@ void CasePieceConstraint::discarded(CaseData &caseData, const int &depth)
 {
     _second->discarded(caseData, depth);
 }
-
 void CasePieceConstraint::discarded(PieceData &pieceData, const int &depth)
 {
     _first->discarded(pieceData, depth);
-}
-
-void CasePieceConstraint::setFirst(CaseModel &modelInterface)
-{
-    this->_first = &modelInterface;
-
-    _first->add(*this);
-}
-
-void CasePieceConstraint::setSecond(PieceModel &modelInterface)
-{
-    this->_second = &modelInterface;
-
-    _second->add(*this);
 }

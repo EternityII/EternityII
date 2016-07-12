@@ -10,11 +10,11 @@ using namespace std;
 
 class CaseModel: public ModelInterface
 {
-    vector<vector<vector<int>>> piecesQteHistory;
+    vector<vector<vector<vector<int>>>> piecesQteHistory;
 
-    vector<vector<vector<bool>>> availableHistory;
+    vector<vector<vector<vector<bool>>>> availableHistory;
 
-    vector<vector<vector<vector<vector<bool>>>>> casePiecesHistory;
+    vector<vector<vector<vector<vector<vector<bool>>>>>> casePiecesHistory;
 
 public:
     int size;
@@ -25,7 +25,7 @@ public:
 
     vector<vector<vector<vector<bool>>>> casePieces;
 
-    void initialize(GameImportData &gameImportData);
+    CaseModel(GameImportData &gameImportData, EventManager &eventManager);
 
     /**
      * @param CaseData caseData, the case which was accepted
@@ -47,6 +47,7 @@ public:
      * @param int const &depth, the depth to rollback
      */
     void rollback(const int &depth);
+    void rollbackPartial(const int &depth);
 };
 
 

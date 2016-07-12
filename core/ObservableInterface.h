@@ -16,9 +16,9 @@ protected:
     EventManager *eventManager;
 
 public:
-    void addEventManager(EventManager &eventManager1)
+    ObservableInterface(EventManager &eventManager)
     {
-        this->eventManager = &eventManager1;
+        this->eventManager = &eventManager;
     }
 
     template<typename O, typename D>

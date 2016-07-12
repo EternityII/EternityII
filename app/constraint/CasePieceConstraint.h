@@ -10,10 +10,7 @@ class CasePieceConstraint: public ConstraintInterface
     CaseModel *_first;
     PieceModel *_second;
 public:
-
-    void setFirst(CaseModel &modelInterface);
-
-    void setSecond(PieceModel &modelInterface);
+    CasePieceConstraint(CaseModel &caseModel, PieceModel &pieceModel, EventManager &eventManager);
 
     /**
      * @param CaseData &caseData, the variable to apply

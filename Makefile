@@ -1,7 +1,7 @@
 CC=g++
 FLAGS=-Wall -std=c++14
-SOURCES=$(wildcard *.cpp) $(wildcard */*.cpp) $(wildcard */*/*.cpp)
-OBJECTS=$(subst cpp,o,$(SOURCES))
+SOURCES=$(wildcard *.cpp) $(wildcard */*.h) $(wildcard */*.cpp) $(wildcard */*/*.h) $(wildcard */*/*.cpp) $(wildcard */*/*/*.h) $(wildcard */*/*/*.cpp)
+OBJECTS=$(subst .h,.o,$(subst .cpp,.o,$(SOURCES)))
 
 main : $(OBJECTS)
 	$(CC) $(FLAGS) -o $@ $^
