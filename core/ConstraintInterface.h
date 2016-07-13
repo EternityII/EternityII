@@ -8,20 +8,17 @@ class ConstraintInterface: public ObserverInterface
 {
 public:
 
-    ConstraintInterface(ModelInterface &firstModel, ModelInterface &secondModel, EventManager &eventManager)
+    ConstraintInterface(ModelInterface &first,
+        ModelInterface &second,
+        EventManager &eventManager)
         : ObserverInterface(eventManager)
     {
-        this->first = &firstModel;
-        this->second = &secondModel;
-        first->add(*this);
-        second->add(*this);
+        this->first = &first;
+        this->second = &second;
+        this->first->add(*this);
+        this->second->add(*this);
 
     }
-
-    /**
-     * When the iteration is rolledback to depth
-     */
-    virtual void rollback(const int &from, const int &to) = 0;
 
     virtual ~ConstraintInterface()
     { };

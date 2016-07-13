@@ -2,20 +2,25 @@
 #define ETERNITYII_VALUEINTERFACE_H
 
 #include "../../model/ModelInterface.h"
+#include "../../data/DataInterface.h"
+
 
 class ValueInterface
 {
 protected:
-    ModelInterface *modelInterface;
+    ModelInterface *model;
+
+    ValueInterface()
+    { };
 public:
-    virtual void initialize(ModelInterface &modelInterface)
+    ValueInterface(ModelInterface &model)
     {
-        this->modelInterface = &modelInterface;
+        this->model = &model;
     };
 
-    virtual DataInterface *next(DataInterface &dataInterface) = 0;
+    virtual DataInterface *next(DataInterface &data) = 0;
 
-    virtual const bool hasNext(DataInterface &dataInterface, const int &depth) = 0;
+    virtual const bool hasNext(DataInterface &data, const int &depth) = 0;
 
     virtual ~ValueInterface()
     { };

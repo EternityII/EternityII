@@ -2,6 +2,7 @@
 #define ETERNITYII_OBSERVERINTERFACE_H
 
 #include "event/EventManager.h"
+
 class ObserverInterface
 {
 protected:

@@ -8,8 +8,12 @@ class VariableInterface
 {
 protected:
     ModelInterface *modelInterface;
+
+    VariableInterface()
+    { }
+
 public:
-    virtual void initialize(ModelInterface &modelInterface)
+    VariableInterface(ModelInterface &modelInterface)
     {
         this->modelInterface = &modelInterface;
     };

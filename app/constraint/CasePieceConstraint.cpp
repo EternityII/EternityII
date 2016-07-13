@@ -22,11 +22,6 @@ void CasePieceConstraint::accepted(PieceData &pieceData, const int &depth)
     _first->accepted(pieceData, depth);
 }
 
-void CasePieceConstraint::rollback(const int &from, const int &to)
-{
-    // nothing to do, not used
-}
-
 void CasePieceConstraint::accept(CaseData &caseData, PieceData &pieceData, const int &depth)
 {
     _first->accept(caseData, depth); // CaseModel

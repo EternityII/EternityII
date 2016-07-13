@@ -1,15 +1,14 @@
 #include <string>
-#include "Framework.h"
+#include "EternityII.h"
 
 using namespace std;
 
-
 int main(int argc, const char *argv[])
 {
-    string filename = "/home/stardisblue/Documents/Eternity/EternityII/assets/pieces_4x4.txt";
+    string filename = "assets/pieces_6x6.txt";
     int variable = 0;
     int value = 0;
 
-    Framework framework;
-    framework.bootstrap(filename, variable, value);
+    EternityII e2;
+    e2.bootstrap(filename, variable, value);
 }

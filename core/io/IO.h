@@ -8,20 +8,23 @@ using namespace std;
 
 class IO
 {
+private:
+    unique_ptr<fstream> file;
+
 public:
 
     /**
-     * Ouvre le fichier, renvoi une erreur si il y a un problème
+     * Open the file, returns an error if failed
      *
-     * @param string filename, le nom du fichier
-     * @param ios_base::openmode mode le mode
+     * @param string filename, the filename
+     * @param ios_base::openmode mode, the openmode
      */
     IO(string &filename, ios_base::openmode mode = ios_base::in | ios_base::out)
     {
         file = make_unique<fstream>(filename.c_str(), mode);
 
         if (!file->good()) {
-            perror("The file cannot be opened");
+            perror("The file couldn't be opened");
             exit(EXIT_FAILURE);
         }
     };
@@ -31,6 +34,9 @@ public:
         close();
     }
 
+    /**
+     * Closes the file
+     */
     void close()
     {
         if (file->is_open()) {
@@ -38,13 +44,18 @@ public:
         }
     }
 
+    /**
+     * Operator overload, mirror of fstream::operator>>
+     */
     IO &operator>>(string &str)
     {
         *file >> str;
 
         return *this;
     }
-
+    /**
+     * Operator overload, mirror of fstream::operator<<
+     */
     IO &operator<<(string &str)
     {
         *file << str;
@@ -52,6 +63,9 @@ public:
         return *this;
     }
 
+    /**
+     * Operator overload, mirror of fstream::operator>>
+     */
     IO &operator>>(int &number)
     {
         *file >> number;
@@ -59,14 +73,15 @@ public:
         return *this;
     }
 
+    /**
+     * Operator overload, mirror of fstream::operator<<
+     */
     IO &operator<<(int &number)
     {
         *file << number;
 
         return *this;
     }
-
-    unique_ptr<fstream> file;
 };
 
 #endif //ETERNITYII_IO_H

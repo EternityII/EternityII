@@ -16,7 +16,7 @@ protected:
         : ObservableInterface(eventManager)
     { }
 public:
-    ModelInterface(GameImportData &gameImportData, EventManager &eventManager)
+    ModelInterface(GameImportData &gameImport, EventManager &eventManager)
         : ObservableInterface(eventManager)
     { };
 
@@ -41,9 +41,7 @@ public:
      *
      * @param int const &depth, the depth to rollback
      */
-    virtual void rollback(const int &depth) = 0;
-
-    virtual void rollbackPartial(const int &depth) = 0;
+    virtual void rollback(const int &depth, const bool total = true) = 0;
 
     virtual ~ModelInterface()
     { };

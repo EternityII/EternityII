@@ -14,26 +14,28 @@ protected:
 
     GameImportData *game;
 
-    ConstraintInterface *constraintInterface;
+    ConstraintInterface *constraint;
 
-    SolverInterface(PathFinder &pathFinder, vector<unique_ptr<ModelInterface>> &models, GameImportData &gameImportData)
+    SolverInterface(PathFinder &pathFinder,
+        vector<unique_ptr<ModelInterface>> &models,
+        GameImportData &gameImport)
     {
         this->pathFinder = &pathFinder;
         this->models = &models;
-        this->game = &gameImportData;
+        this->game = &gameImport;
     }
 
 public:
     SolverInterface
         (PathFinder &pathFinder,
-            ConstraintInterface &constraintInterface,
             vector<unique_ptr<ModelInterface>> &models,
-            GameImportData &gameImportData)
+            GameImportData &gameImport,
+            ConstraintInterface &constraint)
     {
         this->pathFinder = &pathFinder;
         this->models = &models;
-        this->game = &gameImportData;
-        this->constraintInterface = &constraintInterface;
+        this->game = &gameImport;
+        this->constraint = &constraint;
     };
 
     virtual void resolve() = 0;

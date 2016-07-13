@@ -3,38 +3,54 @@
 
 #include "../../../core/pathfinder/value/ValueInterface.h"
 #include "../../data/variable/CaseData.h"
-#include "../../data/value/PieceData.h"
+#include "../../model/PieceModel.h"
 
 class PieceNormalValue: public ValueInterface
 {
-    PieceModel *_modelInterface;
+private:
+    PieceModel *_model;
     int pieceIterator = 0;
     int rotationIterator = 0;
+    int actualDepth = 0;
+
 public :
-    PieceNormalValue(ModelInterface &modelInterface)
+    PieceNormalValue(PieceModel &model)
     {
-        this->_modelInterface = static_cast<PieceModel *>(&modelInterface);
+        this->_model = &model;
     }
 
-    void initialize(ModelInterface &modelInterface) override
-    {
-        this->_modelInterface = static_cast<PieceModel *>(&modelInterface);
-    }
-
-    DataInterface *next(DataInterface &dataInterface) override
+    DataInterface *next(DataInterface &data) override
     {
         // TODO : Is the Model verifying itself, or is the solver/pathfinder verifying the Model
-        PieceData *pieceData = new PieceData(pieceIterator, rotationIterator);
-        return pieceData;
+        return new PieceData(pieceIterator, rotationIterator);
     }
 
-    const bool hasNext(DataInterface &dataInterface, const int &depth) override
+    /**
+     * Checks if the variable can have a value
+     *
+     * @param data the variable
+     * @param depth the current depth, for depth sensitive informations
+     */
+    const bool hasNext(DataInterface &data, const int &depth) override
     {
-        CaseData caseData = static_cast<CaseData &>(dataInterface);
-        for (int nPiece = 0; nPiece < _modelInterface->nbPieces; ++nPiece) {
-            if (_modelInterface->available[nPiece]) {
+        int begin = 0;
+        if (depth == actualDepth) {
+            if (rotationIterator == 3) {
+                ++begin;
+                rotationIterator = 0;
+            }
+            begin += pieceIterator;
+        }
+
+        // static_cast is the best cast
+        CaseData caseData = static_cast<CaseData &>(data);
+        // for each piece if it's available
+        for (int nPiece = begin; nPiece < _model->nbPieces; ++nPiece) {
+            if (_model->available[nPiece]) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
-                    if (_modelInterface->pieceCases[nPiece][rotation][caseData.x][caseData.y]) {
+                    // if the piece can be put on the case
+                    if (_model->pieceCases[nPiece][rotation][caseData
+                        .x][caseData.y]) {
                         pieceIterator = nPiece;
                         rotationIterator = rotation;
                         return true;

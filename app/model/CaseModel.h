@@ -10,11 +10,11 @@ using namespace std;
 
 class CaseModel: public ModelInterface
 {
-    vector<vector<vector<vector<int>>>> piecesQteHistory;
+    vector<vector<deque<CaseData *>>> piecesQteHistory;
 
-    vector<vector<vector<vector<bool>>>> availableHistory;
+    vector<vector<deque<CaseData *>>> availableHistory;
 
-    vector<vector<vector<vector<vector<vector<bool>>>>>> casePiecesHistory;
+    vector<vector<deque<pair<CaseData *, PieceData *>>>> casePiecesHistory;
 
 public:
     int size;
@@ -46,8 +46,8 @@ public:
      *
      * @param int const &depth, the depth to rollback
      */
-    void rollback(const int &depth);
-    void rollbackPartial(const int &depth);
+    void rollback(const int &depth, const bool total = true);
+
 };
 
 

@@ -11,11 +11,11 @@ using namespace std;
 
 class PieceModel: public ModelInterface
 {
-    vector<vector<vector<vector<int>>>> casesQteHistory;
+    vector<vector<deque<PieceData *>>> casesQteHistory;
 
-    vector<vector<vector<bool>>> availableHistory;
+    vector<vector<deque<PieceData *>>> availableHistory;
 
-    vector<vector<vector<vector<vector<vector<bool>>>>>> pieceCasesHistory;
+    vector<vector<deque<pair<PieceData *, CaseData *>>>> pieceCasesHistory;
 
 public:
     int size;
@@ -43,9 +43,7 @@ public:
     *
     * Roll backs the given depth
     */
-    void rollback(const int &depth);
-
-    void rollbackPartial(const int &depth);
+    void rollback(const int &depth, const bool total = true);
 };
 
 

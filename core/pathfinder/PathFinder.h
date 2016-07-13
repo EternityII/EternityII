@@ -12,13 +12,14 @@ class PathFinder
 {
 public:
     /**
-     * @param valueInterface, value strategy
-     * @param variableInterface, variable strategy
+     * @param value, value strategy
+     * @param variable, variable strategy
      */
-    PathFinder(unique_ptr<VariableInterface> variableInterface, unique_ptr<ValueInterface> valueInterface)
+    PathFinder(unique_ptr<VariableInterface> variable,
+        unique_ptr<ValueInterface> value)
     {
-        this->variableInterface = move(variableInterface);
-        this->valueInterface = move(valueInterface);
+        this->variable = move(variable);
+        this->value = move(value);
     };
 
     /**
@@ -26,9 +27,9 @@ public:
      *
      * Gets the next Value depending of the variableData
      */
-    DataInterface *nextValue(DataInterface &variableData)
+    DataInterface *nextValue(DataInterface &variable)
     {
-        return valueInterface->next(variableData);
+        return value->next(variable);
     }
 
     /**
@@ -38,21 +39,22 @@ public:
      */
     DataInterface *nextVariable(int &depth)
     {
-        return variableInterface->next(depth);
+        return variable->next(depth);
     };
 
     const bool hasNextVariable(int &depth)
     {
-        return variableInterface->hasNext(depth);
+        return variable->hasNext(depth);
     }
 
-    const bool hasNextValue(DataInterface &variableData, const int &depth)
+    const bool hasNextValue(DataInterface &variable, const int &depth)
     {
-        return valueInterface->hasNext(variableData, depth);
+        return value->hasNext(variable, depth);
     }
+
 private:
-    unique_ptr<VariableInterface> variableInterface;
-    unique_ptr<ValueInterface> valueInterface;
+    unique_ptr<VariableInterface> variable;
+    unique_ptr<ValueInterface> value;
 };
 
 

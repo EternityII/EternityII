@@ -22,7 +22,7 @@ public:
     void resolve();
 
 private:
-    CasePieceConstraint *_constraintInterface;
+    CasePieceConstraint *_constraint;
 
     vector<vector<PieceData>> plateau;
 
@@ -33,9 +33,13 @@ private:
 
     void resolve(CaseData &caseData, int &depth);
 
-    bool isPossible(CaseData &data, PieceData &pieceData);
-    void putPiece(CaseData &data, PieceData &pieceData);
-    void popPiece(CaseData &data, PieceData &pieceData);
+    bool isPossible(CaseData &caseData, PieceData &pieceData);
+    void putPiece(CaseData &caseData, PieceData &pieceData);
+    void popPiece(CaseData &caseData, PieceData &pieceData);
+
+    bool isBorderFalse(const CaseData &caseData,
+        const PieceData &pieceData,
+        const int border) const;
 };
 
 
