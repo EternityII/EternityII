@@ -11,11 +11,11 @@ using namespace std;
 
 class PieceModel: public ModelInterface
 {
-    vector<vector<deque<PieceData *>>> casesQteHistory;
+    vector<vector<deque<PieceData>>> casesQteHistory;
 
-    vector<vector<deque<PieceData *>>> availableHistory;
+    vector<vector<deque<PieceData>>> availableHistory;
 
-    vector<vector<deque<pair<PieceData *, CaseData *>>>> pieceCasesHistory;
+    vector<vector<deque<pair<PieceData, CaseData>>>> pieceCasesHistory;
 
 public:
     int size;

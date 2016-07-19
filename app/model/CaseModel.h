@@ -10,14 +10,15 @@ using namespace std;
 
 class CaseModel: public ModelInterface
 {
-    vector<vector<deque<CaseData *>>> piecesQteHistory;
+    vector<vector<deque<CaseData>>> piecesQteHistory;
 
-    vector<vector<deque<CaseData *>>> availableHistory;
+    vector<vector<deque<CaseData>>> availableHistory;
 
-    vector<vector<deque<pair<CaseData *, PieceData *>>>> casePiecesHistory;
+    vector<vector<deque<pair<CaseData, PieceData>>>> casePiecesHistory;
 
 public:
     int size;
+    int nbCases;
 
     vector<vector<int>> piecesQte;
 

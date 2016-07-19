@@ -18,15 +18,12 @@ public:
     { };
 
     CaseData(const int &x, const int &y)
-        : DataInterface(true), x(x), y(y)
+        : x(x), y(y)
     { }
 
     CaseData(const CaseData &caseData)
-        : DataInterface(caseData.valid)
-    {
-        this->x = caseData.x;
-        this->y = caseData.y;
-    };
+        : DataInterface(caseData.valid), x(caseData.x), y(caseData.y)
+    { };
 };
 
 #endif //ETERNITYII_CASEDATA_H

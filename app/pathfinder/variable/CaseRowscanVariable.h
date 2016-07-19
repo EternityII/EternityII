@@ -28,26 +28,13 @@ public:
 
     CaseData *next(int &depth) override
     {
-        CaseData *caseData;
-
-        if (depth >= _model->size * _model->size) {
-            return new CaseData(false);
-        }
-
-        int &coord_x = coordinates[depth][0];
-        int &coord_y = coordinates[depth][1];
-        caseData = new CaseData(coord_x, coord_y);
-        if (!_model->available[coord_x][coord_y]) {
-            caseData->valid = false;
-        }
-
-        return caseData;
+        return new CaseData(coordinates[depth][0], coordinates[depth][1]);;
     }
 
     const bool hasNext(int &depth) override
     {
-        //because if has not next then it's impossible
-        return false;
+        return depth < _model->nbCases &&
+            _model->available[coordinates[depth][0]][coordinates[depth][1]];
     }
 };
 

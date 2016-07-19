@@ -1,5 +1,5 @@
 CC=g++
-FLAGS=-Wall -std=c++14 -O3
+FLAGS=-Wall -std=c++14
 SOURCES=$(shell find . -type f -regex ".*cpp" | tac)
 HEADERS=$(shell find * -type f -regex ".*h" | tac)
 OBJECTS=$(subst .cpp,.o,$(SOURCES))

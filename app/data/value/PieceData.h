@@ -24,11 +24,9 @@ public:
     { }
 
     PieceData(const PieceData &pieceData)
-        : DataInterface(pieceData.valid)
-    {
-        this->id = pieceData.id;
-        this->rotation = pieceData.rotation;
-    }
+        : DataInterface(pieceData.valid), id(pieceData.id),
+          rotation(pieceData.rotation)
+    { }
 
     PieceData(const int &id, const int &rotation)
         : id(id), rotation(rotation)

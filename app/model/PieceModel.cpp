@@ -1,5 +1,4 @@
 #include "PieceModel.h"
-#include "../constraint/CasePieceConstraint.h"
 
 PieceModel::PieceModel(GameImportData &gameImportData,
     EventManager &eventManager)
@@ -12,11 +11,11 @@ PieceModel::PieceModel(GameImportData &gameImportData,
     casesQte.resize(nbPieces,
         vector<int>(4, nbPieces));
     casesQteHistory.resize(nbPieces,
-        vector<deque<PieceData *>>(2));
+        vector<deque<PieceData>>(2));
 
     available.resize(nbPieces, true);
     availableHistory.resize(nbPieces,
-        vector<deque<PieceData *>>(2));
+        vector<deque<PieceData>>(2));
 
     // [n°piece][rotation][x][y]
     pieceCases.resize(nbPieces,
@@ -25,7 +24,7 @@ PieceModel::PieceModel(GameImportData &gameImportData,
                 vector<bool>(size, true))));
 
     pieceCasesHistory.resize(nbPieces,
-        vector<deque<pair<PieceData *, CaseData *>>>(2));
+        vector<deque<pair<PieceData, CaseData>>>(2));
 
     for (int variable = 1; variable < size - 1; ++variable) {
         CaseData caseXBeginEdge(0, variable);
@@ -34,8 +33,7 @@ PieceModel::PieceModel(GameImportData &gameImportData,
         CaseData caseYEndEdge(variable, size - 1);
 
         // interior piece cannot be put on a edge case
-        for (int nInsidePiece = (size - 1) * 4;
-             nInsidePiece > nbPieces;
+        for (int nInsidePiece = (size - 1) * 4; nInsidePiece < nbPieces;
              ++nInsidePiece) {
             for (int rotation = 0; rotation < 4; ++rotation) {
                 PieceData pieceData(nInsidePiece, rotation);
@@ -144,14 +142,13 @@ void PieceModel::accept(PieceData &pieceData, const int &depth)
 {
     if (available[pieceData.id]) {
         available[pieceData.id] = false;
-        availableHistory[depth][ACCEPT].emplace_back(
-            new PieceData(pieceData)
-        );
+        availableHistory[depth][ACCEPT].emplace_back(pieceData);
 
-        addAcceptedEvent<CasePieceConstraint, PieceData>(
-            static_cast<CasePieceConstraint &>(*observers[0]),
-            pieceData,
-            depth);
+        /*addAcceptedEvent<CasePieceConstraint, PieceData>(
+             static_cast<CasePieceConstraint &>(*observers[0]),
+             pieceData,
+             depth
+         );*/
     }
 }
 
@@ -165,14 +162,13 @@ void PieceModel::accepted(CaseData &caseData, const int &depth)
                 if (pieceCases[nPiece][rotation][caseData.x][caseData.y]) {
                     --casesQte[nPiece][rotation];
                     casesQteHistory[depth][ACCEPT]
-                        .emplace_back(new PieceData(nPiece, rotation));
+                        .emplace_back(nPiece, rotation);
 
                     pieceCases[nPiece][rotation][caseData.x][caseData.y] =
                         false;
                     pieceCasesHistory[depth][ACCEPT]
-                        .emplace_back(
-                            make_pair(new PieceData(nPiece, rotation),
-                                new CaseData(caseData)));
+                        .emplace_back(make_pair(PieceData(nPiece, rotation),
+                            caseData));
                 }
             }
         }
@@ -187,13 +183,11 @@ void PieceModel::discard(CaseData &caseData,
         pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y] =
             false;
         pieceCasesHistory[depth][DISCARD]
-            .emplace_back(
-                make_pair(new PieceData(pieceData),
-                    new CaseData(caseData)));
+            .emplace_back(make_pair(pieceData, caseData));
 
         --casesQte[pieceData.id][pieceData.rotation];
         casesQteHistory[depth][DISCARD]
-            .emplace_back(new PieceData(pieceData));
+            .emplace_back(pieceData);
 
 
         /* Not useful for the moment
@@ -219,27 +213,23 @@ void PieceModel::rollback(const int &depth, const bool total /* = true */)
         rollbackType = ACCEPT;
     }
 
-    deque<PieceData *> &availQueue = availableHistory[depth][rollbackType];
+    deque<PieceData> &availQueue = availableHistory[depth][rollbackType];
     while (!availQueue.empty()) {
-        available[availQueue.back()->id] = true;
-        delete availQueue.back();
+        available[availQueue.back().id] = true;
         availQueue.pop_back();
     }
 
-    deque<PieceData *> &qteQueue = casesQteHistory[depth][rollbackType];
+    deque<PieceData> &qteQueue = casesQteHistory[depth][rollbackType];
     while (!qteQueue.empty()) {
-        ++casesQte[qteQueue.back()->id][qteQueue.back()->rotation];
-        delete qteQueue.back();
+        ++casesQte[qteQueue.back().id][qteQueue.back().rotation];
         qteQueue.pop_back();
     }
 
-    deque<pair<PieceData *, CaseData *>> &pcQueue =
+    deque<pair<PieceData, CaseData>> &pcQueue =
         pieceCasesHistory[depth][rollbackType];
     while (!pcQueue.empty()) {
-        pieceCases[pcQueue.back().first->id][pcQueue.back().first->rotation]
-        [pcQueue.back().second->x][pcQueue.back().second->y] = true;
-        delete pcQueue.back().first;
-        delete pcQueue.back().second;
+        pieceCases[pcQueue.back().first.id][pcQueue.back().first.rotation]
+        [pcQueue.back().second.x][pcQueue.back().second.y] = true;
         pcQueue.pop_back();
     }
 }

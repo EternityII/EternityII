@@ -5,7 +5,7 @@ using namespace std;
 
 int main(int argc, const char *argv[])
 {
-    string filename = "assets/pieces_6x6.txt";
+    string filename = "assets/pieces_5x5.txt";
     int variable = 0;
     int value = 0;
 

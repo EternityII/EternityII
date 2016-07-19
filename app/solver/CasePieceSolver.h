@@ -9,22 +9,24 @@ using namespace std;
 
 class CasePieceSolver: public SolverInterface
 {
-public:
-
-    CasePieceSolver(PathFinder &pathFinder,
-        ConstraintInterface &constraintInterface,
-        vector<unique_ptr<ModelInterface>> &models,
-        GameImportData &gameImportData);
-
-    /**
-     * Begin the resolution process
-     */
-    void resolve();
-
 private:
     CasePieceConstraint *_constraint;
 
     vector<vector<PieceData>> plateau;
+
+    clock_t durationVariable = 0;
+    clock_t durationValue = 0;
+    clock_t durationAccept = 0;
+    clock_t durationDiscard = 0;
+    clock_t durationRollback = 0;
+    clock_t durationPartialRollback = 0;
+
+    long long quantityNodes = 0;
+    long long quantityVariables = 0;
+    long long quantityValues = 0;
+    int quantitySolutions = 0;
+    long long quantityNodesFirstSolution = 0;
+    int maxDepth;
 
     /**
      * Recursive resolution method
@@ -40,6 +42,18 @@ private:
     bool isBorderFalse(const CaseData &caseData,
         const PieceData &pieceData,
         const int border) const;
+public:
+
+    CasePieceSolver(PathFinder &pathFinder,
+        ConstraintInterface &constraintInterface,
+        vector<unique_ptr<ModelInterface>> &models,
+        GameImportData &gameImportData);
+
+    /**
+     * Begin the resolution process
+     */
+    void resolve();
+
 };
 
 

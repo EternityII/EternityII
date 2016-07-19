@@ -2,9 +2,9 @@
 #include "app/model/PieceModel.h"
 #include "app/model/CaseModel.h"
 #include "app/constraint/CasePieceConstraint.h"
-#include "app/pathfinder/variable/CaseRowscanVariable.h"
-#include "app/pathfinder/value/PieceNormalValue.h"
 #include "app/solver/CasePieceSolver.h"
+#include "app/pathfinder/variable/CasePessimistVariable.h"
+#include "app/pathfinder/value/PiecePessimistValue.h"
 
 
 void EternityII::bootstrap(string &filename, int &variable, int &value)
@@ -38,10 +38,21 @@ void EternityII::bootstrap(string &filename, int &variable, int &value)
         *eventManager);
 
     // Variable Value
+    /** CaseRowscanVariable */
+    //unique_ptr<VariableInterface>  variableInterface = make_unique<CaseRowscanVariable>(*caseModel);
+    /** CaseDiagonalVariable */
+    //unique_ptr<VariableInterface> variableInterface = make_unique<CaseDiagonalVariable>(*caseModel);
+    /** CasePessimistVariable */
     unique_ptr<VariableInterface>
-        variableInterface = make_unique<CaseRowscanVariable>(*caseModel);
+        variableInterface = make_unique<CasePessimistVariable>(*caseModel);
+
+    /** PieceNormalValue */
+    //unique_ptr<ValueInterface> valueInterface = make_unique<PieceNormalValue>(*pieceModel);
+    /** PieceOptimistValue */
+    //unique_ptr<ValueInterface> valueInterface = make_unique<PieceOptimistValue>(*pieceModel);
+    /** PiecePessimistValue */
     unique_ptr<ValueInterface>
-        valueInterface = make_unique<PieceNormalValue>(*pieceModel);
+        valueInterface = make_unique<PiecePessimistValue>(*pieceModel);
 
     // PathFinder
     pathFinder =

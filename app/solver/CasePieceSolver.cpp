@@ -13,12 +13,15 @@ CasePieceSolver::CasePieceSolver(PathFinder &pathFinder,
     // TODO : supprimer avec l'ajout des couleurs
     plateau.resize(game->size,
         vector<PieceData>(game->size, PieceData(-1, 0)));
+
+    maxDepth = game->size * game->size;
 }
 
 void CasePieceSolver::resolve()
 {
     int depth = 0;
     // placing the first piece to avoid rotation duplication
+    pathFinder->hasNextVariable(depth);
     CaseData
         *caseData = static_cast<CaseData *>(pathFinder->nextVariable(depth));
     pathFinder->hasNextValue(*caseData, depth);
@@ -26,6 +29,8 @@ void CasePieceSolver::resolve()
         *pieceData = static_cast<PieceData *>(pathFinder->nextValue(*caseData));
     putPiece(*caseData, *pieceData);
     _constraint->accept(*caseData, *pieceData, depth);
+    ++quantityVariables;
+    ++quantityNodes;
 
     cout << depth << " " << pieceData->id << ":" << pieceData->rotation << endl;
 
@@ -35,8 +40,22 @@ void CasePieceSolver::resolve()
 
     resolve(depth);
 
-    cout << "temps " << (clock() - start) / (double)
-        (CLOCKS_PER_SEC) << endl;
+    cout << "Timers :"
+        << "\n- variable : " << durationVariable / (double) CLOCKS_PER_SEC
+        << "s\n- value : " << durationValue / (double) CLOCKS_PER_SEC
+        << "s\n- accepting : " << durationAccept / (double) CLOCKS_PER_SEC
+        << "s\n- discarding : " << durationDiscard / (double) CLOCKS_PER_SEC
+        << "s\n- partial rollback  : "
+        << durationPartialRollback / (double) CLOCKS_PER_SEC
+        << "s\n- rollback  : " << durationRollback / (double) CLOCKS_PER_SEC
+        << "s\n- solving time : " << (clock() - start) / (double) CLOCKS_PER_SEC
+        << "s\nNodes :"
+        << "\n- Total : " << quantityNodes
+        << "\n- First Solution : " << quantityNodesFirstSolution
+        << "\nSolutions : " << quantitySolutions
+        << "\nCounters : "
+        << "\n- Variable : " << quantityVariables
+        << "\n- Value : " << quantityValues << endl;
 
     delete caseData;
     delete pieceData;
@@ -44,48 +63,86 @@ void CasePieceSolver::resolve()
 
 void CasePieceSolver::resolve(int &depth)
 {
-    CaseData
-        *caseData = static_cast<CaseData *>(pathFinder->nextVariable(depth));
-
-    if (caseData->valid) {
-        resolve(*caseData, depth);
+    if (depth == maxDepth) {
+        if (quantitySolutions == 0) {
+            quantityNodesFirstSolution = quantityNodes;
+        }
+        ++quantitySolutions;
     }
+    // chronos
+    clock_t beginVarDuration = clock();
+    if (pathFinder->hasNextVariable(depth)) {
+        ++quantityNodes;
+        ++quantityVariables;
+        CaseData *caseData =
+            static_cast<CaseData *>(pathFinder->nextVariable(depth));
+        durationVariable += clock() - beginVarDuration;
 
-    delete caseData;
+        // need to choose value now !
+        resolve(*caseData, depth);
+
+        delete caseData;
+    }
 
 }
 
 void CasePieceSolver::resolve(CaseData &caseData, int &depth)
 {
+    clock_t beginVal = clock();
     while (pathFinder->hasNextValue(caseData, depth)) {
-
         PieceData *pieceData =
             static_cast<PieceData *>(pathFinder->nextValue(caseData));
+        durationValue += clock() - beginVal;
+        ++quantityValues;
 
         if (isPossible(caseData, *pieceData)) {
             putPiece(caseData, *pieceData);
-            _constraint->accept(caseData, *pieceData, depth);
 
+            // accept value&variable
+            clock_t beginAccept = clock();
+            _constraint->accept(caseData, *pieceData, depth);
+            durationAccept += clock() - beginAccept;
+
+            // DEBUG :
             cout << depth << " " << pieceData->id << ":" << pieceData->rotation
                 << endl;
 
+            /*************/
+            /* RECURSION */
+            /*************/
             ++depth;
             resolve(depth);
             --depth;
-            // partial backtracking, up to discarded tuples
+            /*****************/
+            /* END RECURSION */
+            /*****************/
+
+            // partial backtracking
+            clock_t beginPartialRollback = clock();
             for (int model = 0; model < models->size(); ++model) {
                 models->operator[](model)->rollback(depth, false);
             }
+            durationPartialRollback += clock() - beginPartialRollback;
+
             popPiece(caseData, *pieceData);
         }
+
+        // discarding value&variable
+        clock_t beginDiscard = clock();
         _constraint->discard(caseData, *pieceData, depth);
+        durationDiscard += clock() - beginDiscard;
+
         delete pieceData;
+
+        beginVal = clock();
     }
 
     // end of recursivity, rolling back to the beginning of depth
+    clock_t beginRollback = clock();
     for (int model = 0; model < models->size(); ++model) {
         models->operator[](model)->rollback(depth);
     }
+    durationRollback += clock() - beginRollback;
 
 }
 

@@ -1,20 +1,19 @@
-#ifndef ETERNITYII_PIECENORMALVALUE_H
-#define ETERNITYII_PIECENORMALVALUE_H
+#ifndef ETERNITYII_PIECEOPTIMISTVALUE_H
+#define ETERNITYII_PIECEOPTIMISTVALUE_H
 
 #include "../../../core/pathfinder/value/ValueInterface.h"
 #include "../../data/variable/CaseData.h"
 #include "../../model/PieceModel.h"
 
-class PieceNormalValue: public ValueInterface
+class PieceOptimistValue: public ValueInterface
 {
 private:
     PieceModel *_model;
     int pieceIterator = 0;
     int rotationIterator = 0;
-    int actualDepth = 0;
 
 public :
-    PieceNormalValue(PieceModel &model)
+    PieceOptimistValue(PieceModel &model)
     {
         this->_model = &model;
     }
@@ -32,34 +31,33 @@ public :
      */
     const bool hasNext(DataInterface &data, const int &depth) override
     {
-        int begin = 0;
-        if (depth == actualDepth) {
-            begin = pieceIterator;
-            if (rotationIterator == 3) {
-                ++begin;
-                rotationIterator = 0;
-            }
-        }
+        int max = 0;
 
         // static_cast is the best cast
         CaseData caseData = static_cast<CaseData &>(data);
         // for each piece if it's available
-        for (int nPiece = begin; nPiece < _model->nbPieces; ++nPiece) {
+        for (int nPiece = 0; nPiece < _model->nbPieces; ++nPiece) {
             if (_model->available[nPiece]) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
                     // if the piece can be put on the case
                     if (_model->pieceCases[nPiece][rotation]
                     [caseData.x][caseData.y]) {
-                        pieceIterator = nPiece;
-                        rotationIterator = rotation;
-                        return true;
+                        if (_model->casesQte[nPiece][rotation] == 0) {
+                            return false;
+                        }
+                        if (_model->casesQte[nPiece][rotation] > max) {
+                            max = _model->casesQte[nPiece][rotation];
+                            pieceIterator = nPiece;
+                            rotationIterator = rotation;
+                        }
                     }
                 }
             }
         }
-        return false;
+
+        return max != 0;
     }
 };
 
 
-#endif //ETERNITYII_PIECENORMALVALUE_H
+#endif //ETERNITYII_PIECEOPTIMISTVALUE_H

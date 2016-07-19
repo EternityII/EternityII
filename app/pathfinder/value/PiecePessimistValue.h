@@ -1,20 +1,19 @@
-#ifndef ETERNITYII_PIECENORMALVALUE_H
-#define ETERNITYII_PIECENORMALVALUE_H
+#ifndef ETERNITYII_PIECEPESSIMISTVALUE_H
+#define ETERNITYII_PIECEPESSIMISTVALUE_H
+
 
 #include "../../../core/pathfinder/value/ValueInterface.h"
-#include "../../data/variable/CaseData.h"
 #include "../../model/PieceModel.h"
 
-class PieceNormalValue: public ValueInterface
+class PiecePessimistValue: public ValueInterface
 {
 private:
     PieceModel *_model;
     int pieceIterator = 0;
     int rotationIterator = 0;
-    int actualDepth = 0;
 
 public :
-    PieceNormalValue(PieceModel &model)
+    PiecePessimistValue(PieceModel &model)
     {
         this->_model = &model;
     }
@@ -32,34 +31,36 @@ public :
      */
     const bool hasNext(DataInterface &data, const int &depth) override
     {
-        int begin = 0;
-        if (depth == actualDepth) {
-            begin = pieceIterator;
-            if (rotationIterator == 3) {
-                ++begin;
-                rotationIterator = 0;
-            }
-        }
+        int min = _model->nbPieces + 1;
 
         // static_cast is the best cast
         CaseData caseData = static_cast<CaseData &>(data);
         // for each piece if it's available
-        for (int nPiece = begin; nPiece < _model->nbPieces; ++nPiece) {
+        for (int nPiece = 0; nPiece < _model->nbPieces; ++nPiece) {
             if (_model->available[nPiece]) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
                     // if the piece can be put on the case
                     if (_model->pieceCases[nPiece][rotation]
                     [caseData.x][caseData.y]) {
-                        pieceIterator = nPiece;
-                        rotationIterator = rotation;
-                        return true;
+                        if (_model->casesQte[nPiece][rotation] == 0) {
+                            return false;
+                        } else if (_model->casesQte[nPiece][rotation] == 1) {
+                            pieceIterator = nPiece;
+                            rotationIterator = rotation;
+                            return true;
+                        } else if (_model->casesQte[nPiece][rotation] < min) {
+                            min = _model->casesQte[nPiece][rotation];
+                            pieceIterator = nPiece;
+                            rotationIterator = rotation;
+                        }
                     }
                 }
             }
         }
-        return false;
+
+        return min != _model->nbPieces + 1;
     }
 };
 
 
-#endif //ETERNITYII_PIECENORMALVALUE_H
+#endif //ETERNITYII_PIECEPESSIMISTVALUE_H
