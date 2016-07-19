@@ -38,13 +38,16 @@ public :
         // for each piece if it's available
         for (int nPiece = 0; nPiece < _model->nbPieces; ++nPiece) {
             if (_model->available[nPiece]) {
+                bool hasHope = false;
                 for (int rotation = 0; rotation < 4; ++rotation) {
-                    // if the piece can be put on the case
+                    if (_model->casesQte[nPiece][rotation] != 0) {
+                        hasHope = true;
+                    }
+
                     if (_model->pieceCases[nPiece][rotation]
                     [caseData.x][caseData.y]) {
-                        if (_model->casesQte[nPiece][rotation] == 0) {
-                            return false;
-                        } else if (_model->casesQte[nPiece][rotation] == 1) {
+                        // if the piece can be put on the case
+                        if (_model->casesQte[nPiece][rotation] == 1) {
                             pieceIterator = nPiece;
                             rotationIterator = rotation;
                             return true;
@@ -54,6 +57,9 @@ public :
                             rotationIterator = rotation;
                         }
                     }
+                }
+                if (!hasHope) {
+                    return false;
                 }
             }
         }

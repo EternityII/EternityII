@@ -3,7 +3,12 @@
 #include "app/model/CaseModel.h"
 #include "app/constraint/CasePieceConstraint.h"
 #include "app/solver/CasePieceSolver.h"
+#include "app/pathfinder/variable/CaseOptimistVariable.h"
+#include "app/pathfinder/variable/CaseRowscanVariable.h"
+#include "app/pathfinder/variable/CaseDiagonalVariable.h"
 #include "app/pathfinder/variable/CasePessimistVariable.h"
+#include "app/pathfinder/value/PieceNormalValue.h"
+#include "app/pathfinder/value/PieceOptimistValue.h"
 #include "app/pathfinder/value/PiecePessimistValue.h"
 
 
@@ -37,22 +42,36 @@ void EternityII::bootstrap(string &filename, int &variable, int &value)
         *pieceModel,
         *eventManager);
 
-    // Variable Value
-    /** CaseRowscanVariable */
-    //unique_ptr<VariableInterface>  variableInterface = make_unique<CaseRowscanVariable>(*caseModel);
-    /** CaseDiagonalVariable */
-    //unique_ptr<VariableInterface> variableInterface = make_unique<CaseDiagonalVariable>(*caseModel);
-    /** CasePessimistVariable */
-    unique_ptr<VariableInterface>
-        variableInterface = make_unique<CasePessimistVariable>(*caseModel);
+    // Variable
+    unique_ptr<VariableInterface> variableInterface;
+    switch (variable) {
+        case 1: /** CaseDiagonalVariable */
+            variableInterface = make_unique<CaseDiagonalVariable>(*caseModel);
+            break;
+        case 2: /** CaseOptimistVariable */
+            variableInterface = make_unique<CaseOptimistVariable>(*caseModel);
+            break;
+        case 3: /** CasePessimistVariable */
+            variableInterface = make_unique<CasePessimistVariable>(*caseModel);
+            break;
+        case 0: /** CaseRowscanVariable */
+        default:
+            variableInterface = make_unique<CaseRowscanVariable>(*caseModel);
+    }
 
-    /** PieceNormalValue */
-    //unique_ptr<ValueInterface> valueInterface = make_unique<PieceNormalValue>(*pieceModel);
-    /** PieceOptimistValue */
-    //unique_ptr<ValueInterface> valueInterface = make_unique<PieceOptimistValue>(*pieceModel);
-    /** PiecePessimistValue */
-    unique_ptr<ValueInterface>
-        valueInterface = make_unique<PiecePessimistValue>(*pieceModel);
+    // Value
+    unique_ptr<ValueInterface> valueInterface;
+    switch (value) {
+        case 1: /** PieceOptimistValue */
+            valueInterface = make_unique<PieceOptimistValue>(*pieceModel);
+            break;
+        case 2: /** PiecePessimistValue */
+            valueInterface = make_unique<PiecePessimistValue>(*pieceModel);
+            break;
+        case 0:/** PieceNormalValue */
+        default:
+            valueInterface = make_unique<PieceNormalValue>(*pieceModel);
+    }
 
     // PathFinder
     pathFinder =

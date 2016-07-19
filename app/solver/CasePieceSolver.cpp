@@ -21,12 +21,8 @@ void CasePieceSolver::resolve()
 {
     int depth = 0;
     // placing the first piece to avoid rotation duplication
-    pathFinder->hasNextVariable(depth);
-    CaseData
-        *caseData = static_cast<CaseData *>(pathFinder->nextVariable(depth));
-    pathFinder->hasNextValue(*caseData, depth);
-    PieceData
-        *pieceData = static_cast<PieceData *>(pathFinder->nextValue(*caseData));
+    CaseData *caseData = new CaseData(0, 0);
+    PieceData *pieceData = new PieceData(0, 0);
     putPiece(*caseData, *pieceData);
     _constraint->accept(*caseData, *pieceData, depth);
     ++quantityVariables;
@@ -78,6 +74,8 @@ void CasePieceSolver::resolve(int &depth)
             static_cast<CaseData *>(pathFinder->nextVariable(depth));
         durationVariable += clock() - beginVarDuration;
 
+        cout << depth << " " << caseData->x << "," << caseData->y;
+
         // need to choose value now !
         resolve(*caseData, depth);
 
@@ -104,8 +102,7 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
             durationAccept += clock() - beginAccept;
 
             // DEBUG :
-            cout << depth << " " << pieceData->id << ":" << pieceData->rotation
-                << endl;
+            cout << " " << pieceData->id << ":" << pieceData->rotation << endl;
 
             /*************/
             /* RECURSION */

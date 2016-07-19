@@ -1,10 +1,12 @@
+#include <iostream>
 #include "CaseModel.h"
+#include "../constraint/CasePieceConstraint.h"
 
 CaseModel::CaseModel(GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
 {
     size = gameImportData.size;
-    nbCases = size * size;
+    nbCases = gameImportData.depth;
     int depth = gameImportData.depth;
 
     // setting up max values
@@ -38,10 +40,10 @@ void CaseModel::accept(CaseData &caseData, const int &depth)
         availableHistory[depth][ACCEPT].emplace_back(caseData);
         // the history has changed !!!
 
-        /*addAcceptedEvent<CasePieceConstraint, CaseData>(
+        addAcceptedEvent<CasePieceConstraint, CaseData>(
             static_cast<CasePieceConstraint &>(*observers[0]), caseData,
             depth
-        );*/
+        );
     }
 }
 
@@ -54,14 +56,15 @@ void CaseModel::accepted(PieceData &pieceData, const int &depth)
             if (available[x][y]) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
                     if (casePieces[x][y][pieceData.id][rotation]) {
-                        --piecesQte[x][y];
-                        piecesQteHistory[depth][ACCEPT]
-                            .emplace_back(x, y);
-
-                        casePieces[x][y][pieceData.id][pieceData.rotation] =
-                            false;
+                        casePieces[x][y][pieceData.id][rotation] = false;
                         casePiecesHistory[depth][ACCEPT]
-                            .emplace_back(make_pair(CaseData(x, y), pieceData));
+                            .emplace_back(make_pair(
+                                CaseData(x, y),
+                                PieceData(pieceData.id, rotation)
+                            ));
+
+                        --piecesQte[x][y];
+                        piecesQteHistory[depth][ACCEPT].emplace_back(x, y);
                     }
                 }
             }
@@ -90,17 +93,17 @@ void CaseModel::discard(CaseData &caseData,
 
 void CaseModel::discarded(PieceData &pieceData, const int &depth)
 {
-// TODO
+// TODO DISCARD
 }
 
 void CaseModel::rollback(const int &depth, const bool total /* = true */)
 {
     int rollbackType;
     if (total) {
-        rollbackType = ACCEPT;
+        rollbackType = DISCARD;
         rollback(depth, false);
     } else {
-        rollbackType = DISCARD;
+        rollbackType = ACCEPT;
     }
 
     deque<CaseData> &availQueue = availableHistory[depth][rollbackType];
