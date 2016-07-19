@@ -1,15 +1,15 @@
-#ifndef ETERNITYII_BORDUREMODEL_H
-#define ETERNITYII_BORDUREMODEL_H
+#ifndef ETERNITYII_FACEMODEL_H
+#define ETERNITYII_FACEMODEL_H
 
 
 #include "../../core/model/ModelInterface.h"
+#include "BordureModel.h"
 #include "../data/variable/BordureData.h"
-#include "../data/variable/CaseData.h"
-#include "../data/value/FaceData.h"
+#include "../data/value/PieceData.h"
 
-class BordureModel: public ModelInterface
+class FaceModel: public ModelInterface
 {
-    BordureModel(GameImportData &gameImportData, EventManager &eventManager);
+    FaceModel(GameImportData &gameImportData, EventManager &eventManager);
 
     /**
      * @param CaseData caseData, the case which was accepted
@@ -17,11 +17,11 @@ class BordureModel: public ModelInterface
      *
      * Informs the all the constraints about the change
      */
-    void accept(BordureData &bordureData, const int &depth);
+    void accept(FaceData &faceData, const int &depth);
 
-    void accepted(FaceData &faceData, const int &depth);
+    void accepted(BordureData &bordureData, const int &depth);
 
-    void accepted(CaseData &caseData, const int &depth);
+    void accepted(PieceData &pieceData, const int &depth);
 
     void discard(
         BordureData &bordureData, FaceData &faceData, const int &depth
@@ -38,4 +38,4 @@ class BordureModel: public ModelInterface
 };
 
 
-#endif //ETERNITYII_BORDUREMODEL_H
+#endif //ETERNITYII_FACEMODEL_H

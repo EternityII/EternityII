@@ -10,10 +10,9 @@ public:
     int y;
 
     CaseData()
-        : DataInterface()
     { }
 
-    CaseData(bool valid)
+    CaseData(const bool valid)
         : DataInterface(valid)
     { };
 

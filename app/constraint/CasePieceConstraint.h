@@ -10,7 +10,9 @@ class CasePieceConstraint: public ConstraintInterface
     CaseModel *_first;
     PieceModel *_second;
 public:
-    CasePieceConstraint(CaseModel &caseModel, PieceModel &pieceModel, EventManager &eventManager);
+    CasePieceConstraint(CaseModel &caseModel,
+        PieceModel &pieceModel,
+        EventManager &eventManager);
 
     /**
      * @param CaseData &caseData, the variable to apply

@@ -16,10 +16,9 @@ public:
     int rotation;
 
     PieceData()
-        : DataInterface()
     { }
 
-    PieceData(bool valid)
+    PieceData(const bool valid)
         : DataInterface(valid)
     { }
 

@@ -37,10 +37,10 @@ void EternityII::bootstrap(string &filename, int &variable, int &value)
         caseModel = make_unique<CaseModel>(*gameImport, *eventManager);
 
     // Constraints
-    unique_ptr<CasePieceConstraint>
-        casePieceConstraint = make_unique<CasePieceConstraint>(*caseModel,
-        *pieceModel,
-        *eventManager);
+    unique_ptr<CasePieceConstraint> casePieceConstraint =
+        make_unique<CasePieceConstraint>(
+            *caseModel, *pieceModel, *eventManager
+        );
 
     // Variable
     unique_ptr<VariableInterface> variableInterface;
@@ -78,10 +78,9 @@ void EternityII::bootstrap(string &filename, int &variable, int &value)
         make_unique<PathFinder>(move(variableInterface), move(valueInterface));
 
     // Solver
-    solver = make_unique<CasePieceSolver>(*pathFinder,
-        *casePieceConstraint,
-        models,
-        *gameImport);
+    solver = make_unique<CasePieceSolver>(
+        *pathFinder, *casePieceConstraint, models, *gameImport
+    );
 
     /* ============================== */
     /* STORING CONSTRAINTS AND MODELS */

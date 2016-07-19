@@ -28,7 +28,8 @@ void CasePieceSolver::resolve()
     ++quantityVariables;
     ++quantityNodes;
 
-    cout << depth << " " << pieceData->id << ":" << pieceData->rotation << endl;
+    // DEBUG :
+    //cout << depth << " " << pieceData->id << ":" << pieceData->rotation << endl;
 
     ++depth;
 
@@ -74,7 +75,8 @@ void CasePieceSolver::resolve(int &depth)
             static_cast<CaseData *>(pathFinder->nextVariable(depth));
         durationVariable += clock() - beginVarDuration;
 
-        cout << depth << " " << caseData->x << "," << caseData->y;
+        //DEBUG :
+        //cout << depth << " " << caseData->x << "," << caseData->y;
 
         // need to choose value now !
         resolve(*caseData, depth);
@@ -102,7 +104,7 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
             durationAccept += clock() - beginAccept;
 
             // DEBUG :
-            cout << " " << pieceData->id << ":" << pieceData->rotation << endl;
+            //cout << " " << pieceData->id << ":" << pieceData->rotation << endl;
 
             /*************/
             /* RECURSION */
