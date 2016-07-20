@@ -6,12 +6,12 @@
 #include "../model/FaceModel.h"
 #include "../model/PieceModel.h"
 
-class FacePiececonstraint: public ConstraintInterface
+class FacePieceConstraint: public ConstraintInterface
 {
     FaceModel &_first;
     PieceModel &_second;
 public:
-    FacePiececonstraint(FaceModel &faceModel,
+    FacePieceConstraint(FaceModel &faceModel,
         PieceModel &pieceModel,
         EventManager &eventManager);
 
