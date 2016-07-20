@@ -9,7 +9,8 @@
 
 class FaceModel: public ModelInterface
 {
-    FaceModel(GameImportData &gameImportData, EventManager &eventManager);
+public:
+    FaceModel(const GameImportData &gameImportData, EventManager &eventManager);
 
     /**
      * @param CaseData caseData, the case which was accepted
@@ -17,17 +18,19 @@ class FaceModel: public ModelInterface
      *
      * Informs the all the constraints about the change
      */
-    void accept(FaceData &faceData, const int &depth);
+    void accept(const BordureData &bordureData,
+        const FaceData &faceData,
+        const int &depth);
 
-    void accepted(BordureData &bordureData, const int &depth);
+    void accepted(const BordureData &bordureData, const int &depth);
 
-    void accepted(PieceData &pieceData, const int &depth);
+    void accepted(const PieceData &pieceData, const int &depth);
 
-    void discard(
-        BordureData &bordureData, FaceData &faceData, const int &depth
-    );
+    void discard(const BordureData &bordureData,
+        const FaceData &faceData,
+        const int &depth);
 
-    void discarded(FaceData &faceData, const int &depth);
+    void discarded(const BordureData &bordureData, const int &depth);
 
 /**
      * Roll backs the given depth

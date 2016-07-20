@@ -4,17 +4,15 @@ CasePieceSolver::CasePieceSolver(PathFinder &pathFinder,
     ConstraintInterface &constraintInterface,
     vector<unique_ptr<ModelInterface>> &models,
     GameImportData &gameImportData)
-    : SolverInterface(pathFinder, models, gameImportData)
+    : SolverInterface(pathFinder, models, gameImportData),
+      _constraint(static_cast<CasePieceConstraint &>(constraintInterface))
 {
-    this->_constraint =
-        static_cast<CasePieceConstraint *>(&constraintInterface);
-
     // initialisation de mon plateau de verification (sera supprimé lors de l'introduction des couleurs
     // TODO : supprimer avec l'ajout des couleurs
-    plateau.resize(game->size,
-        vector<PieceData>(game->size, PieceData(-1, 0)));
+    plateau.resize(game.size,
+        vector<PieceData>(game.size, PieceData(-1, 0)));
 
-    maxDepth = game->size * game->size;
+    maxDepth = game.size * game.size;
 }
 
 void CasePieceSolver::resolve()
@@ -24,7 +22,7 @@ void CasePieceSolver::resolve()
     CaseData *caseData = new CaseData(0, 0);
     PieceData *pieceData = new PieceData(0, 0);
     putPiece(*caseData, *pieceData);
-    _constraint->accept(*caseData, *pieceData, depth);
+    _constraint.accept(*caseData, *pieceData, depth);
     ++quantityVariables;
     ++quantityNodes;
 
@@ -68,11 +66,11 @@ void CasePieceSolver::resolve(int &depth)
     }
     // chronos
     clock_t beginVarDuration = clock();
-    if (pathFinder->hasNextVariable(depth)) {
+    if (pathFinder.hasNextVariable(depth)) {
         ++quantityNodes;
         ++quantityVariables;
         CaseData *caseData =
-            static_cast<CaseData *>(pathFinder->nextVariable(depth));
+            static_cast<CaseData *>(pathFinder.nextVariable(depth));
         durationVariable += clock() - beginVarDuration;
 
         //DEBUG :
@@ -89,9 +87,9 @@ void CasePieceSolver::resolve(int &depth)
 void CasePieceSolver::resolve(CaseData &caseData, int &depth)
 {
     clock_t beginVal = clock();
-    while (pathFinder->hasNextValue(caseData, depth)) {
+    while (pathFinder.hasNextValue(caseData, depth)) {
         PieceData *pieceData =
-            static_cast<PieceData *>(pathFinder->nextValue(caseData));
+            static_cast<PieceData *>(pathFinder.nextValue(caseData));
         durationValue += clock() - beginVal;
         ++quantityValues;
 
@@ -100,7 +98,7 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
 
             // accept value&variable
             clock_t beginAccept = clock();
-            _constraint->accept(caseData, *pieceData, depth);
+            _constraint.accept(caseData, *pieceData, depth);
             durationAccept += clock() - beginAccept;
 
             // DEBUG :
@@ -118,8 +116,8 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
 
             // partial backtracking
             clock_t beginPartialRollback = clock();
-            for (int model = 0; model < models->size(); ++model) {
-                models->operator[](model)->rollback(depth, false);
+            for (int model = 0; model < models.size(); ++model) {
+                models[model]->rollback(depth, false);
             }
             durationPartialRollback += clock() - beginPartialRollback;
 
@@ -128,7 +126,7 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
 
         // discarding value&variable
         clock_t beginDiscard = clock();
-        _constraint->discard(caseData, *pieceData, depth);
+        _constraint.discard(caseData, *pieceData, depth);
         durationDiscard += clock() - beginDiscard;
 
         delete pieceData;
@@ -138,8 +136,8 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
 
     // end of recursivity, rolling back to the beginning of depth
     clock_t beginRollback = clock();
-    for (int model = 0; model < models->size(); ++model) {
-        models->operator[](model)->rollback(depth);
+    for (int model = 0; model < models.size(); ++model) {
+        models[model]->rollback(depth, true);
     }
     durationRollback += clock() - beginRollback;
 
@@ -148,34 +146,34 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
 bool CasePieceSolver::isPossible(CaseData &caseData, PieceData &pieceData)
 {
     if (caseData.x == 0) {
-        if (game->pieces[pieceData.id]->colors[pieceData.rotation][0] != 0 ||
+        if (game.pieces[pieceData.id]->colors[pieceData.rotation][0] != 0 ||
             isBorderFalse(caseData, pieceData, 2)) {
             return false;
         }
-    } else if (caseData.x == game->size - 1) {
-        if (game->pieces[pieceData.id]->colors[pieceData.rotation][2] != 0 ||
+    } else if (caseData.x == game.size - 1) {
+        if (game.pieces[pieceData.id]->colors[pieceData.rotation][2] != 0 ||
             isBorderFalse(caseData, pieceData, 0)) {
             return false;
         }
-    } else if (game->pieces[pieceData.id]->colors[pieceData.rotation][0] == 0 ||
-        game->pieces[pieceData.id]->colors[pieceData.rotation][2] == 0 ||
+    } else if (game.pieces[pieceData.id]->colors[pieceData.rotation][0] == 0 ||
+        game.pieces[pieceData.id]->colors[pieceData.rotation][2] == 0 ||
         isBorderFalse(caseData, pieceData, 0) ||
         isBorderFalse(caseData, pieceData, 2)) {
         return false;
     }
 
     if (caseData.y == 0) {
-        if (game->pieces[pieceData.id]->colors[pieceData.rotation][1] != 0 ||
+        if (game.pieces[pieceData.id]->colors[pieceData.rotation][1] != 0 ||
             isBorderFalse(caseData, pieceData, 3)) {
             return false;
         }
-    } else if (caseData.y == game->size - 1) {
-        if (game->pieces[pieceData.id]->colors[pieceData.rotation][3] != 0 ||
+    } else if (caseData.y == game.size - 1) {
+        if (game.pieces[pieceData.id]->colors[pieceData.rotation][3] != 0 ||
             isBorderFalse(caseData, pieceData, 1)) {
             return false;
         }
-    } else if (game->pieces[pieceData.id]->colors[pieceData.rotation][1] == 0 ||
-        game->pieces[pieceData.id]->colors[pieceData.rotation][3] == 0 ||
+    } else if (game.pieces[pieceData.id]->colors[pieceData.rotation][1] == 0 ||
+        game.pieces[pieceData.id]->colors[pieceData.rotation][3] == 0 ||
         isBorderFalse(caseData, pieceData, 1) ||
         isBorderFalse(caseData, pieceData, 3)) {
         return false;
@@ -190,23 +188,23 @@ const
 {
     if (border == 0) {
         return plateau[caseData.x - 1][caseData.y].id != -1 &&
-            game->pieces[pieceData.id]->colors[pieceData.rotation][0] !=
-                game->pieces[plateau[caseData.x - 1][caseData.y].id]
+            game.pieces[pieceData.id]->colors[pieceData.rotation][0] !=
+                game.pieces[plateau[caseData.x - 1][caseData.y].id]
                     ->colors[plateau[caseData.x - 1][caseData.y].rotation][2];
     } else if (border == 1) {
         return plateau[caseData.x][caseData.y - 1].id != -1 &&
-            game->pieces[pieceData.id]->colors[pieceData.rotation][1] !=
-                game->pieces[plateau[caseData.x][caseData.y - 1].id]
+            game.pieces[pieceData.id]->colors[pieceData.rotation][1] !=
+                game.pieces[plateau[caseData.x][caseData.y - 1].id]
                     ->colors[plateau[caseData.x][caseData.y - 1].rotation][3];
     } else if (border == 2) {
         return plateau[caseData.x + 1][caseData.y].id != -1 &&
-            game->pieces[pieceData.id]->colors[pieceData.rotation][2] !=
-                game->pieces[plateau[caseData.x + 1][caseData.y].id]
+            game.pieces[pieceData.id]->colors[pieceData.rotation][2] !=
+                game.pieces[plateau[caseData.x + 1][caseData.y].id]
                     ->colors[plateau[caseData.x + 1][caseData.y].rotation][0];
     } else if (border == 3) {
         return plateau[caseData.x][caseData.y + 1].id != -1 &&
-            game->pieces[pieceData.id]->colors[pieceData.rotation][3] !=
-                game->pieces[plateau[caseData.x][caseData.y + 1].id]
+            game.pieces[pieceData.id]->colors[pieceData.rotation][3] !=
+                game.pieces[plateau[caseData.x][caseData.y + 1].id]
                     ->colors[plateau[caseData.x][caseData.y + 1].rotation][1];
     }
 }

@@ -17,6 +17,8 @@ using namespace std;
 class EternityII
 {
 public:
+
+    static const int CPCONSTRAINT = 0;
     /**
      * Initializes EternityII
      *

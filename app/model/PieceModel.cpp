@@ -1,8 +1,8 @@
-#include <iostream>
 #include "PieceModel.h"
 #include "../constraint/CasePieceConstraint.h"
+#include "../../EternityII.h"
 
-PieceModel::PieceModel(GameImportData &gameImportData,
+PieceModel::PieceModel(const GameImportData &gameImportData,
     EventManager &eventManager)
     : ModelInterface(eventManager)
 {
@@ -29,21 +29,23 @@ PieceModel::PieceModel(GameImportData &gameImportData,
         vector<deque<pair<PieceData, CaseData>>>(2));
 }
 
-void PieceModel::accept(PieceData &pieceData, const int &depth)
+void PieceModel::accept(
+    const CaseData &caseData, const PieceData &pieceData, const int &depth)
 {
+    // avoiding unnecessary operations
     if (available[pieceData.id]) {
         available[pieceData.id] = false;
         availableHistory[depth][ACCEPT].emplace_back(pieceData);
 
         addAcceptedEvent<CasePieceConstraint, PieceData>(
-            static_cast<CasePieceConstraint &>(*observers[0]),
+            static_cast<CasePieceConstraint &>(*observers[EternityII::CPCONSTRAINT]),
             pieceData,
             depth
         );
     }
 }
 
-void PieceModel::accepted(CaseData &caseData, const int &depth)
+void PieceModel::accepted(const CaseData &caseData, const int &depth)
 {
     // it's a consequence of the update of caseData, so we do it without checking anything
     for (int nPiece = 0; nPiece < nbPieces; ++nPiece) {
@@ -66,9 +68,13 @@ void PieceModel::accepted(CaseData &caseData, const int &depth)
     }
 }
 
-void PieceModel::discard(CaseData &caseData,
-    PieceData &pieceData,
-    const int &depth)
+void PieceModel::accepted(const PieceData &pieceData, const int &depth)
+{
+    // TODO
+}
+
+void PieceModel::discard(
+    const CaseData &caseData, const PieceData &pieceData, const int &depth)
 {
     if (pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y]) {
         pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y] =
@@ -88,35 +94,35 @@ void PieceModel::discard(CaseData &caseData,
     }
 }
 
-void PieceModel::discarded(CaseData &caseData, const int &depth)
+void PieceModel::discarded(const CaseData &caseData, const int &depth)
 {
     // TODO
 }
 
-void PieceModel::rollback(const int &depth, const bool total /* = true */)
+void PieceModel::rollback(const int &depth, const bool &total /* = true*/)
 {
-    int rollbackType;
+    int type;
     if (total) {
-        rollbackType = DISCARD;
+        type = DISCARD;
         rollback(depth, false);
     } else {
-        rollbackType = ACCEPT;
+        type = ACCEPT;
     }
 
-    deque<PieceData> &availQueue = availableHistory[depth][rollbackType];
+    deque<PieceData> &availQueue = availableHistory[depth][type];
     while (!availQueue.empty()) {
         available[availQueue.back().id] = true;
         availQueue.pop_back();
     }
 
-    deque<PieceData> &qteQueue = casesQteHistory[depth][rollbackType];
+    deque<PieceData> &qteQueue = casesQteHistory[depth][type];
     while (!qteQueue.empty()) {
         ++casesQte[qteQueue.back().id][qteQueue.back().rotation];
         qteQueue.pop_back();
     }
 
     deque<pair<PieceData, CaseData>> &pcQueue =
-        pieceCasesHistory[depth][rollbackType];
+        pieceCasesHistory[depth][type];
     while (!pcQueue.empty()) {
         pieceCases[pcQueue.back().first.id][pcQueue.back().first.rotation]
         [pcQueue.back().second.x][pcQueue.back().second.y] = true;

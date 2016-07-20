@@ -1,8 +1,10 @@
 #include <iostream>
 #include "CaseModel.h"
 #include "../constraint/CasePieceConstraint.h"
+#include "../../EternityII.h"
 
-CaseModel::CaseModel(GameImportData &gameImportData, EventManager &eventManager)
+CaseModel::CaseModel(
+    const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
 {
     size = gameImportData.size;
@@ -31,7 +33,9 @@ CaseModel::CaseModel(GameImportData &gameImportData, EventManager &eventManager)
         vector<deque<pair<CaseData, PieceData>>>(2));
 }
 
-void CaseModel::accept(CaseData &caseData, const int &depth)
+void CaseModel::accept(
+    const CaseData &caseData, const PieceData &pieceData, const int &depth
+)
 {
     // only update if it's not already done
     if (available[caseData.x][caseData.y]) {
@@ -41,13 +45,15 @@ void CaseModel::accept(CaseData &caseData, const int &depth)
         // the history has changed !!!
 
         addAcceptedEvent<CasePieceConstraint, CaseData>(
-            static_cast<CasePieceConstraint &>(*observers[0]), caseData,
+            static_cast<CasePieceConstraint &>(
+                *observers[EternityII::CPCONSTRAINT]),
+            caseData,
             depth
         );
     }
 }
 
-void CaseModel::accepted(PieceData &pieceData, const int &depth)
+void CaseModel::accepted(const PieceData &pieceData, const int &depth)
 {
     // it's a consequence of the update of pieceData, so we do it without checking anything
     for (int x = 0; x < size; ++x) {
@@ -72,9 +78,13 @@ void CaseModel::accepted(PieceData &pieceData, const int &depth)
     }
 }
 
-void CaseModel::discard(CaseData &caseData,
-    PieceData &pieceData,
-    const int &depth)
+void CaseModel::accepted(const CaseData &caseData, const int &depth)
+{
+    //TODO
+}
+
+void CaseModel::discard(
+    const CaseData &caseData, const PieceData &pieceData, const int &depth)
 {
     casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation] =
         false;
@@ -91,12 +101,12 @@ void CaseModel::discard(CaseData &caseData,
         depth);*/
 }
 
-void CaseModel::discarded(PieceData &pieceData, const int &depth)
+void CaseModel::discarded(const PieceData &pieceData, const int &depth)
 {
 // TODO DISCARD
 }
 
-void CaseModel::rollback(const int &depth, const bool total /* = true */)
+void CaseModel::rollback(const int &depth, const bool &total /* = true */)
 {
     int rollbackType;
     if (total) {

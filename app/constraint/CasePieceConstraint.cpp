@@ -1,12 +1,12 @@
 #include "CasePieceConstraint.h"
 
-CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel, PieceModel &pieceModel, EventManager &eventManager)
-    : ConstraintInterface(eventManager)
+CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel,
+    PieceModel &pieceModel,
+    EventManager &eventManager)
+    : ConstraintInterface(eventManager), _first(caseModel), _second(pieceModel)
 {
-    this->_first = &caseModel;
-    this->_second = &pieceModel;
-    _first->add(*this);
-    _second->add(*this);
+    _first.add(*this);
+    _second.add(*this);
 
     for (int variable = 1; variable < caseModel.size - 1; ++variable) {
         CaseData caseXBeginEdge(0, variable);
@@ -15,7 +15,8 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel, PieceModel &piece
         CaseData caseYEndEdge(variable, caseModel.size - 1);
 
         // interior piece cannot be put on a edge case
-        for (int nInsidePiece = (caseModel.size - 1) * 4; nInsidePiece < pieceModel.nbPieces;
+        for (int nInsidePiece = (caseModel.size - 1) * 4;
+             nInsidePiece < pieceModel.nbPieces;
              ++nInsidePiece) {
             for (int rotation = 0; rotation < 4; ++rotation) {
                 PieceData pieceData(nInsidePiece, rotation);
@@ -120,43 +121,51 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel, PieceModel &piece
 
 }
 
-void CasePieceConstraint::accepted(CaseData &caseData, const int &depth)
+void CasePieceConstraint::accept(const CaseData &caseData,
+    const PieceData &pieceData,
+    const int &depth)
+{
+    _first.accept(caseData, pieceData, depth); // CaseModel
+    _second.accept(caseData, pieceData, depth); // PieceModel
+
+    while (!eventManager.empty()) {
+        eventManager.process();
+    }
+}
+
+void CasePieceConstraint::accepted(const CaseData &caseData, const int &depth)
 {
     // notify PieceModel that the case is not available anymore
-    _second->accepted(caseData, depth);
+    _first.accepted(caseData, depth);
+    _second.accepted(caseData, depth);
 }
 
-void CasePieceConstraint::accepted(PieceData &pieceData, const int &depth)
+void CasePieceConstraint::accepted(const PieceData &pieceData, const int &depth)
 {
     // notify CaseModel that the piece is not available anymore
-    _first->accepted(pieceData, depth);
+    _first.accepted(pieceData, depth);
+    _second.accepted(pieceData, depth);
 }
 
-void CasePieceConstraint::accept(CaseData &caseData, PieceData &pieceData, const int &depth)
+void CasePieceConstraint::discard(const CaseData &caseData,
+    const PieceData &pieceData,
+    const int &depth)
 {
-    _first->accept(caseData, depth); // CaseModel
-    _second->accept(pieceData, depth); // PieceModel
+    _first.discard(caseData, pieceData, depth);
+    _second.discard(caseData, pieceData, depth);
 
-    while (!eventManager->empty()) {
-        eventManager->process();
+    while (!eventManager.empty()) {
+        eventManager.process();
     }
 }
 
-void CasePieceConstraint::discard(CaseData &caseData, PieceData &pieceData, const int &depth)
+void CasePieceConstraint::discarded(const CaseData &caseData, const int &depth)
 {
-    _first->discard(caseData, pieceData, depth);
-    _second->discard(caseData, pieceData, depth);
-
-    while (!eventManager->empty()) {
-        eventManager->process();
-    }
+    _second.discarded(caseData, depth);
 }
 
-void CasePieceConstraint::discarded(CaseData &caseData, const int &depth)
+void CasePieceConstraint::discarded(const PieceData &pieceData,
+    const int &depth)
 {
-    _second->discarded(caseData, depth);
-}
-void CasePieceConstraint::discarded(PieceData &pieceData, const int &depth)
-{
-    _first->discarded(pieceData, depth);
+    _first.discarded(pieceData, depth);
 }

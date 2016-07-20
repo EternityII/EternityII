@@ -1,41 +1,56 @@
 #include "BordureFaceConstraint.h"
-BordureFaceConstraint::BordureFaceConstraint(
-    BordureModel &bordureModel, FaceModel &faceModel, EventManager &eventManager
-)
-    : ConstraintInterface(eventManager)
-{
 
+BordureFaceConstraint::BordureFaceConstraint(BordureModel &bordureModel,
+    FaceModel &faceModel,
+    EventManager &eventManager)
+    : ConstraintInterface(eventManager), _first(bordureModel),
+      _second(faceModel)
+{
+    _first.add(*this);
+    _second.add(*this);
 }
 
 void BordureFaceConstraint::accept(
-    BordureData &bordureData, FaceData &faceData, const int &depth)
+    const BordureData &bordureData, const FaceData &faceData, const int &depth)
 {
+    _first.accept(bordureData, faceData, depth); // CaseModel
+    _second.accept(bordureData, faceData, depth); // PieceModel
 
+    while (!eventManager.empty()) {
+        eventManager.process();
+    }
+}
+
+void BordureFaceConstraint::accepted(const BordureData &bordureData,
+    const int &depth)
+{
+    _second.accepted(bordureData, depth);
+}
+
+void BordureFaceConstraint::accepted(const FaceData &faceData, const int &depth)
+{
+    _first.accepted(faceData, depth);
 }
 
 void BordureFaceConstraint::discard(
-    BordureData &bordureData, FaceData &faceData, const int &depth)
+    const BordureData &bordureData, const FaceData &faceData, const int &depth)
 {
+    _first.discard(bordureData, faceData, depth);
+    _second.discard(bordureData, faceData, depth);
 
-}
-
-void BordureFaceConstraint::accepted(BordureData &bordureData, const int &depth)
-{
-
-}
-
-void BordureFaceConstraint::accepted(FaceData &faceData, const int &depth)
-{
-
-}
-
-void BordureFaceConstraint::discarded(FaceData &faceData, const int &depth)
-{
-
+    while (!eventManager.empty()) {
+        eventManager.process();
+    }
 }
 
 void BordureFaceConstraint::discarded(
-    BordureData &bordureData, const int &depth)
+    const FaceData &faceData, const int &depth)
 {
+    _first.discarded(faceData, depth);
+}
 
+void BordureFaceConstraint::discarded(
+    const BordureData &bordureData, const int &depth)
+{
+    _second.discarded(bordureData, depth);
 }

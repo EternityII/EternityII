@@ -1,33 +1,39 @@
 #include "FaceModel.h"
-FaceModel::FaceModel(GameImportData &gameImportData, EventManager &eventManager)
+FaceModel::FaceModel(
+    const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
 {
-
+    //TODO
 }
 
-void FaceModel::accept(FaceData &faceData, const int &depth)
+void FaceModel::accept(
+    const BordureData &bordureData, const FaceData &faceData, const int &depth)
 {
-
+    //TODO
 }
 
-void FaceModel::accepted(BordureData &bordureData, const int &depth)
+void FaceModel::accepted(const BordureData &bordureData, const int &depth)
 {
-
+    //TODO
 }
 
-void FaceModel::accepted(PieceData &pieceData, const int &depth)
+void FaceModel::accepted(const PieceData &pieceData, const int &depth)
 {
-
+    //TODO
 }
 
 void FaceModel::discard(
-    BordureData &bordureData, FaceData &faceData, const int &depth
-)
+    const BordureData &bordureData, const FaceData &faceData, const int &depth)
 {
-
+    //TODO
 }
 
-void FaceModel::discarded(FaceData &faceData, const int &depth)
+void FaceModel::discarded(const BordureData &bordureData, const int &depth)
 {
+    //TODO
+}
 
+void FaceModel::rollback(const int &depth, const bool total)
+{
+    //TODO
 }

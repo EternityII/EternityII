@@ -26,7 +26,7 @@ public:
 
     vector<vector<vector<vector<bool>>>> casePieces;
 
-    CaseModel(GameImportData &gameImportData, EventManager &eventManager);
+    CaseModel(const GameImportData &gameImportData, EventManager &eventManager);
 
     /**
      * @param CaseData caseData, the case which was accepted
@@ -34,20 +34,24 @@ public:
      *
      * Informs the all the constraints about the change
      */
-    void accept(CaseData &caseData, const int &depth);
+    void accept(
+        const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
-    void accepted(PieceData &pieceData, const int &depth);
+    void discard(
+        const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
-    void discard(CaseData &caseData, PieceData &pieceData, const int &depth);
+    void accepted(const PieceData &pieceData, const int &depth);
 
-    void discarded(PieceData &pieceData, const int &depth);
+    void accepted(const CaseData &caseData, const int &depth);
+
+    void discarded(const PieceData &pieceData, const int &depth);
 
 /**
      * Roll backs the given depth
      *
      * @param int const &depth, the depth to rollback
      */
-    void rollback(const int &depth, const bool total = true);
+    void rollback(const int &depth, const bool &total = true);
 
 };
 

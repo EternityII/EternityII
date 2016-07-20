@@ -6,12 +6,11 @@
 class ObserverInterface
 {
 protected:
-    EventManager *eventManager;
+    EventManager &eventManager;
 public:
     ObserverInterface(EventManager &eventManager)
-    {
-        this->eventManager = &eventManager;
-    }
+        : eventManager(eventManager)
+    { }
 
     //virtual void accept(DataInterface &varData, DataInterface &valData, const int &depth) = 0;
 

@@ -28,22 +28,26 @@ public:
 
     vector<vector<vector<vector<bool>>>> pieceCases;
 
-    PieceModel(GameImportData &gameImportData, EventManager &eventManager);
+    PieceModel(
+        const GameImportData &gameImportData, EventManager &eventManager);
 
-    void accept(PieceData &pieceData, const int &depth);
+    void accept(
+        const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
-    void accepted(CaseData &caseData, const int &depth);
+    void discard(
+        const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
-    void discard(CaseData &caseData, PieceData &pieceData, const int &depth);
+    void accepted(const CaseData &caseData, const int &depth);
 
-    void discarded(CaseData &caseData, const int &depth);
+    void accepted(const PieceData &pieceData, const int &depth);
 
+    void discarded(const CaseData &caseData, const int &depth);
     /**
     * @param int const &depth, the depth to rollback
     *
     * Roll backs the given depth
     */
-    void rollback(const int &depth, const bool total = true);
+    void rollback(const int &depth, const bool &total = true);
 };
 
 

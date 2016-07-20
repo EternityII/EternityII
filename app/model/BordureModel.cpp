@@ -1,40 +1,41 @@
 #include "BordureModel.h"
 
-BordureModel::BordureModel(GameImportData &gameImportData,
-    EventManager &eventManager)
+BordureModel::BordureModel(
+    const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
 {
-
+    //TODO
 }
 
-void BordureModel::accept(BordureData &bordureData, const int &depth)
+void BordureModel::accept(
+    const BordureData &bordureData, const FaceData &faceData, const int &depth)
 {
-
+    //TODO
 }
 
-void BordureModel::accepted(FaceData &faceData, const int &depth)
+void BordureModel::accepted(const FaceData &faceData, const int &depth)
 {
-
+    //TODO
 }
 
-void BordureModel::accepted(CaseData &caseData, const int &depth)
+void BordureModel::accepted(const CaseData &caseData, const int &depth)
 {
-
+    //TODO
 }
 
 void BordureModel::discard(
-    BordureData &bordureData, FaceData &faceData, const int &depth
+    const BordureData &bordureData, const FaceData &faceData, const int &depth
 )
 {
-
+    //TODO
 }
 
-void BordureModel::discarded(FaceData &faceData, const int &depth)
+void BordureModel::discarded(const FaceData &faceData, const int &depth)
 {
-
+    //TODO
 }
 
 void BordureModel::rollback(const int &depth, const bool total/* = true */)
 {
-
+    //TODO
 }

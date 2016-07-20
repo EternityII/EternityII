@@ -10,7 +10,7 @@ using namespace std;
 class CasePieceSolver: public SolverInterface
 {
 private:
-    CasePieceConstraint *_constraint;
+    CasePieceConstraint &_constraint;
 
     vector<vector<PieceData>> plateau;
 

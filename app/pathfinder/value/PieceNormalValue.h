@@ -8,16 +8,15 @@
 class PieceNormalValue: public ValueInterface
 {
 private:
-    PieceModel *_model;
+    PieceModel &_model;
     int pieceIterator = 0;
     int rotationIterator = 0;
     int actualDepth = 0;
 
 public :
     PieceNormalValue(PieceModel &model)
-    {
-        this->_model = &model;
-    }
+        : _model(model)
+    { }
 
     DataInterface *next(DataInterface &data) override
     {
@@ -44,11 +43,11 @@ public :
         // static_cast is the best cast
         CaseData *caseData = static_cast<CaseData *>(&data);
         // for each piece if it's available
-        for (int nPiece = begin; nPiece < _model->nbPieces; ++nPiece) {
-            if (_model->available[nPiece]) {
+        for (int nPiece = begin; nPiece < _model.nbPieces; ++nPiece) {
+            if (_model.available[nPiece]) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
                     // if the piece can be put on the case
-                    if (_model->pieceCases[nPiece][rotation]
+                    if (_model.pieceCases[nPiece][rotation]
                     [caseData->x][caseData->y]) {
                         pieceIterator = nPiece;
                         rotationIterator = rotation;

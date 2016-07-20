@@ -8,15 +8,14 @@
 class PiecePessimistValue: public ValueInterface
 {
 private:
-    PieceModel *_model;
+    PieceModel &_model;
     int pieceIterator = 0;
     int rotationIterator = 0;
 
 public :
     PiecePessimistValue(PieceModel &model)
-    {
-        this->_model = &model;
-    }
+        : _model(model)
+    { }
 
     DataInterface *next(DataInterface &data) override
     {
@@ -31,28 +30,28 @@ public :
      */
     const bool hasNext(DataInterface &data, const int &depth) override
     {
-        int min = _model->nbPieces + 1;
+        int min = _model.nbPieces + 1;
 
         // static_cast is the best cast
         CaseData caseData = static_cast<CaseData &>(data);
         // for each piece if it's available
-        for (int nPiece = 0; nPiece < _model->nbPieces; ++nPiece) {
-            if (_model->available[nPiece]) {
+        for (int nPiece = 0; nPiece < _model.nbPieces; ++nPiece) {
+            if (_model.available[nPiece]) {
                 bool hasHope = false;
                 for (int rotation = 0; rotation < 4; ++rotation) {
-                    if (_model->casesQte[nPiece][rotation] != 0) {
+                    if (_model.casesQte[nPiece][rotation] != 0) {
                         hasHope = true;
                     }
 
-                    if (_model->pieceCases[nPiece][rotation]
+                    if (_model.pieceCases[nPiece][rotation]
                     [caseData.x][caseData.y]) {
                         // if the piece can be put on the case
-                        if (_model->casesQte[nPiece][rotation] == 1) {
+                        if (_model.casesQte[nPiece][rotation] == 1) {
                             pieceIterator = nPiece;
                             rotationIterator = rotation;
                             return true;
-                        } else if (_model->casesQte[nPiece][rotation] < min) {
-                            min = _model->casesQte[nPiece][rotation];
+                        } else if (_model.casesQte[nPiece][rotation] < min) {
+                            min = _model.casesQte[nPiece][rotation];
                             pieceIterator = nPiece;
                             rotationIterator = rotation;
                         }
@@ -64,7 +63,7 @@ public :
             }
         }
 
-        return min != _model->nbPieces + 1;
+        return min != _model.nbPieces + 1;
     }
 };
 

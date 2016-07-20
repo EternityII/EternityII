@@ -7,8 +7,8 @@
 
 class CasePieceConstraint: public ConstraintInterface
 {
-    CaseModel *_first;
-    PieceModel *_second;
+    CaseModel &_first;
+    PieceModel &_second;
 public:
     CasePieceConstraint(CaseModel &caseModel,
         PieceModel &pieceModel,
@@ -20,7 +20,8 @@ public:
      *
      * applies the data for this constraint
      */
-    void accept(CaseData &caseData, PieceData &pieceData, const int &depth);
+    void accept(
+        const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
     /**
      * @param CaseData &caseData, the variable to apply
@@ -28,25 +29,26 @@ public:
      *
      * discards this variable<->value association
      */
-    void discard(CaseData &caseData, PieceData &pieceData, const int &depth);
+    void discard(
+        const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
     /**
      * @param CaseData &pieceData, variable data
      *
      * propagates (applies) the data to PieceModel from CaseModel
      */
-    void accepted(CaseData &caseData, const int &depth);
+    void accepted(const CaseData &caseData, const int &depth);
 
     /**
      * @param PieceData &pieceData, value data
      *
      * propagates (applies) the data to CaseModel from PieceModel
      */
-    void accepted(PieceData &pieceData, const int &depth);
+    void accepted(const PieceData &pieceData, const int &depth);
 
-    void discarded(PieceData &pieceData, const int &depth);
+    void discarded(const PieceData &pieceData, const int &depth);
 
-    void discarded(CaseData &caseData, const int &depth);
+    void discarded(const CaseData &caseData, const int &depth);
 };
 
 

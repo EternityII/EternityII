@@ -9,7 +9,9 @@
 
 class BordureModel: public ModelInterface
 {
-    BordureModel(GameImportData &gameImportData, EventManager &eventManager);
+public:
+    BordureModel(
+        const GameImportData &gameImportData, EventManager &eventManager);
 
     /**
      * @param CaseData caseData, the case which was accepted
@@ -17,17 +19,19 @@ class BordureModel: public ModelInterface
      *
      * Informs the all the constraints about the change
      */
-    void accept(BordureData &bordureData, const int &depth);
+    void accept(const BordureData &bordureData,
+        const FaceData &faceData,
+        const int &depth);
 
-    void accepted(FaceData &faceData, const int &depth);
+    void accepted(const FaceData &faceData, const int &depth);
 
-    void accepted(CaseData &caseData, const int &depth);
+    void accepted(const CaseData &caseData, const int &depth);
 
-    void discard(
-        BordureData &bordureData, FaceData &faceData, const int &depth
-    );
+    void discard(const BordureData &bordureData,
+        const FaceData &faceData,
+        const int &depth);
 
-    void discarded(FaceData &faceData, const int &depth);
+    void discarded(const FaceData &faceData, const int &depth);
 
 /**
      * Roll backs the given depth

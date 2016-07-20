@@ -8,22 +8,19 @@
 class SolverInterface
 {
 protected:
-    PathFinder *pathFinder;
+    PathFinder &pathFinder;
 
-    vector<unique_ptr<ModelInterface>> *models;
+    vector<unique_ptr<ModelInterface>> &models;
 
-    GameImportData *game;
+    GameImportData &game;
 
     ConstraintInterface *constraint;
 
     SolverInterface(PathFinder &pathFinder,
         vector<unique_ptr<ModelInterface>> &models,
         GameImportData &gameImport)
-    {
-        this->pathFinder = &pathFinder;
-        this->models = &models;
-        this->game = &gameImport;
-    }
+        : pathFinder(pathFinder), models(models), game(gameImport)
+    { }
 
 public:
     SolverInterface
@@ -31,10 +28,8 @@ public:
             vector<unique_ptr<ModelInterface>> &models,
             GameImportData &gameImport,
             ConstraintInterface &constraint)
+        : pathFinder(pathFinder), models(models), game(gameImport)
     {
-        this->pathFinder = &pathFinder;
-        this->models = &models;
-        this->game = &gameImport;
         this->constraint = &constraint;
     };
 
