@@ -12,13 +12,13 @@ public:
         : eventManager(eventManager)
     { }
 
-    //virtual void accept(DataInterface &varData, DataInterface &valData, const int &depth) = 0;
+    //virtual void allow(DataInterface &varData, DataInterface &valData, const int &depth) = 0;
 
     //virtual void callback(DataInterface &valData, const int &depth) = 0;
 
-    //virtual void discard(DataInterface &varData, DataInterface &valData, const int &depth) = 0;
+    //virtual void denyOne(DataInterface &varData, DataInterface &valData, const int &depth) = 0;
 
-    //virtual void discarded(DataInterface &varData, const int &depth) = 0;
+    //virtual void deny(DataInterface &varData, const int &depth) = 0;
     virtual ~ObserverInterface()
     { }
 };

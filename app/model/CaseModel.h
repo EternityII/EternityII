@@ -10,15 +10,15 @@ using namespace std;
 
 class CaseModel: public ModelInterface
 {
-    vector<vector<deque<CaseData>>> piecesQteHistory;
+    vector<vector<deque<CaseData> > > piecesQteHistory;
 
-    vector<vector<deque<CaseData>>> availableHistory;
+    vector<vector<deque<CaseData> > > availableHistory;
 
-    vector<vector<deque<pair<CaseData, PieceData>>>> casePiecesHistory;
+    vector<vector<deque<pair<CaseData, PieceData> > > > casePiecesHistory;
 
 public:
     int size;
-    int nbCases;
+    int casesQte;
 
     vector<vector<int>> piecesQte;
 
@@ -28,31 +28,24 @@ public:
 
     CaseModel(const GameImportData &gameImportData, EventManager &eventManager);
 
-    /**
-     * @param CaseData caseData, the case which was accepted
-     * @param const int &depth,
-     *
-     * Informs the all the constraints about the change
-     */
-    void accept(
+    void allow(
         const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
-    void discard(
-        const CaseData &caseData, const PieceData &pieceData, const int &depth);
+    void denyOne(
+        const CaseData &caseData,
+        const PieceData &pieceData,
+        const int &depth,
+        const int &persistent);
 
-    void accepted(const PieceData &pieceData, const int &depth);
+    void deny(const PieceData &pieceData,
+        const int &depth,
+        const int &persistent);
 
-    void accepted(const CaseData &caseData, const int &depth);
+    void deny(const CaseData &caseData,
+        const int &depth,
+        const int &persistent);
 
-    void discarded(const PieceData &pieceData, const int &depth);
-
-/**
-     * Roll backs the given depth
-     *
-     * @param int const &depth, the depth to rollback
-     */
     void rollback(const int &depth, const bool &total = true);
-
 };
 
 

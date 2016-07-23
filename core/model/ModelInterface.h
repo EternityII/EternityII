@@ -4,15 +4,14 @@
 
 #include "../ObservableInterface.h"
 #include "../io/data/GameImportData.h"
-#include "../event/Element.h"
 
 
 
 class ModelInterface: public ObservableInterface
 {
 protected:
-    const int DISCARD = 0;
-    const int ACCEPT = 1;
+    const int PERSISTENT = 0;
+    const int TRANSITORY = 1;
 
     ModelInterface(EventManager &eventManager)
         : ObservableInterface(eventManager)

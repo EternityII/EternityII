@@ -9,39 +9,55 @@ BordureCaseConstraint::BordureCaseConstraint(BordureModel &bordureModel,
     _second.add(*this);
 }
 
-void BordureCaseConstraint::accept(const BordureData &bordureData,
+void BordureCaseConstraint::allow(
+    const BordureData &bordureData,
+    const ColorData &colorData,
+    const int &depth)
+{
+    // TODO : Adapt
+    //_first.allow(bordureData, colorData, depth);
+    //_second.allow(caseData, bordureData, depth);
+}
+
+void BordureCaseConstraint::allow(
+    const CaseData &caseData, const PieceData &pieceData, const int &depth)
+{
+    // TODO : Adapt
+    //_first.allow(bordureData, colorData, depth);
+    //_second.allow(caseData, bordureData, depth);
+}
+
+void BordureCaseConstraint::denyOne(
     const CaseData &caseData,
-    const int &depth)
+    const PieceData &pieceData,
+    const int &depth,
+    const int &persistent)
 {
-//TODO :
+    // TODO : adapt
+    // _first.denyOne(bordureData, colorData,depth,persistent);
 }
 
-void BordureCaseConstraint::discard(const BordureData &bordureData,
-    const CaseData &caseData,
-    const int &depth)
+void BordureCaseConstraint::denyOne(
+    const BordureData &bordureData,
+    const ColorData &colorData,
+    const int &depth,
+    const int &persistent)
 {
-//TODO :
+    // TODO : adapt
+    //_second.denyOne(caseData, pieceData, depth, persistent);
+
 }
 
-void BordureCaseConstraint::accepted(const BordureData &bordureData,
-    const int &depth)
+void BordureCaseConstraint::deny(
+    const BordureData &bordureData, const int &depth, const int &persistent)
 {
-//TODO :
+    //TODO :
+    //_second.deny(caseData,depth)
 }
 
-void BordureCaseConstraint::accepted(const CaseData &caseData, const int &depth)
+void BordureCaseConstraint::deny(
+    const CaseData &caseData, const int &depth, const int &persistent)
 {
-//TODO :
-}
-
-void BordureCaseConstraint::discarded(const CaseData &caseData,
-    const int &depth)
-{
-//TODO :
-}
-
-void BordureCaseConstraint::discarded(const BordureData &bordureData,
-    const int &depth)
-{
-//TODO :
+    //TODO
+    //_first.deny(bordureData,depth);
 }

@@ -14,43 +14,30 @@ public:
         CaseModel &caseModel,
         EventManager &eventManager);
 
-    /**
-     * @param BordureData &bordureData, the variable to apply
-     * @param CaseData &caseData, the value to apply
-     *
-     * applies the data for this constraint
-     */
-    void accept(const BordureData &bordureData,
-        const CaseData &caseData,
+    void allow(
+        const BordureData &bordureData,
+        const ColorData &colorData,
         const int &depth);
 
-    /**
-     * @param BordureData &bordureData, the variable to apply
-     * @param CaseData &caseData, the value to apply
-     *
-     * discards this variable<->value association
-     */
-    void discard(const BordureData &bordureData,
-        const CaseData &caseData,
-        const int &depth);
+    void allow(
+        const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
-    /**
-     * @param BordureData &caseData, variable data
-     *
-     * propagates (applies) the data to FaceModel from BordureModel
-     */
-    void accepted(const BordureData &bordureData, const int &depth);
+    void denyOne(const BordureData &bordureData,
+        const ColorData &colorData,
+        const int &depth,
+        const int &persistent);
 
-    /**
-     * @param CaseData &caseData, value data
-     *
-     * propagates (applies) the data to BordureModel from FaceModel
-     */
-    void accepted(const CaseData &caseData, const int &depth);
+    void denyOne(const CaseData &caseData,
+        const PieceData &pieceData,
+        const int &depth,
+        const int &persistent);
 
-    void discarded(const CaseData &caseData, const int &depth);
+    void deny(const BordureData &bordureData,
+        const int &depth,
+        const int &persistent);
 
-    void discarded(const BordureData &bordureData, const int &depth);
+    void deny(
+        const CaseData &caseData, const int &depth, const int &persistent);
 };
 
 

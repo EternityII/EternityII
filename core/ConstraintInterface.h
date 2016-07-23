@@ -11,10 +11,8 @@ public:
     ConstraintInterface(ModelInterface &first,
         ModelInterface &second,
         EventManager &eventManager)
-        : ObserverInterface(eventManager)
+        : ObserverInterface(eventManager), first(&first), second(&second)
     {
-        this->first = &first;
-        this->second = &second;
         this->first->add(*this);
         this->second->add(*this);
 

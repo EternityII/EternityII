@@ -3,16 +3,15 @@
 
 #include <memory>
 #include <deque>
-#include "Element.h"
 
 using namespace std;
 
 class EventManager
 {
-    deque<unique_ptr<Element>> elements;
+    deque<unique_ptr<function<void()>>> elements;
 
 public:
-    void add(unique_ptr<Element> element)
+    void add(unique_ptr<function<void()>> element)
     {
         elements.emplace_back(move(element));
     }
@@ -20,7 +19,7 @@ public:
     void process()
     {
         if (!elements.empty()) {
-            elements.front()->execute();
+            elements.front()->operator()();
             elements.pop_front();
         }
     }

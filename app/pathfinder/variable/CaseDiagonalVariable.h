@@ -17,7 +17,7 @@ public:
     {
 
         // mapping the coordinates
-        coordinates.resize(_model.nbCases, vector<int>(2, 0));
+        coordinates.resize(_model.casesQte, vector<int>(2, 0));
         int depth = 0;
         for (int i = 0; i < _model.size; ++i) {
             for (int xi = i, yi = 0; yi <= i; --xi, ++yi) {
@@ -45,7 +45,7 @@ public:
 
     const bool hasNext(int &depth) override
     {
-        return depth < _model.nbCases &&
+        return depth < _model.casesQte &&
             _model.available[coordinates[depth][0]][coordinates[depth][1]];
 
     }

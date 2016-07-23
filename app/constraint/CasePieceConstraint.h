@@ -20,35 +20,26 @@ public:
      *
      * applies the data for this constraint
      */
-    void accept(
+    void allow(
         const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
     /**
      * @param CaseData &caseData, the variable to apply
      * @param PieceData &pieceData, the value to apply
      *
-     * discards this variable<->value association
+     * denys this variable<->value association
      */
-    void discard(
-        const CaseData &caseData, const PieceData &pieceData, const int &depth);
+    void denyOne(
+        const CaseData &caseData,
+        const PieceData &pieceData,
+        const int &depth,
+        const int &persistent);
 
-    /**
-     * @param CaseData &pieceData, variable data
-     *
-     * propagates (applies) the data to PieceModel from CaseModel
-     */
-    void accepted(const CaseData &caseData, const int &depth);
+    void
+    deny(const PieceData &pieceData, const int &depth, const int &persistent);
 
-    /**
-     * @param PieceData &pieceData, value data
-     *
-     * propagates (applies) the data to CaseModel from PieceModel
-     */
-    void accepted(const PieceData &pieceData, const int &depth);
-
-    void discarded(const PieceData &pieceData, const int &depth);
-
-    void discarded(const CaseData &caseData, const int &depth);
+    void
+    deny(const CaseData &caseData, const int &depth, const int &persistent);
 };
 
 

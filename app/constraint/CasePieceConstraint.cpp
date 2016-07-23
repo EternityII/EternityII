@@ -8,6 +8,7 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel,
     _first.add(*this);
     _second.add(*this);
 
+    // because entry point u know
     for (int variable = 1; variable < caseModel.size - 1; ++variable) {
         CaseData caseXBeginEdge(0, variable);
         CaseData caseXEndEdge(caseModel.size - 1, variable);
@@ -21,10 +22,10 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel,
             for (int rotation = 0; rotation < 4; ++rotation) {
                 PieceData pieceData(nInsidePiece, rotation);
 
-                discard(caseXBeginEdge, pieceData, 0);
-                discard(caseXEndEdge, pieceData, 0);
-                discard(caseYBeginEdge, pieceData, 0);
-                discard(caseYEndEdge, pieceData, 0);
+                denyOne(caseXBeginEdge, pieceData, 0, 0);
+                denyOne(caseXEndEdge, pieceData, 0, 0);
+                denyOne(caseYBeginEdge, pieceData, 0, 0);
+                denyOne(caseYEndEdge, pieceData, 0, 0);
             }
 
         }
@@ -37,21 +38,21 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel,
             PieceData pieceEdgeRight(nBordPiece, 2);
             PieceData pieceEdgeBottom(nBordPiece, 3);
 
-            discard(caseXBeginEdge, pieceEdgeTop, 0);
-            discard(caseXBeginEdge, pieceEdgeRight, 0);
-            discard(caseXBeginEdge, pieceEdgeBottom, 0);
+            denyOne(caseXBeginEdge, pieceEdgeTop, 0, 0);
+            denyOne(caseXBeginEdge, pieceEdgeRight, 0, 0);
+            denyOne(caseXBeginEdge, pieceEdgeBottom, 0, 0);
 
-            discard(caseYBeginEdge, pieceEdgeLeft, 0);
-            discard(caseYBeginEdge, pieceEdgeRight, 0);
-            discard(caseYBeginEdge, pieceEdgeBottom, 0);
+            denyOne(caseYBeginEdge, pieceEdgeLeft, 0, 0);
+            denyOne(caseYBeginEdge, pieceEdgeRight, 0, 0);
+            denyOne(caseYBeginEdge, pieceEdgeBottom, 0, 0);
 
-            discard(caseXEndEdge, pieceEdgeLeft, 0);
-            discard(caseXEndEdge, pieceEdgeTop, 0);
-            discard(caseXEndEdge, pieceEdgeBottom, 0);
+            denyOne(caseXEndEdge, pieceEdgeLeft, 0, 0);
+            denyOne(caseXEndEdge, pieceEdgeTop, 0, 0);
+            denyOne(caseXEndEdge, pieceEdgeBottom, 0, 0);
 
-            discard(caseYEndEdge, pieceEdgeRight, 0);
-            discard(caseYEndEdge, pieceEdgeTop, 0);
-            discard(caseYEndEdge, pieceEdgeLeft, 0);
+            denyOne(caseYEndEdge, pieceEdgeRight, 0, 0);
+            denyOne(caseYEndEdge, pieceEdgeTop, 0, 0);
+            denyOne(caseYEndEdge, pieceEdgeLeft, 0, 0);
         }
 
         // corner piece cannot be put on edge
@@ -59,10 +60,10 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel,
             for (int rotation = 0; rotation < 4; ++rotation) {
                 PieceData cornerPiece(nCornerPiece, rotation);
 
-                discard(caseXBeginEdge, cornerPiece, 0);
-                discard(caseXEndEdge, cornerPiece, 0);
-                discard(caseYBeginEdge, cornerPiece, 0);
-                discard(caseYEndEdge, cornerPiece, 0);
+                denyOne(caseXBeginEdge, cornerPiece, 0, 0);
+                denyOne(caseXEndEdge, cornerPiece, 0, 0);
+                denyOne(caseYBeginEdge, cornerPiece, 0, 0);
+                denyOne(caseYEndEdge, cornerPiece, 0, 0);
             }
         }
     }
@@ -74,7 +75,7 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel,
             for (int nPiece = 0; nPiece < (caseModel.size - 1) * 4; ++nPiece) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
                     PieceData pieceData(nPiece, rotation);
-                    discard(caseInterieur, pieceData, 0);
+                    denyOne(caseInterieur, pieceData, 0, 0);
                 }
             }
         }
@@ -89,83 +90,74 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel,
         for (int rotation = 0; rotation < 4; ++rotation) {
             PieceData pieceData(nPiece, rotation);
 
-            discard(caseCornerLeftTop, pieceData, 0);
-            discard(caseCornerTopRight, pieceData, 0);
-            discard(caseCornerRightBot, pieceData, 0);
-            discard(caseCornerBotLeft, pieceData, 0);
+            denyOne(caseCornerLeftTop, pieceData, 0, 0);
+            denyOne(caseCornerTopRight, pieceData, 0, 0);
+            denyOne(caseCornerRightBot, pieceData, 0, 0);
+            denyOne(caseCornerBotLeft, pieceData, 0, 0);
 
         }
     }
 
     for (int nPieceCorner = 0; nPieceCorner < 4; ++nPieceCorner) {
         PieceData pieceCornerLeftTop(nPieceCorner, 0);
-        discard(caseCornerTopRight, pieceCornerLeftTop, 0);
-        discard(caseCornerRightBot, pieceCornerLeftTop, 0);
-        discard(caseCornerBotLeft, pieceCornerLeftTop, 0);
+        denyOne(caseCornerTopRight, pieceCornerLeftTop, 0, 0);
+        denyOne(caseCornerRightBot, pieceCornerLeftTop, 0, 0);
+        denyOne(caseCornerBotLeft, pieceCornerLeftTop, 0, 0);
 
         PieceData pieceCornerTopRight(nPieceCorner, 1);
-        discard(caseCornerLeftTop, pieceCornerTopRight, 0);
-        discard(caseCornerRightBot, pieceCornerTopRight, 0);
-        discard(caseCornerBotLeft, pieceCornerTopRight, 0);
+        denyOne(caseCornerLeftTop, pieceCornerTopRight, 0, 0);
+        denyOne(caseCornerRightBot, pieceCornerTopRight, 0, 0);
+        denyOne(caseCornerBotLeft, pieceCornerTopRight, 0, 0);
 
         PieceData pieceCornerRightBot(nPieceCorner, 2);
-        discard(caseCornerLeftTop, pieceCornerRightBot, 0);
-        discard(caseCornerTopRight, pieceCornerRightBot, 0);
-        discard(caseCornerBotLeft, pieceCornerRightBot, 0);
+        denyOne(caseCornerLeftTop, pieceCornerRightBot, 0, 0);
+        denyOne(caseCornerTopRight, pieceCornerRightBot, 0, 0);
+        denyOne(caseCornerBotLeft, pieceCornerRightBot, 0, 0);
 
         PieceData pieceCornerBotLeft(nPieceCorner, 3);
-        discard(caseCornerLeftTop, pieceCornerBotLeft, 0);
-        discard(caseCornerTopRight, pieceCornerBotLeft, 0);
-        discard(caseCornerRightBot, pieceCornerBotLeft, 0);
+        denyOne(caseCornerLeftTop, pieceCornerBotLeft, 0, 0);
+        denyOne(caseCornerTopRight, pieceCornerBotLeft, 0, 0);
+        denyOne(caseCornerRightBot, pieceCornerBotLeft, 0, 0);
     }
 
 }
 
-void CasePieceConstraint::accept(const CaseData &caseData,
+void CasePieceConstraint::allow(const CaseData &caseData,
     const PieceData &pieceData,
     const int &depth)
 {
-    _first.accept(caseData, pieceData, depth); // CaseModel
-    _second.accept(caseData, pieceData, depth); // PieceModel
+    _first.allow(caseData, pieceData, depth); // CaseModel
+    _second.allow(caseData, pieceData, depth); // PieceModel
 
     while (!eventManager.empty()) {
         eventManager.process();
     }
 }
 
-void CasePieceConstraint::accepted(const CaseData &caseData, const int &depth)
-{
-    // notify PieceModel that the case is not available anymore
-    _first.accepted(caseData, depth);
-    _second.accepted(caseData, depth);
-}
-
-void CasePieceConstraint::accepted(const PieceData &pieceData, const int &depth)
-{
-    // notify CaseModel that the piece is not available anymore
-    _first.accepted(pieceData, depth);
-    _second.accepted(pieceData, depth);
-}
-
-void CasePieceConstraint::discard(const CaseData &caseData,
+void CasePieceConstraint::denyOne(const CaseData &caseData,
     const PieceData &pieceData,
-    const int &depth)
+    const int &depth, const int &persistent)
 {
-    _first.discard(caseData, pieceData, depth);
-    _second.discard(caseData, pieceData, depth);
+    _first.denyOne(caseData, pieceData, depth, persistent);
+    _second.denyOne(caseData, pieceData, depth, persistent);
 
     while (!eventManager.empty()) {
         eventManager.process();
     }
 }
 
-void CasePieceConstraint::discarded(const CaseData &caseData, const int &depth)
+void CasePieceConstraint::deny(const CaseData &caseData,
+    const int &depth,
+    const int &persistent)
 {
-    _second.discarded(caseData, depth);
+    // never used... i think
+    _second.deny(caseData, depth, persistent);
 }
 
-void CasePieceConstraint::discarded(const PieceData &pieceData,
-    const int &depth)
+void CasePieceConstraint::deny(const PieceData &pieceData,
+    const int &depth,
+    const int &persistent)
 {
-    _first.discarded(pieceData, depth);
+    // never used... i think
+    _first.deny(pieceData, depth, persistent);
 }

@@ -1,43 +1,51 @@
 #ifndef ETERNITYII_BORDUREMODEL_H
 #define ETERNITYII_BORDUREMODEL_H
 
-
+#include <vector>
 #include "../../core/model/ModelInterface.h"
 #include "../data/variable/BordureData.h"
 #include "../data/variable/CaseData.h"
-#include "../data/value/FaceData.h"
+#include "../data/value/ColorData.h"
+
+using namespace std;
 
 class BordureModel: public ModelInterface
 {
+private:
+    vector<vector<deque<BordureData> > > availableHistory;
+
+    vector<vector<deque<BordureData> > > colorsQteHistory;
+
+    vector<vector<deque<pair<BordureData, ColorData> > > > bordureColorsHistory;
 public:
+
+    int borduresQte;
+
+    vector<bool> available;
+
+    vector<int> colorsQte;
+
+    vector<vector<int>> bordureColors;
+
     BordureModel(
         const GameImportData &gameImportData, EventManager &eventManager);
 
-    /**
-     * @param CaseData caseData, the case which was accepted
-     * @param const int &depth,
-     *
-     * Informs the all the constraints about the change
-     */
-    void accept(const BordureData &bordureData,
-        const FaceData &faceData,
+    void allow(const BordureData &bordureData,
+        const ColorData &colorData,
         const int &depth);
 
-    void accepted(const FaceData &faceData, const int &depth);
+    void denyOne(const BordureData &bordureData,
+        const ColorData &colorData,
+        const int &depth, const int &persistent);
 
-    void accepted(const CaseData &caseData, const int &depth);
+    void deny(const ColorData &colorData,
+        const int &depth,
+        const int &persistent);
 
-    void discard(const BordureData &bordureData,
-        const FaceData &faceData,
-        const int &depth);
+    void deny(const BordureData &bordureData,
+        const int &depth,
+        const int &persistent);
 
-    void discarded(const FaceData &faceData, const int &depth);
-
-/**
-     * Roll backs the given depth
-     *
-     * @param int const &depth, the depth to rollback
-     */
     void rollback(const int &depth, const bool total = true);
 };
 

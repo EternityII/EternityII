@@ -45,16 +45,16 @@ void EternityII::bootstrap(string &filename, int &variable, int &value)
     // Variable
     unique_ptr<VariableInterface> variableInterface;
     switch (variable) {
-        case 1: /** CaseDiagonalVariable */
+        case 1: /* CaseDiagonalVariable */
             variableInterface = make_unique<CaseDiagonalVariable>(*caseModel);
             break;
-        case 2: /** CaseOptimistVariable */
+        case 2: /* CaseOptimistVariable */
             variableInterface = make_unique<CaseOptimistVariable>(*caseModel);
             break;
-        case 3: /** CasePessimistVariable */
+        case 3: /* CasePessimistVariable */
             variableInterface = make_unique<CasePessimistVariable>(*caseModel);
             break;
-        case 0: /** CaseRowscanVariable */
+        case 0: /* CaseRowscanVariable */
         default:
             variableInterface = make_unique<CaseRowscanVariable>(*caseModel);
     }
@@ -62,13 +62,13 @@ void EternityII::bootstrap(string &filename, int &variable, int &value)
     // Value
     unique_ptr<ValueInterface> valueInterface;
     switch (value) {
-        case 1: /** PieceOptimistValue */
+        case 1: /* PieceOptimistValue */
             valueInterface = make_unique<PieceOptimistValue>(*pieceModel);
             break;
-        case 2: /** PiecePessimistValue */
+        case 2: /* PiecePessimistValue */
             valueInterface = make_unique<PiecePessimistValue>(*pieceModel);
             break;
-        case 0:/** PieceNormalValue */
+        case 0: /* PieceNormalValue */
         default:
             valueInterface = make_unique<PieceNormalValue>(*pieceModel);
     }
@@ -106,12 +106,12 @@ void EternityII::import(IO &io)
     gameImport->setSize(currentNumber);
 
     // Number of colors
-    io >> currentNumber;
+    io >> gameImport->colorsQte;
 
     // pre-placed pieces
     io >> placedPieces;
 
-    for (int i = 0; i < placedPieces; i++) {
+    for (int i = 0; i < placedPieces; ++i) {
         for (int j = 0; j < 4; ++j) {
             // We don't need to know the preplaced pieces // yet
             io >> currentNumber;

@@ -16,20 +16,31 @@ public:
     int rotation;
 
     PieceData()
-    { }
+    {}
 
     PieceData(const bool valid)
         : DataInterface(valid)
-    { }
+    {}
+
+    PieceData(const int &id, const int &rotation)
+        : id(id), rotation(rotation)
+    {}
 
     PieceData(const PieceData &pieceData)
         : DataInterface(pieceData.valid), id(pieceData.id),
           rotation(pieceData.rotation)
-    { }
+    {}
 
-    PieceData(const int &id, const int &rotation)
-        : id(id), rotation(rotation)
-    { }
+    /*PieceData &operator=(const PieceData &pieceData)
+    {
+        id = pieceData.id;
+        rotation = pieceData.rotation;
+
+        return *this;
+    }*/
+
+    ~PieceData()
+    {}
 
 };
 

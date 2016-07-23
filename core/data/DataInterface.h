@@ -8,14 +8,14 @@ public:
 
     DataInterface()
         : valid(true)
-    { }
+    {}
 
-    DataInterface(bool valid)
+    DataInterface(const bool &valid)
         : valid(valid)
-    { }
+    {}
 
     virtual ~DataInterface()
-    { }
+    {}
 };
 
 #endif //ETERNITYII_DATAINTERFACE_H

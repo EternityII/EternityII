@@ -18,6 +18,11 @@ public:
         this->model = &model;
     };
 
+    /**
+     * test
+     * @param data
+     * @return
+     */
     virtual DataInterface *next(DataInterface &data) = 0;
 
     virtual const bool hasNext(DataInterface &data, const int &depth) = 0;

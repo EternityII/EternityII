@@ -32,7 +32,7 @@ public:
 
     const bool hasNext(int &depth) override
     {
-        return depth < _model.nbCases &&
+        return depth < _model.casesQte &&
             _model.available[coordinates[depth][0]][coordinates[depth][1]];
     }
 };

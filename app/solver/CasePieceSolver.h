@@ -2,6 +2,8 @@
 #define ETERNITYII_DEFAULTSOLVER_H
 
 #include <iostream>
+#include <algorithm>
+
 #include "../../core/SolverInterface.h"
 #include "../constraint/CasePieceConstraint.h"
 
@@ -16,12 +18,13 @@ private:
 
     clock_t durationVariable = 0;
     clock_t durationValue = 0;
-    clock_t durationAccept = 0;
-    clock_t durationDiscard = 0;
+    clock_t durationAllow = 0;
+    clock_t durationDeny = 0;
     clock_t durationRollback = 0;
     clock_t durationPartialRollback = 0;
 
     long long quantityNodes = 0;
+    vector<long> quantityNodesByDepth;
     long long quantityVariables = 0;
     long long quantityValues = 0;
     int quantitySolutions = 0;
@@ -35,9 +38,9 @@ private:
 
     void resolve(CaseData &caseData, int &depth);
 
-    bool isPossible(CaseData &caseData, PieceData &pieceData);
-    void putPiece(CaseData &caseData, PieceData &pieceData);
-    void popPiece(CaseData &caseData, PieceData &pieceData);
+    bool isPossible(const CaseData &caseData, const PieceData &pieceData) const;
+    void putPiece(const CaseData &caseData, const PieceData &pieceData);
+    void popPiece(const CaseData &caseData, const PieceData &pieceData);
 
     bool isBorderFalse(const CaseData &caseData,
         const PieceData &pieceData,

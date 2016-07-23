@@ -27,7 +27,7 @@ public:
     const bool hasNext(int &depth) override
     {
         //because if has not next then it's impossible
-        if (depth >= _model.nbCases) {
+        if (depth >= _model.casesQte) {
             return false;
         }
         int max = 0;

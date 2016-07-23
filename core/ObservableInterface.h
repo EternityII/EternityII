@@ -4,7 +4,6 @@
 #include <vector>
 #include "ObserverInterface.h"
 #include "event/EventManager.h"
-#include "event/Element.h"
 
 using namespace std;
 
@@ -18,26 +17,33 @@ protected:
 public:
     ObservableInterface(EventManager &eventManager)
         : eventManager(eventManager)
-    { }
+    {}
 
-    template<typename O, typename D>
-    void addAcceptedEvent(O &obj, const D &data, const int &depth)
+    template<class O, typename D>
+    void addDenyEvent(O &obj,
+        const D &data,
+        const int &depth,
+        const int &persistent) const
     {
-        unique_ptr<std::function<void()>> callback =
-            make_unique<std::function<void()>>(
-                bind(static_cast<void (O::*)(const D &,
-                    const int &)>(&O::accepted), obj, data, depth));
-        eventManager.add(make_unique<Element>(move(callback)));
+        eventManager.add(make_unique<std::function<void()> >(
+            [&obj, data, depth, persistent]
+            { obj.deny(data, depth, persistent); }
+        ));
     }
 
-    template<typename O, typename D>
-    void addDiscardedEvent(O &obj, const D &data, const int &depth)
+    template<class O, typename D1, typename D2>
+    void addDenyOneEvent(
+        O &obj,
+        const D1 &data1,
+        const D2 &data2,
+        const int &depth,
+        const int &persistent) const
     {
-        unique_ptr<std::function<void()>> callback =
-            make_unique<std::function<void()>>(
-                bind(static_cast<void (O::*)(const D &,
-                    const int &)>(&O::discarded), obj, data, depth));
-        eventManager.add(make_unique<Element>(move(callback)));
+        eventManager
+            .add(make_unique<std::function<void()> >(
+                [&obj, data1, data2, depth, persistent]
+                { obj.DenyOne(data1, data2, depth, persistent); }
+            ));
     }
 
     void add(ObserverInterface &observer)
@@ -53,13 +59,13 @@ public:
     /**
      * Informs the all the constraints about the change
      */
-    //virtual void accept(DataInterface &dataInterface, const int &depth){ };
+    //virtual void allow(DataInterface &dataInterface, const int &depth){ };
     //virtual void callback(DataInterface &dataInterface, const int &depth){};
 
-    //virtual void discard(DataInterface &dataInterface,DataInterface &dataInterface, const int &depth){ };
+    //virtual void denyOne(DataInterface &dataInterface,DataInterface &dataInterface, const int &depth){ };
 
     virtual ~ObservableInterface()
-    { };
+    {};
 };
 
 

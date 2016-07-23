@@ -13,12 +13,13 @@ class CasePessimistVariable: public VariableInterface
 
     int iteratorX;
     int iteratorY;
+    int max;
 
 public:
 
     CasePessimistVariable(CaseModel &model)
-        : _model(model)
-    { }
+        : _model(model), max(_model.casesQte * 4 + 1)
+    {}
 
     CaseData *next(int &depth) override
     {
@@ -28,10 +29,10 @@ public:
     const bool hasNext(int &depth) override
     {
         //because if has not next then it's impossible
-        if (depth >= _model.nbCases) {
+        if (depth >= _model.casesQte) {
             return false;
         }
-        int min = _model.nbCases * 4 + 1;
+        int min = max;
         for (int xi = 0; xi < _model.size; ++xi) {
             for (int yi = 0; yi < _model.size; ++yi) {
                 if (_model.available[xi][yi]) {
@@ -50,7 +51,7 @@ public:
             }
         }
 
-        return min != _model.nbCases + 1;
+        return min != _model.casesQte + 1;
     }
 };
 

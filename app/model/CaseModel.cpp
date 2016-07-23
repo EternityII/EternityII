@@ -8,7 +8,7 @@ CaseModel::CaseModel(
     : ModelInterface(eventManager)
 {
     size = gameImportData.size;
-    nbCases = gameImportData.depth;
+    casesQte = gameImportData.depth;
     int depth = gameImportData.depth;
 
     // setting up max values
@@ -33,107 +33,126 @@ CaseModel::CaseModel(
         vector<deque<pair<CaseData, PieceData>>>(2));
 }
 
-void CaseModel::accept(
+void CaseModel::allow(
     const CaseData &caseData, const PieceData &pieceData, const int &depth
 )
 {
     // only update if it's not already done
     if (available[caseData.x][caseData.y]) {
-        available[caseData.x][caseData.y] =
-            false; // the case is not available anymore
-        availableHistory[depth][ACCEPT].emplace_back(caseData);
-        // the history has changed !!!
+        // This case has only this piece in it's domain
+        for (int pieceId = 0; pieceId < casesQte; ++pieceId) {
+            for (int rotation = 0; rotation < 4; ++rotation) {
+                if (pieceData.id != pieceId && pieceData.rotation != pieceId) {
+                    PieceData pieceDataPartialDeny(pieceId, rotation);
 
-        addAcceptedEvent<CasePieceConstraint, CaseData>(
-            static_cast<CasePieceConstraint &>(
-                *observers[EternityII::CPCONSTRAINT]),
+                    denyOne(caseData, pieceDataPartialDeny, depth, TRANSITORY);
+                }
+            }
+        }
+
+        // the case is not available anymore
+        available[caseData.x][caseData.y] = false;
+        availableHistory[depth][TRANSITORY].emplace_back(caseData);
+
+        --piecesQte[caseData.x][caseData.y];
+        piecesQteHistory[depth][TRANSITORY].emplace_back(caseData);
+
+        // this case isn't available so deleting from all the domains
+        addDenyEvent(static_cast<CasePieceConstraint &>
+            (*observers[EternityII::CPCONSTRAINT]),
             caseData,
-            depth
+            depth,
+            TRANSITORY
         );
     }
 }
 
-void CaseModel::accepted(const PieceData &pieceData, const int &depth)
+void CaseModel::denyOne(
+    const CaseData &caseData,
+    const PieceData &pieceData,
+    const int &depth,
+    const int &persistent)
 {
-    // it's a consequence of the update of pieceData, so we do it without checking anything
+    if (casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation]) {
+        casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation]
+            = false;
+        casePiecesHistory[depth][persistent]
+            .emplace_back(make_pair(caseData, pieceData));
+
+        --piecesQte[caseData.x][caseData.y];
+        piecesQteHistory[depth][persistent]
+            .emplace_back(caseData);
+
+        /* Does nothing for the moment
+         * addDenyEvent(static_cast<CasePieceConstraint &>(*observers[EternityII::PCCONSTRAINT]),
+            caseData,
+            depth);*/
+    }
+}
+
+void CaseModel::deny(const PieceData &pieceData,
+    const int &depth,
+    const int &persistent)
+{
     for (int x = 0; x < size; ++x) {
         for (int y = 0; y < size; ++y) {
             // if the case has the piece in it's domain and if it's available
             if (available[x][y]) {
-                for (int rotation = 0; rotation < 4; ++rotation) {
-                    if (casePieces[x][y][pieceData.id][rotation]) {
-                        casePieces[x][y][pieceData.id][rotation] = false;
-                        casePiecesHistory[depth][ACCEPT]
-                            .emplace_back(make_pair(
-                                CaseData(x, y),
-                                PieceData(pieceData.id, rotation)
-                            ));
+                CaseData caseData(x, y);
 
-                        --piecesQte[x][y];
-                        piecesQteHistory[depth][ACCEPT].emplace_back(x, y);
-                    }
+                for (int rotation = 0; rotation < 4; ++rotation) {
+                    PieceData pieceDataRotation(pieceData.id, rotation);
+
+                    denyOne(caseData, pieceDataRotation, depth, persistent);
                 }
             }
         }
     }
 }
 
-void CaseModel::accepted(const CaseData &caseData, const int &depth)
+void CaseModel::deny(const CaseData &caseData,
+    const int &depth,
+    const int &persistent)
 {
-    //TODO
-}
+    if (available[caseData.x][caseData.y]) {
+        for (int nPiece = 0; nPiece < casesQte; ++nPiece) {
+            for (int rotation = 0; rotation < 4; ++rotation) {
+                PieceData pieceData(nPiece, rotation);
 
-void CaseModel::discard(
-    const CaseData &caseData, const PieceData &pieceData, const int &depth)
-{
-    casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation] =
-        false;
-    casePiecesHistory[depth][DISCARD].emplace_back(
-        make_pair(caseData, pieceData)
-    );
-
-    --piecesQte[caseData.x][caseData.y];
-    piecesQteHistory[depth][DISCARD].emplace_back(caseData);
-
-    /* Does nothing for the moment
-     * addDiscardedEvent<CasePieceConstraint, CaseData>(static_cast<CasePieceConstraint &>(*observers[0]),
-        caseData,
-        depth);*/
-}
-
-void CaseModel::discarded(const PieceData &pieceData, const int &depth)
-{
-// TODO DISCARD
+                denyOne(caseData, pieceData, depth, persistent);
+            }
+        }
+    }
 }
 
 void CaseModel::rollback(const int &depth, const bool &total /* = true */)
 {
-    int rollbackType;
+    int type;
     if (total) {
-        rollbackType = DISCARD;
+        type = PERSISTENT;
         rollback(depth, false);
     } else {
-        rollbackType = ACCEPT;
+        type = TRANSITORY;
     }
 
-    deque<CaseData> &availQueue = availableHistory[depth][rollbackType];
+    auto &availQueue = availableHistory[depth][type];
     while (!availQueue.empty()) {
         available[availQueue.back().x][availQueue.back().y] = true;
         availQueue.pop_back();
     }
 
-    deque<CaseData> &qteQueue = piecesQteHistory[depth][rollbackType];
+    auto &qteQueue = piecesQteHistory[depth][type];
     while (!qteQueue.empty()) {
         ++piecesQte[qteQueue.back().x][qteQueue.back().y];
         qteQueue.pop_back();
     }
 
-    deque<pair<CaseData, PieceData>>
-        &pcQueue = casePiecesHistory[depth][rollbackType];
+    auto &pcQueue = casePiecesHistory[depth][type];
     while (!pcQueue.empty()) {
         casePieces[pcQueue.back().first.x][pcQueue.back().first.y]
         [pcQueue.back().second.id][pcQueue.back().second.rotation] = true;
         pcQueue.pop_back();
     }
 }
+
 

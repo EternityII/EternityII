@@ -19,6 +19,7 @@ public:
      */
     int size;
 
+    int colorsQte;
     /**
      * Plateau
      */
@@ -38,7 +39,7 @@ public:
     }
 
     ~GameImportData()
-    { }
+    {}
 };
 
 
