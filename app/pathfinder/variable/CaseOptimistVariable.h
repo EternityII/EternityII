@@ -34,14 +34,14 @@ public:
         for (int xi = 0; xi < _model.size; ++xi) {
             for (int yi = 0; yi < _model.size; ++yi) {
                 if (_model.available[xi][yi]) {
-                    if (_model.piecesQte[xi][yi] == 0) {
+                    if (_model.pieceCount[xi][yi] == 0) {
                         return false;
-                    } else if (_model.piecesQte[xi][yi] == 1) {
+                    } else if (_model.pieceCount[xi][yi] == 1) {
                         iteratorX = xi;
                         iteratorY = yi;
                         return true;
-                    } else if (_model.piecesQte[xi][yi] > max) {
-                        max = _model.piecesQte[xi][yi];
+                    } else if (_model.pieceCount[xi][yi] > max) {
+                        max = _model.pieceCount[xi][yi];
                         iteratorX = xi;
                         iteratorY = yi;
                     }

@@ -6,26 +6,26 @@ PieceModel::PieceModel(const GameImportData &gameImportData,
     EventManager &eventManager)
     : ModelInterface(eventManager)
 {
-    nbPieces = gameImportData.depth;
+    piecesQte = gameImportData.depth;
     size = gameImportData.size;
 
     // Initializing tables
-    casesQte.resize(nbPieces,
-        vector<int>(4, nbPieces));
-    casesQteHistory.resize(nbPieces,
+    casesCount.resize(piecesQte,
+        vector<int>(4, piecesQte));
+    casesCountHistory.resize(piecesQte,
         vector<deque<PieceData >>(2));
 
-    available.resize(nbPieces, true);
-    availableHistory.resize(nbPieces,
+    available.resize(piecesQte, true);
+    availableHistory.resize(piecesQte,
         vector<deque<PieceData >>(2));
 
     // [n°piece][rotation][x][y]
-    pieceCases.resize(nbPieces,
+    pieceCases.resize(piecesQte,
         vector<vector<vector<bool >>>(4,
             vector<vector<bool >>(size,
                 vector<bool>(size, true))));
 
-    pieceCasesHistory.resize(nbPieces,
+    pieceCasesHistory.resize(piecesQte,
         vector<deque<pair<PieceData, CaseData >>>(2));
 }
 
@@ -49,7 +49,7 @@ void PieceModel::allow(
 
         // need to wait till the end
         addDenyEvent(static_cast<CasePieceConstraint &>
-            (*observers[EternityII::CPCONSTRAINT]),
+            (*observers[EternityII::CAPI_CONSTRAINT]),
             pieceData,
             depth,
             TRANSITORY);
@@ -68,8 +68,8 @@ void PieceModel::denyOne(
         pieceCasesHistory[depth][persistent]
             .emplace_back(make_pair(pieceData, caseData));
 
-        --casesQte[pieceData.id][pieceData.rotation];
-        casesQteHistory[depth][persistent]
+        --casesCount[pieceData.id][pieceData.rotation];
+        casesCountHistory[depth][persistent]
             .emplace_back(pieceData);
 
 
@@ -84,7 +84,7 @@ void PieceModel::deny(const CaseData &caseData,
     const int &depth,
     const int &persistent)
 {
-    for (int nPiece = 0; nPiece < nbPieces; ++nPiece) {
+    for (int nPiece = 0; nPiece < piecesQte; ++nPiece) {
         if (available[nPiece]) { // if the piece is available
             for (int rotation = 0; rotation < 4; ++rotation) {
                 PieceData pieceData(nPiece, rotation);
@@ -131,9 +131,9 @@ void PieceModel::rollback(const int &depth, const bool &total /* = true*/)
         availQueue.pop_back();
     }
 
-    auto &qteQueue = casesQteHistory[depth][type];
+    auto &qteQueue = casesCountHistory[depth][type];
     while (!qteQueue.empty()) {
-        ++casesQte[qteQueue.back().id][qteQueue.back().rotation];
+        ++casesCount[qteQueue.back().id][qteQueue.back().rotation];
         qteQueue.pop_back();
     }
 

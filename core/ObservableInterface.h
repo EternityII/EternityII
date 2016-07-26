@@ -42,7 +42,7 @@ public:
         eventManager
             .add(make_unique<std::function<void()> >(
                 [&obj, data1, data2, depth, persistent]
-                { obj.DenyOne(data1, data2, depth, persistent); }
+                { obj.denyOne(data1, data2, depth, persistent); }
             ));
     }
 

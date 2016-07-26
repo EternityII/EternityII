@@ -11,7 +11,7 @@ using namespace std;
 
 class PieceModel: public ModelInterface
 {
-    vector<vector<deque<PieceData> > > casesQteHistory;
+    vector<vector<deque<PieceData> > > casesCountHistory;
 
     vector<vector<deque<PieceData> > > availableHistory;
 
@@ -20,9 +20,9 @@ class PieceModel: public ModelInterface
 public:
     int size;
 
-    int nbPieces;
+    int piecesQte;
 
-    vector<vector<int> > casesQte;
+    vector<vector<int> > casesCount;
 
     vector<bool> available;
 

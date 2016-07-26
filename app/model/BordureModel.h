@@ -14,16 +14,17 @@ class BordureModel: public ModelInterface
 private:
     vector<vector<deque<BordureData> > > availableHistory;
 
-    vector<vector<deque<BordureData> > > colorsQteHistory;
+    vector<vector<deque<BordureData> > > colorsCountHistory;
 
     vector<vector<deque<pair<BordureData, ColorData> > > > bordureColorsHistory;
 public:
 
     int borduresQte;
+    int colorsQte;
 
     vector<bool> available;
 
-    vector<int> colorsQte;
+    vector<int> colorsCount;
 
     vector<vector<int>> bordureColors;
 

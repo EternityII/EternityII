@@ -1,4 +1,7 @@
 #include "ColorModel.h"
+#include "../constraint/ColorPieceConstraint.h"
+#include "../constraint/BordureColorConstraint.h"
+#include "../../EternityII.h"
 ColorModel::ColorModel(
     const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
@@ -11,7 +14,8 @@ void ColorModel::allow(
     const ColorData &colorData,
     const int &depth)
 {
-    //TODO
+    //entrypoint : not used because the entrypoint is CasePieceConstraint
+    // TODO : minimal importance
 }
 
 void ColorModel::denyOne(const BordureData &bordureData,
@@ -19,22 +23,55 @@ void ColorModel::denyOne(const BordureData &bordureData,
     const int &depth,
     const int &persistent)
 {
-    //TODO
+    // if still available
+    if (colorBordures[colorData.id][bordureData.id]) {
+        colorBordures[colorData.id][bordureData.id] = false;
+        colorBorduresHistory[depth][persistent]
+            .emplace_back(make_pair(colorData, bordureData));
+
+        --borduresCount[colorData.id];
+        borduresCountHistory[depth][persistent]
+            .emplace_back(colorData);
+
+        if (borduresCount[colorData.id] == 0) {
+            colorBordures[colorData.id][bordureData.id] = false;
+            colorBorduresHistory[depth][persistent]
+                .emplace_back(make_pair(colorData, bordureData));
+
+
+            // this border <--> color was denied
+            // this is a very strong event
+            // go my love, update the border please
+            addDenyOneEvent(static_cast<BordureColorConstraint &>
+                (*observers[EternityII::BOCO_CONSTRAINT]),
+                bordureData,
+                colorData,
+                depth,
+                persistent);
+
+            // go my love update the piece <--> case
+            addDenyOneEvent(static_cast<ColorPieceConstraint &>
+                (*observers[EternityII::COPI_CONSTRAINT]),
+                bordureData,
+                colorData,
+                depth,
+                persistent);
+        }
+    }
 }
 
 void ColorModel::deny(const BordureData &bordureData,
     const int &depth,
     const int &persistent)
 {
-    //TODO
+    //TODO : don't think it will be used : minimal importance
 }
 
 void ColorModel::deny(const ColorData &colorData,
     const int &depth,
     const int &persistent)
 {
-    //TODO
-
+    //TODO : don't think it will be used : minimal importance
 }
 
 void ColorModel::rollback(const int &depth, const bool total)
@@ -45,5 +82,23 @@ void ColorModel::rollback(const int &depth, const bool total)
         rollback(depth, false);
     } else {
         type = TRANSITORY;
+    }
+
+    auto &availQueue = availableHistory[depth][type];
+    while (!availQueue.empty()) {
+        available[availQueue.back().id] = true;
+        availQueue.pop_back();
+    }
+
+    auto &qteQueue = borduresCountHistory[depth][type];
+    while (!qteQueue.empty()) {
+        ++borduresCount[qteQueue.back().id];
+        qteQueue.pop_back();
+    }
+
+    auto &pcQueue = colorBorduresHistory[depth][type];
+    while (!pcQueue.empty()) {
+        colorBordures[pcQueue.back().first.id][pcQueue.back().second.id] = true;
+        pcQueue.pop_back();
     }
 }

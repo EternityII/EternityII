@@ -17,7 +17,7 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel,
 
         // interior piece cannot be put on a edge case
         for (int nInsidePiece = (caseModel.size - 1) * 4;
-             nInsidePiece < pieceModel.nbPieces;
+             nInsidePiece < pieceModel.piecesQte;
              ++nInsidePiece) {
             for (int rotation = 0; rotation < 4; ++rotation) {
                 PieceData pieceData(nInsidePiece, rotation);
@@ -86,7 +86,7 @@ CasePieceConstraint::CasePieceConstraint(CaseModel &caseModel,
     CaseData caseCornerRightBot(caseModel.size - 1, caseModel.size - 1);
     CaseData caseCornerBotLeft(0, caseModel.size - 1);
 
-    for (int nPiece = 4; nPiece < pieceModel.nbPieces; ++nPiece) {
+    for (int nPiece = 4; nPiece < pieceModel.piecesQte; ++nPiece) {
         for (int rotation = 0; rotation < 4; ++rotation) {
             PieceData pieceData(nPiece, rotation);
 

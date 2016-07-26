@@ -10,7 +10,7 @@ using namespace std;
 
 class CaseModel: public ModelInterface
 {
-    vector<vector<deque<CaseData> > > piecesQteHistory;
+    vector<vector<deque<CaseData> > > piecesCountHistory;
 
     vector<vector<deque<CaseData> > > availableHistory;
 
@@ -20,7 +20,7 @@ public:
     int size;
     int casesQte;
 
-    vector<vector<int>> piecesQte;
+    vector<vector<int>> pieceCount;
 
     vector<vector<bool>> available;
 

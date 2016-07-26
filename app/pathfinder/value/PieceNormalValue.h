@@ -43,7 +43,7 @@ public :
         // static_cast is the best cast
         CaseData *caseData = static_cast<CaseData *>(&data);
         // for each piece if it's available
-        for (int nPiece = begin; nPiece < _model.nbPieces; ++nPiece) {
+        for (int nPiece = begin; nPiece < _model.piecesQte; ++nPiece) {
             if (_model.available[nPiece]) {
                 for (int rotation = 0; rotation < 4; ++rotation) {
                     // if the piece can be put on the case

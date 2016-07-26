@@ -13,10 +13,10 @@ CaseModel::CaseModel(
 
     // setting up max values
 
-    piecesQte.resize(size,
+    pieceCount.resize(size,
         vector<int>(size, depth * 4));
 
-    piecesQteHistory.resize(depth,
+    piecesCountHistory.resize(depth,
         vector<deque<CaseData>>(2));
 
     available.resize(size,
@@ -54,13 +54,13 @@ void CaseModel::allow(
         available[caseData.x][caseData.y] = false;
         availableHistory[depth][TRANSITORY].emplace_back(caseData);
 
-        --piecesQte[caseData.x][caseData.y];
-        piecesQteHistory[depth][TRANSITORY].emplace_back(caseData);
+        --pieceCount[caseData.x][caseData.y];
+        piecesCountHistory[depth][TRANSITORY].emplace_back(caseData);
 
         // this case isn't available so deleting from all the domains
         // needed for var val choice
         addDenyEvent(static_cast<CasePieceConstraint &>
-            (*observers[EternityII::CPCONSTRAINT]),
+            (*observers[EternityII::CAPI_CONSTRAINT]),
             caseData,
             depth,
             TRANSITORY
@@ -80,8 +80,8 @@ void CaseModel::denyOne(
         casePiecesHistory[depth][persistent]
             .emplace_back(make_pair(caseData, pieceData));
 
-        --piecesQte[caseData.x][caseData.y];
-        piecesQteHistory[depth][persistent]
+        --pieceCount[caseData.x][caseData.y];
+        piecesCountHistory[depth][persistent]
             .emplace_back(caseData);
 
         /* Does nothing, because of entrypoint
@@ -142,9 +142,9 @@ void CaseModel::rollback(const int &depth, const bool &total /* = true */)
         availQueue.pop_back();
     }
 
-    auto &qteQueue = piecesQteHistory[depth][type];
+    auto &qteQueue = piecesCountHistory[depth][type];
     while (!qteQueue.empty()) {
-        ++piecesQte[qteQueue.back().x][qteQueue.back().y];
+        ++pieceCount[qteQueue.back().x][qteQueue.back().y];
         qteQueue.pop_back();
     }
 
