@@ -58,6 +58,7 @@ void CaseModel::allow(
         piecesQteHistory[depth][TRANSITORY].emplace_back(caseData);
 
         // this case isn't available so deleting from all the domains
+        // needed for var val choice
         addDenyEvent(static_cast<CasePieceConstraint &>
             (*observers[EternityII::CPCONSTRAINT]),
             caseData,
@@ -83,7 +84,7 @@ void CaseModel::denyOne(
         piecesQteHistory[depth][persistent]
             .emplace_back(caseData);
 
-        /* Does nothing for the moment
+        /* Does nothing, because of entrypoint
          * addDenyEvent(static_cast<CasePieceConstraint &>(*observers[EternityII::PCCONSTRAINT]),
             caseData,
             depth);*/

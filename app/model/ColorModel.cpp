@@ -39,5 +39,11 @@ void ColorModel::deny(const ColorData &colorData,
 
 void ColorModel::rollback(const int &depth, const bool total)
 {
-    //TODO
+    int type;
+    if (total) {
+        type = PERSISTENT;
+        rollback(depth, false);
+    } else {
+        type = TRANSITORY;
+    }
 }

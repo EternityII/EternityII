@@ -1,6 +1,7 @@
 #include "BordureModel.h"
 #include "../../EternityII.h"
 #include "../constraint/BordureColorConstraint.h"
+#include "../constraint/BordureCaseConstraint.h"
 
 BordureModel::BordureModel(
     const GameImportData &gameImportData, EventManager &eventManager)
@@ -14,11 +15,12 @@ void BordureModel::allow(
     const ColorData &colorData,
     const int &depth)
 {
+    // Won't be used : the entry point is CasePiece
     if (available[bordureData.id]) {
         for (int colorId = 0; colorId < borduresQte; ++colorId) {
             if (colorId != colorData.id) {
                 ColorData colorDataPartialDeny(colorId);
-
+                // yep that's good, everything else is denied
                 denyOne(bordureData, colorDataPartialDeny, depth, TRANSITORY);
             }
         }
@@ -31,7 +33,7 @@ void BordureModel::allow(
 
         // this edge isn't available anymore so we notify the colorModel
         addDenyEvent(static_cast<BordureColorConstraint &>
-            (*observers[EternityII::CPCONSTRAINT]),
+            (*observers[EternityII::BCOCONSTRAINT]),
             bordureData, depth, TRANSITORY
         );
     }
@@ -50,6 +52,31 @@ void BordureModel::denyOne(const BordureData &bordureData,
         --colorsQte[bordureData.id];
         colorsQteHistory[depth][persistent]
             .emplace_back(bordureData);
+
+        // HAHA !! The color is not here anymoooroe !
+        if (colorsQte[bordureData.id] == 0) {
+            bordureColors[bordureData.id][colorData.id] = false;
+            bordureColorsHistory[depth][persistent]
+                .emplace_back(make_pair(bordureData, colorData));
+
+            // TODO : deny the color on the other border
+
+            // this border <--> color was denied
+            // this is a very strong event
+            addDenyOneEvent(static_cast<BordureColorConstraint &>
+                (*observers[EternityII::BCOCONSTRAINT]),
+                bordureData,
+                colorData,
+                depth,
+                persistent);
+
+            addDenyOneEvent(static_cast<BordureCaseConstraint &>
+                (*observers[EternityII::BCACONSTRAINT]),
+                bordureData,
+                colorData,
+                depth,
+                persistent);
+        }
     }
 }
 

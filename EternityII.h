@@ -19,6 +19,8 @@ class EternityII
 public:
 
     static const int CPCONSTRAINT = 0;
+    static const int BCOCONSTRAINT = 0; // TODO
+    static const int BCACONSTRAINT = 0; // TODO
     /**
      * Initializes EternityII
      *

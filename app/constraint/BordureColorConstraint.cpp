@@ -30,6 +30,7 @@ void BordureColorConstraint::denyOne(
     const int &depth,
     const int &persistent)
 {
+    // yep
     _first.denyOne(bordureData, colorData, depth, persistent);
     _second.denyOne(bordureData, colorData, depth, persistent);
 
