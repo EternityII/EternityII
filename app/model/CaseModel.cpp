@@ -2,13 +2,15 @@
 #include "CaseModel.h"
 #include "../constraint/CasePieceConstraint.h"
 #include "../../EternityII.h"
+#include "../constraint/BordureCaseConstraint.h"
 
 CaseModel::CaseModel(
     const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
 {
     size = gameImportData.size;
-    casesQte = gameImportData.depth;
+    casesQte = gameImportData.casesQte;
+    piecesQte = gameImportData.piecesQte;
     int depth = gameImportData.depth;
 
     // setting up max values
@@ -37,10 +39,11 @@ void CaseModel::allow(
     const CaseData &caseData, const PieceData &pieceData, const int &depth
 )
 {
+    // entrypoint :
     // only update if it's not already done
     if (available[caseData.x][caseData.y]) {
         // This case has only this piece in it's domain
-        for (int pieceId = 0; pieceId < casesQte; ++pieceId) {
+        for (int pieceId = 0; pieceId < piecesQte; ++pieceId) {
             for (int rotation = 0; rotation < 4; ++rotation) {
                 if (pieceData.id != pieceId && pieceData.rotation != pieceId) {
                     PieceData pieceDataPartialDeny(pieceId, rotation);
@@ -56,15 +59,6 @@ void CaseModel::allow(
 
         --pieceCount[caseData.x][caseData.y];
         piecesCountHistory[depth][TRANSITORY].emplace_back(caseData);
-
-        // this case isn't available so deleting from all the domains
-        // needed for var val choice
-        addDenyEvent(static_cast<CasePieceConstraint &>
-            (*observers[EternityII::CAPI_CONSTRAINT]),
-            caseData,
-            depth,
-            TRANSITORY
-        );
     }
 }
 
@@ -84,10 +78,14 @@ void CaseModel::denyOne(
         piecesCountHistory[depth][persistent]
             .emplace_back(caseData);
 
-        /* Does nothing, because of entrypoint
-         * addDenyEvent(static_cast<CasePieceConstraint &>(*observers[EternityII::PCCONSTRAINT]),
-            caseData,
-            depth);*/
+        addDenyOneEvent(static_cast<CasePieceConstraint &>
+            (observers[EternityII::CAPI_CONSTRAINT]),
+            caseData, pieceData, depth, persistent
+        );
+        addDenyOneEvent(static_cast<BordureCaseConstraint &>
+            (observers[EternityII::CAPI_CONSTRAINT]),
+            caseData, pieceData, depth, persistent
+        );
     }
 }
 
@@ -95,6 +93,7 @@ void CaseModel::deny(const PieceData &pieceData,
     const int &depth,
     const int &persistent)
 {
+    // unused : dangerous : the consequence is too big
     for (int x = 0; x < size; ++x) {
         for (int y = 0; y < size; ++y) {
             // if the case has the piece in it's domain and if it's available
@@ -115,10 +114,12 @@ void CaseModel::deny(const CaseData &caseData,
     const int &depth,
     const int &persistent)
 {
+    // unused : dangerous : hodor hodor hodor
+
     if (available[caseData.x][caseData.y]) {
-        for (int nPiece = 0; nPiece < casesQte; ++nPiece) {
+        for (int piecesId = 0; piecesId < piecesQte; ++piecesId) {
             for (int rotation = 0; rotation < 4; ++rotation) {
-                PieceData pieceData(nPiece, rotation);
+                PieceData pieceData(piecesId, rotation);
 
                 denyOne(caseData, pieceData, depth, persistent);
             }

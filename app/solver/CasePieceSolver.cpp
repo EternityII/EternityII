@@ -13,7 +13,7 @@ CasePieceSolver::CasePieceSolver(PathFinder &pathFinder,
         vector<PieceData>(game.size, PieceData(-1, 0)));
 
 
-    maxDepth = game.size * game.size;
+    maxDepth = game.depth;
     quantityNodesByDepth.resize(maxDepth, 0);
 }
 

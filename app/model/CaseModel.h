@@ -19,10 +19,11 @@ class CaseModel: public ModelInterface
 public:
     int size;
     int casesQte;
+    int piecesQte;
 
-    vector<vector<int>> pieceCount;
+    vector<vector<int> > pieceCount;
 
-    vector<vector<bool>> available;
+    vector<vector<bool> > available;
 
     vector<vector<vector<vector<bool>>>> casePieces;
 

@@ -16,8 +16,8 @@ public:
     /**
      * Open the file, returns an error if failed
      *
-     * @param string filename, the filename
-     * @param ios_base::openmode mode, the openmode
+     * \param filename the filename
+     * \param mode the openmode. from iosmode::openmode
      */
     IO(string &filename, ios_base::openmode mode = ios_base::in | ios_base::out)
     {
@@ -56,7 +56,7 @@ public:
     /**
      * Operator overload, mirror of fstream::operator<<
      */
-    IO &operator<<(string &str)
+    IO &operator<<(const string &str)
     {
         *file << str;
 
@@ -76,7 +76,7 @@ public:
     /**
      * Operator overload, mirror of fstream::operator<<
      */
-    IO &operator<<(int &number)
+    IO &operator<<(const int &number)
     {
         *file << number;
 

@@ -1,12 +1,13 @@
 #include "PieceModel.h"
 #include "../constraint/CasePieceConstraint.h"
 #include "../../EternityII.h"
+#include "../constraint/ColorPieceConstraint.h"
 
 PieceModel::PieceModel(const GameImportData &gameImportData,
     EventManager &eventManager)
     : ModelInterface(eventManager)
 {
-    piecesQte = gameImportData.depth;
+    piecesQte = gameImportData.piecesQte;
     size = gameImportData.size;
 
     // Initializing tables
@@ -32,6 +33,7 @@ PieceModel::PieceModel(const GameImportData &gameImportData,
 void PieceModel::allow(
     const CaseData &caseData, const PieceData &pieceData, const int &depth)
 {
+    // entrypoint :
     if (available[pieceData.id]) {
 
         for (int xi = 0; xi < size; ++xi) {
@@ -46,13 +48,6 @@ void PieceModel::allow(
 
         available[pieceData.id] = false;
         availableHistory[depth][TRANSITORY].emplace_back(pieceData);
-
-        // need to wait till the end
-        addDenyEvent(static_cast<CasePieceConstraint &>
-            (*observers[EternityII::CAPI_CONSTRAINT]),
-            pieceData,
-            depth,
-            TRANSITORY);
     }
 }
 
@@ -62,9 +57,10 @@ void PieceModel::denyOne(
     const int &depth,
     const int &persistent)
 {
+    // if the piece can be put here ?
     if (pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y]) {
-        pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y] =
-            false;
+        pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y]
+            = false; // not anymore :)
         pieceCasesHistory[depth][persistent]
             .emplace_back(make_pair(pieceData, caseData));
 
@@ -72,11 +68,13 @@ void PieceModel::denyOne(
         casesCountHistory[depth][persistent]
             .emplace_back(pieceData);
 
+        addDenyOneEvent(static_cast<CasePieceConstraint &>
+            (*observers[EternityII::CAPI_CONSTRAINT]),
+            caseData, pieceData, depth, persistent);
 
-        /* Not useful for the moment
-         * addDenyEvent(static_cast<CasePieceConstraint &>(*observers[0]),
-            pieceData,
-            depth);*/
+        addDenyOneEvent(static_cast<ColorPieceConstraint &>
+            (*observers[EternityII::COPI_CONSTRAINT]),
+            caseData, pieceData, depth, persistent);
     }
 }
 

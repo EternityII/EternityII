@@ -14,7 +14,7 @@ void ColorModel::allow(
     const ColorData &colorData,
     const int &depth)
 {
-    //entrypoint : not used because the entrypoint is CasePieceConstraint
+    //entrypoint : unused : the entrypoint is CasePieceConstraint
     // TODO : minimal importance
 }
 
@@ -25,7 +25,7 @@ void ColorModel::denyOne(const BordureData &bordureData,
 {
     // if still available
     if (colorBordures[colorData.id][bordureData.id]) {
-        colorBordures[colorData.id][bordureData.id] = false;
+        colorBordures[colorData.id][bordureData.id] = false; // not anymore :)
         colorBorduresHistory[depth][persistent]
             .emplace_back(make_pair(colorData, bordureData));
 
@@ -33,6 +33,7 @@ void ColorModel::denyOne(const BordureData &bordureData,
         borduresCountHistory[depth][persistent]
             .emplace_back(colorData);
 
+        // the no-border zone
         if (borduresCount[colorData.id] == 0) {
             colorBordures[colorData.id][bordureData.id] = false;
             colorBorduresHistory[depth][persistent]
@@ -65,7 +66,7 @@ void ColorModel::deny(const BordureData &bordureData,
     const int &persistent)
 {
     //TODO : don't think it will be used : minimal importance
-    // DANGEROUS !! use with care
+    // unused : dangerous : use with care
 
 }
 
@@ -74,7 +75,7 @@ void ColorModel::deny(const ColorData &colorData,
     const int &persistent)
 {
     //TODO : don't think it will be used : minimal importance
-    // DANGEROUS !! use with care
+    // unused : dangerous : !! use with care
 
 }
 

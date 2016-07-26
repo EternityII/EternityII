@@ -7,8 +7,24 @@
 
 class BordureCaseConstraint: public ConstraintInterface
 {
+    //! rewriting #first
     BordureModel &_first;
+
+    //! rewriting #first
     CaseModel &_second;
+
+    //! bordureCase contains the cases on both sides
+    vector<pair<CaseData, CaseData> > bordureCases;
+
+    //! contains the data of each border
+    vector<vector<vector<BordureData> > > caseBordure;
+
+    //! list of all the pieces containing this color at the each rotation
+    vector<vector<deque<PieceData> > > colorPieces;
+
+    //! each color at each rotation of the piece
+    vector<vector<vector<int> > > pieceColors;
+
 public:
     BordureCaseConstraint(BordureModel &bordureModel,
         CaseModel &caseModel,

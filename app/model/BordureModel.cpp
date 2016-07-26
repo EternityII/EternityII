@@ -15,7 +15,7 @@ void BordureModel::allow(
     const ColorData &colorData,
     const int &depth)
 {
-    // entrypoint : Won't be used : the entrypoint is CasePiece
+    // entrypoint : unused : the entrypoint is CasePiece
     if (available[bordureData.id]) {
         for (int colorId = 0; colorId < borduresQte; ++colorId) {
             if (colorId != colorData.id) {
@@ -82,8 +82,7 @@ void BordureModel::deny(const BordureData &bordureData,
     const int &depth,
     const int &persistent)
 {
-    // entrypoint : CasePieceConstraint
-    // DANGEROUS !! use with care
+    // unused : dangerous : well that was f****** scary
     if (available[bordureData.id]) {
         for (int colorId = 0; colorId < borduresQte; ++colorId) {
             ColorData colorData(colorId);
@@ -97,7 +96,7 @@ void BordureModel::deny(const ColorData &colorData,
     const int &depth,
     const int &persistent)
 {
-    // DANGEROUS !! use with care
+    // unused : dangerous : use with care
     for (int bordureId = 0; bordureId < borduresQte; ++bordureId) {
         if (available[bordureId]) {
             BordureData bordureData(bordureId);
