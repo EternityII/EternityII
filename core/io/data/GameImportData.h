@@ -9,37 +9,45 @@ using namespace std;
 class GameImportData
 {
 public:
-    /**
-     * Nombre de pièces
-     */
+    //! the number of pieces / cases
     int depth;
 
-    /**
-     * Taille du plateau
-     */
+    //! the number of pieces. Duplication of #depth to clarify
+    int casesQte;
+
+    //! the number of cases. Duplication of #depth to clarify
+    int piecesQte;
+
+    //! size of the instance (heigh or width)
     int size;
 
+    //! the number of unique colors
     int colorsQte;
-    /**
-     * Plateau
-     */
+
+    //! unused : the instance. may be implemented later for visual representation
     vector<vector<PieceImportData>> plateau;
 
-    /**
-     * Liste des pièces
-     */
+    //! list of the pieces, with four precalculated rotation
     vector<unique_ptr<PieceImportData>> pieces;
 
-    void setSize(int &i)
+    /**
+     * Sets the size of the game.
+     *
+     * Set the #depth (also #piecesQte and #casesQte), and the #size as well,
+     * also pre-sizes the list of #pieces
+     *
+     * @param newSize the size of the game
+     */
+    void setSize(const int &newSize)
     {
-        size = i;
-        depth = i * i;
+        size = newSize;
+        depth = newSize * newSize;
+        piecesQte = depth;
+        casesQte = depth;
 
-        pieces.resize(depth);
+        pieces.resize(piecesQte);
     }
 
-    ~GameImportData()
-    {}
 };
 
 

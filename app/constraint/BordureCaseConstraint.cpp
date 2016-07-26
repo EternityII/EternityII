@@ -17,18 +17,18 @@ void BordureCaseConstraint::allow(
     const int &depth)
 {
 
-    /* TODO : INACTIVE : entrypoint */
-    //_first.allow(bordureData, colorData, depth);
-    // TODO : all the four borders are denied
+    // entrypoint : unused : the entrypoint is CasePieceConstraint
+    // _first.allow(bordureData, colorData, depth);
+    // TODO : minimal importance : all the four borders are denied
     //_second.allow(caseData, pieceData, depth);
 }
 
 void BordureCaseConstraint::allow(
     const CaseData &caseData, const PieceData &pieceData, const int &depth)
 {
-    /* TODO : INACTIVE : entrypoint */
+    // entrypoint : unused : the entrypoint is CasePieceConstraint
     //_first.allow(bordureData, colorData, depth);
-    // TODO : all the four borders are denied
+    // TODO : minimal importance : all the four borders are denied
     //_second.allow(caseData, bordureData, depth);
 }
 

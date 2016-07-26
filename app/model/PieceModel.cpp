@@ -126,19 +126,19 @@ void PieceModel::rollback(const int &depth, const bool &total /* = true*/)
     }
 
     auto &availQueue = availableHistory[depth][type];
-    while (!availQueue.empty()) {
+    while (not availQueue.empty()) {
         available[availQueue.back().id] = true;
         availQueue.pop_back();
     }
 
     auto &qteQueue = casesCountHistory[depth][type];
-    while (!qteQueue.empty()) {
+    while (not qteQueue.empty()) {
         ++casesCount[qteQueue.back().id][qteQueue.back().rotation];
         qteQueue.pop_back();
     }
 
     auto &pcQueue = pieceCasesHistory[depth][type];
-    while (!pcQueue.empty()) {
+    while (not pcQueue.empty()) {
         pieceCases[pcQueue.back().first.id][pcQueue.back().first.rotation]
         [pcQueue.back().second.x][pcQueue.back().second.y] = true;
         pcQueue.pop_back();

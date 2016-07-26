@@ -23,7 +23,7 @@ public:
     {
         file = make_unique<fstream>(filename.c_str(), mode);
 
-        if (!file->good()) {
+        if (not file->good()) {
             perror("The file couldn't be opened");
             exit(EXIT_FAILURE);
         }

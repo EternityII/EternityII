@@ -6,7 +6,7 @@ ColorModel::ColorModel(
     const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
 {
-    //TODO
+    //TODO : IMPORTANT
 }
 
 void ColorModel::allow(
@@ -65,6 +65,8 @@ void ColorModel::deny(const BordureData &bordureData,
     const int &persistent)
 {
     //TODO : don't think it will be used : minimal importance
+    // DANGEROUS !! use with care
+
 }
 
 void ColorModel::deny(const ColorData &colorData,
@@ -72,6 +74,8 @@ void ColorModel::deny(const ColorData &colorData,
     const int &persistent)
 {
     //TODO : don't think it will be used : minimal importance
+    // DANGEROUS !! use with care
+
 }
 
 void ColorModel::rollback(const int &depth, const bool total)
@@ -85,19 +89,19 @@ void ColorModel::rollback(const int &depth, const bool total)
     }
 
     auto &availQueue = availableHistory[depth][type];
-    while (!availQueue.empty()) {
+    while (not availQueue.empty()) {
         available[availQueue.back().id] = true;
         availQueue.pop_back();
     }
 
     auto &qteQueue = borduresCountHistory[depth][type];
-    while (!qteQueue.empty()) {
+    while (not qteQueue.empty()) {
         ++borduresCount[qteQueue.back().id];
         qteQueue.pop_back();
     }
 
     auto &pcQueue = colorBorduresHistory[depth][type];
-    while (!pcQueue.empty()) {
+    while (not pcQueue.empty()) {
         colorBordures[pcQueue.back().first.id][pcQueue.back().second.id] = true;
         pcQueue.pop_back();
     }

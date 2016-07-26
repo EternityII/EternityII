@@ -18,7 +18,7 @@ public:
 
     void process()
     {
-        if (!elements.empty()) {
+        if (not elements.empty()) {
             elements.front()->operator()();
             elements.pop_front();
         }

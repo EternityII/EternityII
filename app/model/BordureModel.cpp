@@ -7,7 +7,7 @@ BordureModel::BordureModel(
     const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
 {
-    //TODO
+    //TODO : IMPORTANT
 }
 
 void BordureModel::allow(
@@ -82,6 +82,8 @@ void BordureModel::deny(const BordureData &bordureData,
     const int &depth,
     const int &persistent)
 {
+    // entrypoint : CasePieceConstraint
+    // DANGEROUS !! use with care
     if (available[bordureData.id]) {
         for (int colorId = 0; colorId < borduresQte; ++colorId) {
             ColorData colorData(colorId);
@@ -95,6 +97,7 @@ void BordureModel::deny(const ColorData &colorData,
     const int &depth,
     const int &persistent)
 {
+    // DANGEROUS !! use with care
     for (int bordureId = 0; bordureId < borduresQte; ++bordureId) {
         if (available[bordureId]) {
             BordureData bordureData(bordureId);
@@ -115,19 +118,19 @@ void BordureModel::rollback(const int &depth, const bool total/* = true */)
     }
 
     auto &availQueue = availableHistory[depth][type];
-    while (!availQueue.empty()) {
+    while (not availQueue.empty()) {
         available[availQueue.back().id] = true;
         availQueue.pop_back();
     }
 
     auto &qteQueue = colorsCountHistory[depth][type];
-    while (!qteQueue.empty()) {
+    while (not qteQueue.empty()) {
         ++colorsCount[qteQueue.back().id];
         qteQueue.pop_back();
     }
 
     auto &pcQueue = bordureColorsHistory[depth][type];
-    while (!pcQueue.empty()) {
+    while (not pcQueue.empty()) {
         bordureColors[pcQueue.back().first.id][pcQueue.back().second.id] = true;
         pcQueue.pop_back();
     }

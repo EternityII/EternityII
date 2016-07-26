@@ -15,11 +15,13 @@ void BordureColorConstraint::allow(
     const ColorData &colorData,
     const int &depth)
 {
+    // entrypoint : unused : the entrypoint is CasePieceConstraint
     _first.allow(bordureData, colorData, depth); // CaseModel
     _second.allow(bordureData, colorData, depth); // PieceModel
 
-    // the entry point is CasePieceConstraint
-    /* while (!eventManager.empty()) {
+    // entrypoint : unused : to be uncommented if the entrypoint is this Constraint
+    /* // entrypoint : advice : comment this if the entrypoint is not this constraint
+    while (not eventManager.empty()) {
         eventManager.process();
     }*/
 }
@@ -30,19 +32,15 @@ void BordureColorConstraint::denyOne(
     const int &depth,
     const int &persistent)
 {
-    // yep
+    // doublechecking each time (blocked by if) can be optimized
     _first.denyOne(bordureData, colorData, depth, persistent);
     _second.denyOne(bordureData, colorData, depth, persistent);
-
-    // the entry point is CasePieceConstraint
-    /* while (!eventManager.empty()) {
-        eventManager.process();
-    }*/
 }
 
 void BordureColorConstraint::deny(
     const BordureData &bordureData, const int &depth, const int &persistent)
 {
+    // unused : dangerous : use with care
     _second.deny(bordureData, depth, persistent);
 }
 
@@ -50,5 +48,6 @@ void BordureColorConstraint::deny(const ColorData &colorData,
     const int &depth,
     const int &persistent)
 {
+    // unused : dangerous : use with care
     _first.deny(colorData, depth, persistent);
 }

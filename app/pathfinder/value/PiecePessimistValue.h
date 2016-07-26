@@ -57,7 +57,7 @@ public :
                         }
                     }
                 }
-                if (!hasHope) {
+                if (not hasHope) {
                     return false;
                 }
             }
