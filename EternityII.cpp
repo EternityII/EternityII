@@ -108,6 +108,10 @@ void EternityII::import(IO &io)
     // Number of colors
     io >> gameImport->colorsQte;
 
+    ++gameImport->colorsQte;
+
+    gameImport->colorCount.resize(gameImport->colorsQte, 0);
+
     // pre-placed pieces
     io >> placedPieces;
 
@@ -141,6 +145,7 @@ void EternityII::import(IO &io)
         for (int i = 0; i < 4; ++i) {
             for (int j = 1; j <= 3; ++j) {
                 piece->colors[j][(j + i) % 4] = piece->colors[0][i];
+                ++gameImport->colorCount[piece->colors[0][i]];
             }
         }
 

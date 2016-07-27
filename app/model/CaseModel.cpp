@@ -2,7 +2,6 @@
 #include "CaseModel.h"
 #include "../constraint/CasePieceConstraint.h"
 #include "../../EternityII.h"
-#include "../constraint/BordureCaseConstraint.h"
 
 CaseModel::CaseModel(
     const GameImportData &gameImportData, EventManager &eventManager)
@@ -56,9 +55,6 @@ void CaseModel::allow(
         // the case is not available anymore
         available[caseData.x][caseData.y] = false;
         availableHistory[depth][TRANSITORY].emplace_back(caseData);
-
-        --pieceCount[caseData.x][caseData.y];
-        piecesCountHistory[depth][TRANSITORY].emplace_back(caseData);
     }
 }
 
@@ -79,13 +75,13 @@ void CaseModel::denyOne(
             .emplace_back(caseData);
 
         addDenyOneEvent(static_cast<CasePieceConstraint &>
-            (observers[EternityII::CAPI_CONSTRAINT]),
+            (*observers[EternityII::CAPI_CONSTRAINT]),
             caseData, pieceData, depth, persistent
         );
-        addDenyOneEvent(static_cast<BordureCaseConstraint &>
-            (observers[EternityII::CAPI_CONSTRAINT]),
+        /*addDenyOneEvent(static_cast<BordureCaseConstraint &>
+            (*observers[EternityII::CAPI_CONSTRAINT]),
             caseData, pieceData, depth, persistent
-        );
+        );*/
     }
 }
 

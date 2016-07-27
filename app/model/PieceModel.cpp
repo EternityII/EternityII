@@ -1,7 +1,6 @@
 #include "PieceModel.h"
 #include "../constraint/CasePieceConstraint.h"
 #include "../../EternityII.h"
-#include "../constraint/ColorPieceConstraint.h"
 
 PieceModel::PieceModel(const GameImportData &gameImportData,
     EventManager &eventManager)
@@ -27,7 +26,7 @@ PieceModel::PieceModel(const GameImportData &gameImportData,
                 vector<bool>(size, true))));
 
     pieceCasesHistory.resize(piecesQte,
-        vector<deque<pair<PieceData, CaseData >>>(2));
+        vector<deque<pair<PieceData, CaseData> > >(2));
 }
 
 void PieceModel::allow(
@@ -72,9 +71,9 @@ void PieceModel::denyOne(
             (*observers[EternityII::CAPI_CONSTRAINT]),
             caseData, pieceData, depth, persistent);
 
-        addDenyOneEvent(static_cast<ColorPieceConstraint &>
-            (*observers[EternityII::COPI_CONSTRAINT]),
-            caseData, pieceData, depth, persistent);
+        /* addDenyOneEvent(static_cast<ColorPieceConstraint &>
+             (*observers[EternityII::COPI_CONSTRAINT]),
+             caseData, pieceData, depth, persistent);*/
     }
 }
 

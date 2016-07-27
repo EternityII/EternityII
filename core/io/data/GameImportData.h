@@ -24,6 +24,7 @@ public:
     //! the number of unique colors
     int colorsQte;
 
+    vector<int> colorCount;
     //! unused : the instance. may be implemented later for visual representation
     vector<vector<PieceImportData>> plateau;
 

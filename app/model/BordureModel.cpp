@@ -7,7 +7,27 @@ BordureModel::BordureModel(
     const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
 {
-    //TODO : IMPORTANT
+    borduresQte = gameImportData.size * (gameImportData.size - 1) * 2;
+    colorsQte = gameImportData.colorsQte;
+
+    available.resize(borduresQte, true);
+    availableHistory.resize(gameImportData.depth,
+        vector<deque<BordureData>>(2));
+
+    colorsCount.resize(borduresQte, colorsQte);
+    colorsCountHistory.resize(gameImportData.depth,
+        vector<deque<BordureData>>(2));
+
+    bordureColors.resize(borduresQte, vector<int>(colorsQte, 0));
+    bordureColorsHistory.resize(gameImportData.depth,
+        vector<deque<pair<BordureData, ColorData> > >(2));
+
+    for (int bordureId = 0; bordureId < borduresQte; ++bordureId) {
+        for (int colorId = 0; colorId < colorsQte; ++colorId) {
+            bordureColors[bordureId][colorId] =
+                gameImportData.colorCount[colorId];
+        }
+    }
 }
 
 void BordureModel::allow(
@@ -17,7 +37,7 @@ void BordureModel::allow(
 {
     // entrypoint : unused : the entrypoint is CasePiece
     if (available[bordureData.id]) {
-        for (int colorId = 0; colorId < borduresQte; ++colorId) {
+        for (int colorId = 0; colorId < colorsQte; ++colorId) {
             if (colorId != colorData.id) {
                 ColorData colorDataPartialDeny(colorId);
                 // yep that's good, everything else is denied
@@ -27,9 +47,6 @@ void BordureModel::allow(
 
         available[bordureData.id] = false;
         availableHistory[depth][TRANSITORY].emplace_back(bordureData);
-
-        --colorsCount[bordureData.id];
-        colorsCountHistory[depth][TRANSITORY].emplace_back(bordureData);
 
         // this bordure isn't available anymore so we notify the colorModel
         addDenyEvent(static_cast<BordureColorConstraint &>
@@ -44,20 +61,21 @@ void BordureModel::denyOne(const BordureData &bordureData,
     const int &depth,
     const int &persistent)
 {
-    if (bordureColors[bordureData.id][colorData.id]) {
+    if (bordureColors[bordureData.id][colorData.id] != 0) {
         bordureColors[bordureData.id][colorData.id] = false;
         bordureColorsHistory[depth][persistent]
             .emplace_back(make_pair(bordureData, colorData));
 
-        --colorsCount[bordureData.id];
-        colorsCountHistory[depth][persistent]
-            .emplace_back(bordureData);
+
+        --bordureColors[bordureData.id][colorData.id];
+        bordureColorsHistory[depth][persistent]
+            .emplace_back(make_pair(bordureData, colorData));
 
         // HAHA !! The color is not here anymoooroe !
-        if (colorsCount[bordureData.id] == 0) {
-            bordureColors[bordureData.id][colorData.id] = false;
-            bordureColorsHistory[depth][persistent]
-                .emplace_back(make_pair(bordureData, colorData));
+        if (bordureColors[bordureData.id][colorData.id] == 0) {
+            --colorsCount[bordureData.id];
+            colorsCountHistory[depth][persistent]
+                .emplace_back(bordureData);
 
             // this border <--> color was denied
             // this is a very strong event
@@ -130,7 +148,7 @@ void BordureModel::rollback(const int &depth, const bool total/* = true */)
 
     auto &pcQueue = bordureColorsHistory[depth][type];
     while (not pcQueue.empty()) {
-        bordureColors[pcQueue.back().first.id][pcQueue.back().second.id] = true;
+        ++bordureColors[pcQueue.back().first.id][pcQueue.back().second.id];
         pcQueue.pop_back();
     }
 }

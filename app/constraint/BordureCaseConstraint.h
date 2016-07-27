@@ -10,7 +10,7 @@ class BordureCaseConstraint: public ConstraintInterface
     //! rewriting #first
     BordureModel &_first;
 
-    //! rewriting #first
+    //! rewriting #second
     CaseModel &_second;
 
     //! bordureCase contains the cases on both sides
@@ -23,12 +23,15 @@ class BordureCaseConstraint: public ConstraintInterface
     vector<vector<deque<PieceData> > > colorPieces;
 
     //! each color at each rotation of the piece
-    vector<vector<vector<int> > > pieceColors;
+    vector<vector<vector<ColorData> > > pieceColors;
 
+    //! max index when the border becomes horizontal
+    int borderMaxIndex;
 public:
     BordureCaseConstraint(BordureModel &bordureModel,
         CaseModel &caseModel,
-        EventManager &eventManager);
+        EventManager &eventManager,
+        GameImportData &gameImportData);
 
     void allow(
         const BordureData &bordureData,
@@ -54,6 +57,7 @@ public:
 
     void deny(
         const CaseData &caseData, const int &depth, const int &persistent);
+
 };
 
 
