@@ -95,15 +95,21 @@ void CaseModel::addOne(
     const int &persistent)
 {
     // one time action
-    if (not available[caseData.x][caseData.y]) {
-        available[caseData.x][caseData.y] = true;
-    }
-
     if (!casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation]) {
+        if (not available[caseData.x][caseData.y]) {
+            available[caseData.x][caseData.y] = true;
+        }
+
         casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation]
             = true;
 
         ++pieceCount[caseData.x][caseData.y];
+
+        // propagation to lower level of Models (bordure)
+        addAddOneEvent(static_cast<BordureCaseConstraint &>
+            (*observers[1]),
+            caseData, pieceData, depth, persistent
+        );
     }
 }
 

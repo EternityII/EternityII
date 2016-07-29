@@ -32,35 +32,10 @@ ColorPieceConstraint::ColorPieceConstraint(ColorModel &colorModel,
      * Default values
      */
 
-    for (int x = 0; x < gameImportData.size - 1; ++x) {
-        for (int y = 0; y < gameImportData.size - 1; ++y) {
+    // TODO : ambigu :/
 
-            // vertical
-            bordureCases[y * gameImportData.size + x].first.x = x;
-            bordureCases[y * gameImportData.size + x].first.y = y;
-            bordureCases[y * gameImportData.size + x].second.x = x + 1;
-            bordureCases[y * gameImportData.size + x].second.y = y;
+    // todo : bordurecases , caseBordure, colorPieces, pieceColors
 
-
-            // horizontal
-            bordureCases[borderMaxIndex + (y * gameImportData.size + x)].first
-                .x = x;
-            bordureCases[borderMaxIndex + (y * gameImportData.size + x)].first
-                .y = y;
-            bordureCases[borderMaxIndex + (y * gameImportData.size + x)].second
-                .x = x;
-            bordureCases[borderMaxIndex + (y * gameImportData.size + x)].second
-                .y = y + 1;
-
-
-            caseBordure[x][y][2] = y * gameImportData.size + x;
-            caseBordure[x + 1][y][0] = y * gameImportData.size + x;
-            caseBordure[x][y][3] =
-                borderMaxIndex + (y * gameImportData.size + x);
-            caseBordure[x][y + 1][1] =
-                borderMaxIndex + (y * gameImportData.size + x);
-        }
-    }
 }
 
 void ColorPieceConstraint::allow(const BordureData &bordureData,

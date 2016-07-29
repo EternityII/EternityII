@@ -34,51 +34,9 @@ BordureCaseConstraint::BordureCaseConstraint(BordureModel &bordureModel,
     /*
      * Default values
      */
+    // TODO : ambigu :/
 
-    for (int x = 0; x < gameImportData.size - 1; ++x) {
-        for (int y = 0; y < gameImportData.size - 1; ++y) {
-
-            // vertical
-            bordureCases[y * gameImportData.size + x].first.x = x;
-            bordureCases[y * gameImportData.size + x].first.y = y;
-            bordureCases[y * gameImportData.size + x].second.x = x + 1;
-            bordureCases[y * gameImportData.size + x].second.y = y;
-
-
-            // horizontal
-            bordureCases[borderMaxIndex + (y * gameImportData.size + x)].first
-                .x = x;
-            bordureCases[borderMaxIndex + (y * gameImportData.size + x)].first
-                .y = y;
-            bordureCases[borderMaxIndex + (y * gameImportData.size + x)].second
-                .x = x;
-            bordureCases[borderMaxIndex + (y * gameImportData.size + x)].second
-                .y = y + 1;
-
-
-            caseBordure[x][y][2] = y * gameImportData.size + x;
-            caseBordure[x + 1][y][0] = y * gameImportData.size + x;
-            caseBordure[x][y][3] =
-                borderMaxIndex + (y * gameImportData.size + x);
-            caseBordure[x][y + 1][1] =
-                borderMaxIndex + (y * gameImportData.size + x);
-        }
-    }
-
-
-    for (int pieceId = 0; pieceId < gameImportData.piecesQte; ++pieceId) {
-        for (int rotation = 0; rotation < 4; ++rotation) {
-            for (int face = 0; face < 4; ++face) {
-                colorPieces[gameImportData.pieces[pieceId]
-                    ->colors[rotation][face]][face]
-                    .emplace_back(pieceId, rotation);
-
-                pieceColors[pieceId][rotation][face].id =
-                    gameImportData.pieces[pieceId]->colors[rotation][face];
-            }
-        }
-    }
-
+    // todo : bordurecases , caseBordure, colorPieces, pieceColors
 }
 
 void BordureCaseConstraint::allow(

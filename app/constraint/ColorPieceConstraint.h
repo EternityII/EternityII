@@ -54,10 +54,6 @@ public:
         const int &depth,
         const int &persistent);
 
-    void deny(
-        const ColorData &colorData, const int &depth, const int &persistent);
-    void deny(
-        const PieceData &pieceData, const int &depth, const int &persistent);
     void addOne(const CaseData &caseData,
         const PieceData &pieceData,
         const int &depth,
@@ -66,6 +62,12 @@ public:
         const ColorData &colorData,
         const int &depth,
         const int &persistent);
+
+    void deny(
+        const ColorData &colorData, const int &depth, const int &persistent);
+    void deny(
+        const PieceData &pieceData, const int &depth, const int &persistent);
+
 };
 
 

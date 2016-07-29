@@ -79,13 +79,14 @@ void ColorModel::addOne(const BordureData &bordureData,
     const int &depth,
     const int &persistent)
 {
-    // x time action no consequence (blind action)
 
-    if (not available[colorData.id]) {
-        available[colorData.id] = true;
-    }
+    if (bordureData.id != -1) { // just to be sure
+        // one time action
+        if (not available[colorData.id]) {
+            available[colorData.id] = true;
+        }
 
-    if (bordureData.id != -1) {
+        // x time action no consequence (blind action)
         if (colorBordures[colorData.id][bordureData.id] == 0) {
             // first time having this border :)
             ++borduresCount[colorData.id];

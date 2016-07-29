@@ -96,12 +96,13 @@ void BordureModel::addOne(const BordureData &bordureData,
     const int &depth,
     const int &persistent)
 {
-
-    if (not available[bordureData.id]) {
-        available[bordureData.id] = true;
-    }
-    // x time action no consequence (blind action)
+    // just in case :)
     if (bordureData.id != -1) {
+        // one time action
+        if (not available[bordureData.id]) {
+            available[bordureData.id] = true;
+        }
+        // x time action no consequence (blind action)
         // this one is à no check so be careful
         if (bordureColors[bordureData.id][colorData.id] == 0) {
             // first time having this color :)

@@ -84,16 +84,23 @@ void PieceModel::addOne(
     const int &depth,
     const int &persistent)
 {
-    if (not available[pieceData.id]) {
-        available[pieceData.id] = true;
-    }
+
 
     // i can do it only one time :)
     if (!pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y]) {
+        if (not available[pieceData.id]) {
+            available[pieceData.id] = true;
+        }
+
         pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y]
             = true; // not anymore :)
 
         ++casesCount[pieceData.id][pieceData.rotation];
+
+        // propagation
+        addAddOneEvent(static_cast<ColorPieceConstraint &>
+            (*observers[1]),
+            caseData, pieceData, depth, persistent);
     }
 }
 

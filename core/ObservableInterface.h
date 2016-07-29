@@ -45,6 +45,20 @@ public:
                 { obj.denyOne(data1, data2, depth, persistent); }
             ));
     }
+    template<class O, typename D1, typename D2>
+    void addAddOneEvent(
+        O &obj,
+        const D1 &data1,
+        const D2 &data2,
+        const int &depth,
+        const int &persistent) const
+    {
+        eventManager
+            .add(make_unique<std::function<void()> >(
+                [&obj, data1, data2, depth, persistent]
+                { obj.addOne(data1, data2, depth, persistent); }
+            ));
+    }
 
     void add(ObserverInterface &observer)
     {
