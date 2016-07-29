@@ -9,12 +9,16 @@ CasePieceSolver::CasePieceSolver(PathFinder &pathFinder,
 {
     // initialisation de mon plateau de verification (sera supprimé lors de l'introduction des couleurs
     // TODO : supprimer avec l'ajout des couleurs
-    plateau.resize(game.size,
-        vector<PieceData>(game.size, PieceData(-1, 0)));
+
+    size = game.size;
+    plateau.resize(size,
+        vector<PieceData>(size, PieceData(-1, 0)));
 
 
     maxDepth = game.depth;
     quantityNodesByDepth.resize(maxDepth, 0);
+
+    firstOpti();
 }
 
 void CasePieceSolver::resolve()
@@ -236,4 +240,119 @@ void CasePieceSolver::popPiece(
     const CaseData &caseData, const PieceData &pieceData)
 {
     plateau[caseData.x][caseData.y].id = -1;
+}
+
+void CasePieceSolver::firstOpti()
+{
+    // because entry point u know
+    for (int variable = 1; variable < size - 1; ++variable) {
+        CaseData caseXBeginEdge(0, variable);
+        CaseData caseXEndEdge(size - 1, variable);
+        CaseData caseYBeginEdge(variable, 0);
+        CaseData caseYEndEdge(variable, size - 1);
+
+        // interior piece cannot be put on a edge case
+        for (int nInsidePiece = (size - 1) * 4;
+             nInsidePiece < maxDepth;
+             ++nInsidePiece) {
+            for (int rotation = 0; rotation < 4; ++rotation) {
+                PieceData pieceData(nInsidePiece, rotation);
+
+                _constraint.denyOne(caseXBeginEdge, pieceData, 0, 0);
+                _constraint.denyOne(caseXEndEdge, pieceData, 0, 0);
+                _constraint.denyOne(caseYBeginEdge, pieceData, 0, 0);
+                _constraint.denyOne(caseYEndEdge, pieceData, 0, 0);
+            }
+
+        }
+
+        // Edge pieces can be put only at a specific rotation on the edge
+        for (int nBordPiece = 4; nBordPiece < (size - 1) * 4;
+             ++nBordPiece) {
+            PieceData pieceEdgeLeft(nBordPiece, 0);
+            PieceData pieceEdgeTop(nBordPiece, 1);
+            PieceData pieceEdgeRight(nBordPiece, 2);
+            PieceData pieceEdgeBottom(nBordPiece, 3);
+
+            _constraint.denyOne(caseXBeginEdge, pieceEdgeTop, 0, 0);
+            _constraint.denyOne(caseXBeginEdge, pieceEdgeRight, 0, 0);
+            _constraint.denyOne(caseXBeginEdge, pieceEdgeBottom, 0, 0);
+
+            _constraint.denyOne(caseYBeginEdge, pieceEdgeLeft, 0, 0);
+            _constraint.denyOne(caseYBeginEdge, pieceEdgeRight, 0, 0);
+            _constraint.denyOne(caseYBeginEdge, pieceEdgeBottom, 0, 0);
+
+            _constraint.denyOne(caseXEndEdge, pieceEdgeLeft, 0, 0);
+            _constraint.denyOne(caseXEndEdge, pieceEdgeTop, 0, 0);
+            _constraint.denyOne(caseXEndEdge, pieceEdgeBottom, 0, 0);
+
+            _constraint.denyOne(caseYEndEdge, pieceEdgeRight, 0, 0);
+            _constraint.denyOne(caseYEndEdge, pieceEdgeTop, 0, 0);
+            _constraint.denyOne(caseYEndEdge, pieceEdgeLeft, 0, 0);
+        }
+
+        // corner piece cannot be put on edge
+        for (int nCornerPiece = 0; nCornerPiece < 4; ++nCornerPiece) {
+            for (int rotation = 0; rotation < 4; ++rotation) {
+                PieceData cornerPiece(nCornerPiece, rotation);
+
+                _constraint.denyOne(caseXBeginEdge, cornerPiece, 0, 0);
+                _constraint.denyOne(caseXEndEdge, cornerPiece, 0, 0);
+                _constraint.denyOne(caseYBeginEdge, cornerPiece, 0, 0);
+                _constraint.denyOne(caseYEndEdge, cornerPiece, 0, 0);
+            }
+        }
+    }
+
+    // Corner and Edge pieces cannot be put on an interior case
+    for (int x = 1; x < size - 1; ++x) {
+        for (int y = 1; y < size - 1; ++y) {
+            CaseData caseInterieur(x, y);
+            for (int nPiece = 0; nPiece < (size - 1) * 4; ++nPiece) {
+                for (int rotation = 0; rotation < 4; ++rotation) {
+                    PieceData pieceData(nPiece, rotation);
+                    _constraint.denyOne(caseInterieur, pieceData, 0, 0);
+                }
+            }
+        }
+    }
+
+    CaseData caseCornerLeftTop(0, 0);
+    CaseData caseCornerTopRight(size - 1, 0);
+    CaseData caseCornerRightBot(size - 1, size - 1);
+    CaseData caseCornerBotLeft(0, size - 1);
+
+    for (int nPiece = 4; nPiece < maxDepth; ++nPiece) {
+        for (int rotation = 0; rotation < 4; ++rotation) {
+            PieceData pieceData(nPiece, rotation);
+
+            _constraint.denyOne(caseCornerLeftTop, pieceData, 0, 0);
+            _constraint.denyOne(caseCornerTopRight, pieceData, 0, 0);
+            _constraint.denyOne(caseCornerRightBot, pieceData, 0, 0);
+            _constraint.denyOne(caseCornerBotLeft, pieceData, 0, 0);
+
+        }
+    }
+
+    for (int nPieceCorner = 0; nPieceCorner < 4; ++nPieceCorner) {
+        PieceData pieceCornerLeftTop(nPieceCorner, 0);
+        _constraint.denyOne(caseCornerTopRight, pieceCornerLeftTop, 0, 0);
+        _constraint.denyOne(caseCornerRightBot, pieceCornerLeftTop, 0, 0);
+        _constraint.denyOne(caseCornerBotLeft, pieceCornerLeftTop, 0, 0);
+
+        PieceData pieceCornerTopRight(nPieceCorner, 1);
+        _constraint.denyOne(caseCornerLeftTop, pieceCornerTopRight, 0, 0);
+        _constraint.denyOne(caseCornerRightBot, pieceCornerTopRight, 0, 0);
+        _constraint.denyOne(caseCornerBotLeft, pieceCornerTopRight, 0, 0);
+
+        PieceData pieceCornerRightBot(nPieceCorner, 2);
+        _constraint.denyOne(caseCornerLeftTop, pieceCornerRightBot, 0, 0);
+        _constraint.denyOne(caseCornerTopRight, pieceCornerRightBot, 0, 0);
+        _constraint.denyOne(caseCornerBotLeft, pieceCornerRightBot, 0, 0);
+
+        PieceData pieceCornerBotLeft(nPieceCorner, 3);
+        _constraint.denyOne(caseCornerLeftTop, pieceCornerBotLeft, 0, 0);
+        _constraint.denyOne(caseCornerTopRight, pieceCornerBotLeft, 0, 0);
+        _constraint.denyOne(caseCornerRightBot, pieceCornerBotLeft, 0, 0);
+    }
 }

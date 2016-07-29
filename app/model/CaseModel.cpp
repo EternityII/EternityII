@@ -1,7 +1,7 @@
 #include <iostream>
 #include "CaseModel.h"
 #include "../constraint/CasePieceConstraint.h"
-#include "../../EternityII.h"
+#include "../constraint/BordureCaseConstraint.h"
 
 CaseModel::CaseModel(
     const GameImportData &gameImportData, EventManager &eventManager)
@@ -75,13 +75,13 @@ void CaseModel::denyOne(
             .emplace_back(caseData);
 
         addDenyOneEvent(static_cast<CasePieceConstraint &>
-            (*observers[EternityII::CAPI_CONSTRAINT]),
+            (*observers[0]),
             caseData, pieceData, depth, persistent
         );
-        /*addDenyOneEvent(static_cast<BordureCaseConstraint &>
-            (*observers[EternityII::CAPI_CONSTRAINT]),
+        addDenyOneEvent(static_cast<BordureCaseConstraint &>
+            (*observers[1]),
             caseData, pieceData, depth, persistent
-        );*/
+        );
     }
 }
 

@@ -1,7 +1,6 @@
 #include "ColorModel.h"
 #include "../constraint/ColorPieceConstraint.h"
 #include "../constraint/BordureColorConstraint.h"
-#include "../../EternityII.h"
 ColorModel::ColorModel(
     const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
@@ -17,6 +16,8 @@ ColorModel::ColorModel(
         vector<deque<ColorData> >(2));
 
     colorBordures.resize(colorsQte, vector<int>(borduresQte));
+    colorBorduresHistory.resize(gameImportData.depth,
+        vector<deque<pair<ColorData, BordureData> > >(2));
 
     for (int bordureId = 0; bordureId < borduresQte; ++bordureId) {
         for (int colorId = 0; colorId < colorsQte; ++colorId) {
@@ -43,10 +44,6 @@ void ColorModel::denyOne(const BordureData &bordureData,
 {
     // if still available
     if (colorBordures[colorData.id][bordureData.id]) {
-        colorBordures[colorData.id][bordureData.id] = false; // not anymore :)
-        colorBorduresHistory[depth][persistent]
-            .emplace_back(make_pair(colorData, bordureData));
-
 
         --colorBordures[colorData.id][bordureData.id];
         colorBorduresHistory[depth][persistent]
@@ -64,7 +61,7 @@ void ColorModel::denyOne(const BordureData &bordureData,
             // this is a very strong event
             // go my love, update the border please
             addDenyOneEvent(static_cast<BordureColorConstraint &>
-                (*observers[EternityII::BOCO_CONSTRAINT]),
+                (*observers[0]),
                 bordureData,
                 colorData,
                 depth,
@@ -72,7 +69,7 @@ void ColorModel::denyOne(const BordureData &bordureData,
 
             // go my love update the piece <--> case
             addDenyOneEvent(static_cast<ColorPieceConstraint &>
-                (*observers[EternityII::COPI_CONSTRAINT]),
+                (*observers[1]),
                 bordureData,
                 colorData,
                 depth,
@@ -99,7 +96,7 @@ void ColorModel::deny(const ColorData &colorData,
 
 }
 
-void ColorModel::rollback(const int &depth, const bool total)
+void ColorModel::rollback(const int &depth, const bool &total /* = true */)
 {
     int type;
     if (total) {

@@ -47,7 +47,7 @@ public:
         const int &depth,
         const int &persistent);
 
-    void rollback(const int &depth, const bool total = true);
+    void rollback(const int &depth, const bool &total = true);
 };
 
 

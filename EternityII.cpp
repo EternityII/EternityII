@@ -10,6 +10,11 @@
 #include "app/pathfinder/value/PieceNormalValue.h"
 #include "app/pathfinder/value/PieceOptimistValue.h"
 #include "app/pathfinder/value/PiecePessimistValue.h"
+#include "app/model/BordureModel.h"
+#include "app/model/ColorModel.h"
+#include "app/constraint/BordureCaseConstraint.h"
+#include "app/constraint/BordureColorConstraint.h"
+#include "app/constraint/ColorPieceConstraint.h"
 
 
 void EternityII::bootstrap(string &filename, int &variable, int &value)
@@ -31,16 +36,24 @@ void EternityII::bootstrap(string &filename, int &variable, int &value)
     eventManager = make_unique<EventManager>();
 
     // Models
-    unique_ptr<PieceModel>
-        pieceModel = make_unique<PieceModel>(*gameImport, *eventManager);
-    unique_ptr<CaseModel>
-        caseModel = make_unique<CaseModel>(*gameImport, *eventManager);
+    auto pieceModel = make_unique<PieceModel>(*gameImport, *eventManager);
+    auto caseModel = make_unique<CaseModel>(*gameImport, *eventManager);
+    auto bordureModel = make_unique<BordureModel>(*gameImport, *eventManager);
+    auto colorModel = make_unique<ColorModel>(*gameImport, *eventManager);
 
     // Constraints
-    unique_ptr<CasePieceConstraint> casePieceConstraint =
-        make_unique<CasePieceConstraint>(
-            *caseModel, *pieceModel, *eventManager
-        );
+    auto casePieceConstraint = make_unique<CasePieceConstraint>(
+        *caseModel, *pieceModel, *eventManager);
+
+    auto bordureColorConstraint = make_unique<BordureColorConstraint>(
+        *bordureModel, *colorModel, *eventManager);
+
+    auto bordureCaseConstraint = make_unique<BordureCaseConstraint>(
+        *bordureModel, *caseModel, *eventManager, *gameImport);
+
+    auto colorPieceConstraint = make_unique<ColorPieceConstraint>(
+        *colorModel, *pieceModel, *eventManager, *gameImport);
+
 
     // Variable
     unique_ptr<VariableInterface> variableInterface;
@@ -85,10 +98,15 @@ void EternityII::bootstrap(string &filename, int &variable, int &value)
     /* ============================== */
     /* STORING CONSTRAINTS AND MODELS */
     /* ============================== */
-    constraints.push_back(move(casePieceConstraint));
+    constraints.push_back(move(casePieceConstraint)); // 0
+    constraints.push_back(move(bordureColorConstraint)); // 1
+    constraints.push_back(move(bordureCaseConstraint)); // 2
+    constraints.push_back(move(colorPieceConstraint)); // 3
 
     models.push_back(move(pieceModel));
     models.push_back(move(caseModel));
+    models.push_back(move(bordureModel));
+    models.push_back(move(colorModel));
 
     /* ======================== */
     /* LAUNCHING THE RESOLUTION */
@@ -139,13 +157,13 @@ void EternityII::import(IO &io)
             }
 
             piece->colors[0][i] = currentNumber;
+            ++gameImport->colorCount[piece->colors[0][i]];
         }
 
         // duplicating the colors to 4 possible rotations
         for (int i = 0; i < 4; ++i) {
             for (int j = 1; j <= 3; ++j) {
                 piece->colors[j][(j + i) % 4] = piece->colors[0][i];
-                ++gameImport->colorCount[piece->colors[0][i]];
             }
         }
 

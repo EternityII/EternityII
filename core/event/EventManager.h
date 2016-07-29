@@ -19,8 +19,9 @@ public:
     void process()
     {
         if (not elements.empty()) {
-            elements.front()->operator()();
+            auto ptr = move(elements.front());
             elements.pop_front();
+            ptr->operator()();
         }
     }
 

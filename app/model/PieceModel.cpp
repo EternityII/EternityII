@@ -1,6 +1,6 @@
 #include "PieceModel.h"
 #include "../constraint/CasePieceConstraint.h"
-#include "../../EternityII.h"
+#include "../constraint/ColorPieceConstraint.h"
 
 PieceModel::PieceModel(const GameImportData &gameImportData,
     EventManager &eventManager)
@@ -68,12 +68,12 @@ void PieceModel::denyOne(
             .emplace_back(pieceData);
 
         addDenyOneEvent(static_cast<CasePieceConstraint &>
-            (*observers[EternityII::CAPI_CONSTRAINT]),
+            (*observers[0]),
             caseData, pieceData, depth, persistent);
 
-        /* addDenyOneEvent(static_cast<ColorPieceConstraint &>
-             (*observers[EternityII::COPI_CONSTRAINT]),
-             caseData, pieceData, depth, persistent);*/
+        addDenyOneEvent(static_cast<ColorPieceConstraint &>
+            (*observers[1]),
+            caseData, pieceData, depth, persistent);
     }
 }
 

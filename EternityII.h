@@ -19,9 +19,9 @@ class EternityII
 public:
 
     static const int CAPI_CONSTRAINT = 0;
-    static const int BOCO_CONSTRAINT = 0; // TODO
-    static const int BOCA_CONSTRAINT = 0; // TODO
-    static const int COPI_CONSTRAINT = 0; // TODO
+    static const int BOCO_CONSTRAINT = 1; // TODO
+    static const int BOCA_CONSTRAINT = 2; // TODO
+    static const int COPI_CONSTRAINT = 3; // TODO
 
     /**
      * Initializes EternityII

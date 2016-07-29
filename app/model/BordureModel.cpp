@@ -61,12 +61,8 @@ void BordureModel::denyOne(const BordureData &bordureData,
     const int &depth,
     const int &persistent)
 {
-    if (bordureColors[bordureData.id][colorData.id] != 0) {
-        bordureColors[bordureData.id][colorData.id] = false;
-        bordureColorsHistory[depth][persistent]
-            .emplace_back(make_pair(bordureData, colorData));
-
-
+    if (bordureData.id != -1
+        && bordureColors[bordureData.id][colorData.id] != 0) {
         --bordureColors[bordureData.id][colorData.id];
         bordureColorsHistory[depth][persistent]
             .emplace_back(make_pair(bordureData, colorData));
@@ -80,14 +76,14 @@ void BordureModel::denyOne(const BordureData &bordureData,
             // this border <--> color was denied
             // this is a very strong event
             addDenyOneEvent(static_cast<BordureColorConstraint &>
-                (*observers[EternityII::BOCO_CONSTRAINT]),
+                (*observers[0]),
                 bordureData,
                 colorData,
                 depth,
                 persistent);
 
             addDenyOneEvent(static_cast<BordureCaseConstraint &>
-                (*observers[EternityII::BOCA_CONSTRAINT]),
+                (*observers[1]),
                 bordureData,
                 colorData,
                 depth,
@@ -124,7 +120,7 @@ void BordureModel::deny(const ColorData &colorData,
     }
 }
 
-void BordureModel::rollback(const int &depth, const bool total/* = true */)
+void BordureModel::rollback(const int &depth, const bool &total/* = true */)
 {
     int type;
     if (total) {

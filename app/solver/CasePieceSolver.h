@@ -29,7 +29,10 @@ private:
     long long quantityValues = 0;
     int quantitySolutions = 0;
     long long quantityNodesFirstSolution = 0;
+
     int maxDepth;
+
+    int size;
 
     /**
      * Recursive resolution method
@@ -37,14 +40,14 @@ private:
     void resolve(int &depth);
 
     void resolve(CaseData &caseData, int &depth);
-
     bool isPossible(const CaseData &caseData, const PieceData &pieceData) const;
     void putPiece(const CaseData &caseData, const PieceData &pieceData);
-    void popPiece(const CaseData &caseData, const PieceData &pieceData);
 
+    void popPiece(const CaseData &caseData, const PieceData &pieceData);
     bool isBorderFalse(const CaseData &caseData,
         const PieceData &pieceData,
         const int border) const;
+
 public:
 
     CasePieceSolver(PathFinder &pathFinder,
@@ -56,7 +59,7 @@ public:
      * Begin the resolution process
      */
     void resolve();
-
+    void firstOpti();
 };
 
 
