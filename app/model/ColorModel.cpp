@@ -8,23 +8,19 @@ ColorModel::ColorModel(
     colorsQte = gameImportData.colorsQte;
     borduresQte = gameImportData.size * (gameImportData.size - 1) * 2;
 
-    available.resize(colorsQte, true);
-    availableHistory.resize(gameImportData.depth, vector<deque<ColorData> >(2));
+    // default values
+    available.resize(colorsQte, false);
 
-    borduresCount.resize(colorsQte, borduresQte);
-    borduresCountHistory.resize(gameImportData.depth,
-        vector<deque<ColorData> >(2));
+    borduresCount.resize(colorsQte, 0);
 
     colorBordures.resize(colorsQte, vector<int>(borduresQte));
+
+    // History
+    availableHistory.resize(gameImportData.depth, vector<deque<ColorData> >(2));
+    borduresCountHistory.resize(gameImportData.depth,
+        vector<deque<ColorData> >(2));
     colorBorduresHistory.resize(gameImportData.depth,
         vector<deque<pair<ColorData, BordureData> > >(2));
-
-    for (int bordureId = 0; bordureId < borduresQte; ++bordureId) {
-        for (int colorId = 0; colorId < colorsQte; ++colorId) {
-            colorBordures[colorId][bordureId] =
-                gameImportData.colorCount[colorId];
-        }
-    }
 
 }
 
@@ -84,6 +80,11 @@ void ColorModel::addOne(const BordureData &bordureData,
     const int &persistent)
 {
     // x time action no consequence (blind action)
+
+    if (not available[colorData.id]) {
+        available[colorData.id] = true;
+    }
+
     if (bordureData.id != -1) {
         if (colorBordures[colorData.id][bordureData.id] == 0) {
             // first time having this border :)

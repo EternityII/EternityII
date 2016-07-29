@@ -9,22 +9,23 @@ PieceModel::PieceModel(const GameImportData &gameImportData,
     piecesQte = gameImportData.piecesQte;
     size = gameImportData.size;
 
-    // Initializing tables
-    casesCount.resize(piecesQte,
-        vector<int>(4, piecesQte));
-    casesCountHistory.resize(piecesQte,
-        vector<deque<PieceData >>(2));
+    // Initializing tables with default values
+    available.resize(piecesQte, false);
 
-    available.resize(piecesQte, true);
-    availableHistory.resize(piecesQte,
-        vector<deque<PieceData >>(2));
+    casesCount.resize(piecesQte,
+        vector<int>(4, 0));
 
     // [n°piece][rotation][x][y]
     pieceCases.resize(piecesQte,
         vector<vector<vector<bool >>>(4,
             vector<vector<bool >>(size,
-                vector<bool>(size, true))));
+                vector<bool>(size, false))));
 
+    // history
+    availableHistory.resize(piecesQte,
+        vector<deque<PieceData >>(2));
+    casesCountHistory.resize(piecesQte,
+        vector<deque<PieceData >>(2));
     pieceCasesHistory.resize(piecesQte,
         vector<deque<pair<PieceData, CaseData> > >(2));
 }
@@ -83,6 +84,10 @@ void PieceModel::addOne(
     const int &depth,
     const int &persistent)
 {
+    if (not available[pieceData.id]) {
+        available[pieceData.id] = true;
+    }
+
     // i can do it only one time :)
     if (!pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y]) {
         pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y]

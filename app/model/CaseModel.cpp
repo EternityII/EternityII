@@ -14,22 +14,25 @@ CaseModel::CaseModel(
 
     // setting up max values
 
+    // Default values
     pieceCount.resize(size,
-        vector<int>(size, depth * 4));
-
-    piecesCountHistory.resize(depth,
-        vector<deque<CaseData>>(2));
+        vector<int>(size, 0));
 
     available.resize(size,
-        vector<bool>(size, true));
-    availableHistory.resize(depth,
-        vector<deque<CaseData>>(2));
+        vector<bool>(size, false));
 
     // [x][y][n°piece][rotation]
     casePieces.resize(size,
         vector<vector<vector<bool>>>(size,
             vector<vector<bool>>(depth,
-                vector<bool>(4, true))));
+                vector<bool>(4, false))));
+
+
+    // init history
+    availableHistory.resize(depth,
+        vector<deque<CaseData>>(2));
+    piecesCountHistory.resize(depth,
+        vector<deque<CaseData>>(2));
     casePiecesHistory.resize(depth,
         vector<deque<pair<CaseData, PieceData>>>(2));
 }
@@ -92,6 +95,10 @@ void CaseModel::addOne(
     const int &persistent)
 {
     // one time action
+    if (not available[caseData.x][caseData.y]) {
+        available[caseData.x][caseData.y] = true;
+    }
+
     if (!casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation]) {
         casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation]
             = true;

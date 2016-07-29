@@ -7,27 +7,26 @@ BordureModel::BordureModel(
     const GameImportData &gameImportData, EventManager &eventManager)
     : ModelInterface(eventManager)
 {
+    // Initializing to default values (empty or all denied)
     borduresQte = gameImportData.size * (gameImportData.size - 1) * 2;
     colorsQte = gameImportData.colorsQte;
 
-    available.resize(borduresQte, true);
-    availableHistory.resize(gameImportData.depth,
-        vector<deque<BordureData>>(2));
+    //default values
 
-    colorsCount.resize(borduresQte, colorsQte);
-    colorsCountHistory.resize(gameImportData.depth,
-        vector<deque<BordureData>>(2));
+    available.resize(borduresQte, false);
+
+    colorsCount.resize(borduresQte, 0);
 
     bordureColors.resize(borduresQte, vector<int>(colorsQte, 0));
+
+
+    // history
+    availableHistory.resize(gameImportData.depth,
+        vector<deque<BordureData>>(2));
+    colorsCountHistory.resize(gameImportData.depth,
+        vector<deque<BordureData>>(2));
     bordureColorsHistory.resize(gameImportData.depth,
         vector<deque<pair<BordureData, ColorData> > >(2));
-
-    for (int bordureId = 0; bordureId < borduresQte; ++bordureId) {
-        for (int colorId = 0; colorId < colorsQte; ++colorId) {
-            bordureColors[bordureId][colorId] =
-                gameImportData.colorCount[colorId];
-        }
-    }
 }
 
 void BordureModel::allow(
@@ -97,6 +96,10 @@ void BordureModel::addOne(const BordureData &bordureData,
     const int &depth,
     const int &persistent)
 {
+
+    if (not available[bordureData.id]) {
+        available[bordureData.id] = true;
+    }
     // x time action no consequence (blind action)
     if (bordureData.id != -1) {
         // this one is à no check so be careful
