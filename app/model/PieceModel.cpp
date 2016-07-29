@@ -38,7 +38,7 @@ void PieceModel::allow(
 
         for (int xi = 0; xi < size; ++xi) {
             for (int yi = 0; yi < size; ++yi) {
-                if (xi != caseData.x && yi != caseData.y) {
+                if (xi != caseData.x || yi != caseData.y) {
                     CaseData caseDataPartialDeny(xi, yi);
 
                     denyOne(caseDataPartialDeny, pieceData, depth, TRANSITORY);
