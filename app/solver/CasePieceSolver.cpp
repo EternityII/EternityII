@@ -114,36 +114,36 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
         durationValue += clock() - beginVal;
         ++quantityValues;
 
-        if (isPossible(caseData, *pieceData)) {
-            putPiece(caseData, *pieceData);
+        //if (isPossible(caseData, *pieceData)) {
+        putPiece(caseData, *pieceData);
 
-            // allow value&variable
-            clock_t beginAllow = clock();
-            _constraint.allow(caseData, *pieceData, depth);
-            durationAllow += clock() - beginAllow;
+        // allow value&variable
+        clock_t beginAllow = clock();
+        _constraint.allow(caseData, *pieceData, depth);
+        durationAllow += clock() - beginAllow;
 
-            // DEBUG :
-            //cout << " " << pieceData->id << ":" << pieceData->rotation << endl;
+        // DEBUG :
+        //cout << " " << pieceData->id << ":" << pieceData->rotation << endl;
 
-            /*************/
-            /* RECURSION */
-            /*************/
-            ++depth;
-            resolve(depth);
-            --depth;
-            /*****************/
-            /* END RECURSION */
-            /*****************/
+        /*************/
+        /* RECURSION */
+        /*************/
+        ++depth;
+        resolve(depth);
+        --depth;
+        /*****************/
+        /* END RECURSION */
+        /*****************/
 
-            // partial backtracking
-            clock_t beginPartialRollback = clock();
-            for (auto &iter : models) {
-                iter->rollback(depth, false);
-            }
-            durationPartialRollback += clock() - beginPartialRollback;
-
-            popPiece(caseData, *pieceData);
+        // partial backtracking
+        clock_t beginPartialRollback = clock();
+        for (auto &iter : models) {
+            iter->rollback(depth, false);
         }
+        durationPartialRollback += clock() - beginPartialRollback;
+
+        popPiece(caseData, *pieceData);
+        //}
 
         // denying value&variable
         clock_t beginDeny = clock();
@@ -262,7 +262,7 @@ void CasePieceSolver::firstOpti()
     // left edge
     for (int yi = 1; yi < size - 1; ++yi) {
         CaseData caseData(0, yi);
-        for (int pieceId = 4; pieceId < 4 * (size - 2); ++pieceId) {
+        for (int pieceId = 4; pieceId < 4 * (size - 1); ++pieceId) {
             PieceData pieceData(pieceId, 0);
 
             _constraint.addOne(caseData, pieceData);
@@ -272,7 +272,7 @@ void CasePieceSolver::firstOpti()
     // top edge
     for (int xi = 1; xi < size - 1; ++xi) {
         CaseData caseData(xi, 0);
-        for (int pieceId = 4; pieceId < 4 * (size - 2); ++pieceId) {
+        for (int pieceId = 4; pieceId < 4 * (size - 1); ++pieceId) {
             PieceData pieceData(pieceId, 1);
 
             _constraint.addOne(caseData, pieceData);
@@ -282,7 +282,7 @@ void CasePieceSolver::firstOpti()
     // right edge
     for (int yi = 1; yi < size - 1; ++yi) {
         CaseData caseData(size - 1, yi);
-        for (int pieceId = 4; pieceId < 4 * (size - 2); ++pieceId) {
+        for (int pieceId = 4; pieceId < 4 * (size - 1); ++pieceId) {
             PieceData pieceData(pieceId, 2);
 
             _constraint.addOne(caseData, pieceData);
@@ -292,7 +292,7 @@ void CasePieceSolver::firstOpti()
     // bottom edge
     for (int xi = 1; xi < size - 1; ++xi) {
         CaseData caseData(xi, size - 1);
-        for (int pieceId = 4; pieceId < 4 * (size - 2); ++pieceId) {
+        for (int pieceId = 4; pieceId < 4 * (size - 1); ++pieceId) {
             PieceData pieceData(pieceId, 3);
 
             _constraint.addOne(caseData, pieceData);

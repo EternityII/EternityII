@@ -13,7 +13,7 @@ int main(int argc, const char *argv[])
      * 2 : Optimist
      * 3 : Pessimist
      */
-    int variable = 0;
+    int variable = 3;
     /**
      * 0 : Lexico
      * 1 : Optimist
