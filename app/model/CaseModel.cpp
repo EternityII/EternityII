@@ -46,7 +46,7 @@ void CaseModel::allow(
         // This case has only this piece in it's domain
         for (int pieceId = 0; pieceId < piecesQte; ++pieceId) {
             for (int rotation = 0; rotation < 4; ++rotation) {
-                if (pieceData.id != pieceId && pieceData.rotation != pieceId) {
+                if (pieceId != pieceData.id || pieceData.rotation != rotation) {
                     PieceData pieceDataPartialDeny(pieceId, rotation);
 
                     denyOne(caseData, pieceDataPartialDeny, depth, TRANSITORY);
@@ -76,14 +76,10 @@ void CaseModel::denyOne(
         piecesCountHistory[depth][persistent]
             .emplace_back(caseData);
 
-        addDenyOneEvent(static_cast<CasePieceConstraint &>
-            (*observers[0]),
-            caseData, pieceData, depth, persistent
-        );
-        addDenyOneEvent(static_cast<BordureCaseConstraint &>
-            (*observers[1]),
-            caseData, pieceData, depth, persistent
-        );
+        static_cast<CasePieceConstraint &>(*observers[0])
+            .denyOne(caseData, pieceData, depth, persistent);
+        static_cast<BordureCaseConstraint &>(*observers[1])
+            .denyOne(caseData, pieceData, depth, persistent);
     }
 }
 

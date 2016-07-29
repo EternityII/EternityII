@@ -14,7 +14,7 @@ class BordureCaseConstraint: public ConstraintInterface
     CaseModel &_second;
 
     //! bordureCase contains the cases on both sides
-    vector<pair<CaseData, CaseData> > bordureCases;
+    vector<CaseData> bordureCases;
 
     //! contains the data of each border
     vector<vector<vector<BordureData> > > caseBordure;

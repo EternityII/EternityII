@@ -9,24 +9,24 @@ ColorPieceConstraint::ColorPieceConstraint(ColorModel &colorModel,
     _second.add(*this);
 
     const auto size = gameImportData.size;
-    borderMaxIndex = size * (size - 1);
+    borderMaxIndex = 2 * size * (size - 1);
 
 
     /*
-     * Initialisation
-     */
+    * Initialisation
+    */
 
     bordureCases.resize(2 * borderMaxIndex);
 
     caseBordure.resize(size, // x
-        vector < vector < BordureData > > (size, // y
+        vector<vector<BordureData> >(size, // y
             vector<BordureData>(4, BordureData(-1)))); // border n°-1
 
     colorPieces.resize(gameImportData.colorsQte,
-        vector < deque < PieceData > > (4));
+        vector<deque<PieceData> >(4));
 
     pieceColors.resize(gameImportData.piecesQte, // pieceId
-        vector < vector < ColorData > > (4, // pieceRotation
+        vector<vector<ColorData> >(4, // pieceRotation
             vector<ColorData>(4))); // wanted face.
 
     /*
@@ -38,16 +38,16 @@ ColorPieceConstraint::ColorPieceConstraint(ColorModel &colorModel,
     auto borderIndex = 0;
     for (int yi = 0; yi < size; ++yi) {
         for (int xi = 0; xi < size - 1; ++xi) {
-            bordureCases[borderIndex].first.x = xi;
-            bordureCases[borderIndex].first.y = yi;
-            bordureCases[borderIndex].second.x = xi + 1;
-            bordureCases[borderIndex].second.y = yi;
-
             // right side
+            bordureCases[borderIndex].x = xi;
+            bordureCases[borderIndex].y = yi;
             caseBordure[xi][yi][2].id = borderIndex;
-            //leftside
-            caseBordure[xi + 1][yi][0].id = borderIndex;
+            ++borderIndex;
 
+            //leftside
+            bordureCases[borderIndex].x = xi + 1;
+            bordureCases[borderIndex].y = yi;
+            caseBordure[xi + 1][yi][0].id = borderIndex;
             ++borderIndex;
         }
     }
@@ -55,14 +55,15 @@ ColorPieceConstraint::ColorPieceConstraint(ColorModel &colorModel,
     // horizontal borders
     for (int yi = 0; yi < size - 1; ++yi) {
         for (int xi = 0; xi < size; ++xi) {
-            bordureCases[borderIndex].first.x = xi;
-            bordureCases[borderIndex].first.y = yi;
-            bordureCases[borderIndex].second.x = xi;
-            bordureCases[borderIndex].second.y = yi + 1;
-
-            // right side
+            // topside
+            bordureCases[borderIndex].x = xi;
+            bordureCases[borderIndex].y = yi;
             caseBordure[xi][yi][3].id = borderIndex;
-            //leftside
+            ++borderIndex;
+
+            //bottomside
+            bordureCases[borderIndex].x = xi;
+            bordureCases[borderIndex].y = yi + 1;
             caseBordure[xi][yi + 1][1].id = borderIndex;
             ++borderIndex;
         }
@@ -133,8 +134,10 @@ void ColorPieceConstraint::denyOne(const BordureData &bordureData,
         return;
     }
 
-    const auto &caseDataFirst = bordureCases[bordureData.id].first;
-    const auto &caseDataSecond = bordureCases[bordureData.id].second;
+    const auto &caseDataFirst =
+        bordureCases[bordureData.id - (bordureData.id % 2)];
+    const auto &caseDataSecond =
+        bordureCases[bordureData.id + (bordureData.id + 1) % 2];
 
     if (bordureData.id < borderMaxIndex) { // vertical
         for (auto &iterator : colorPieces[colorData.id][2]) {

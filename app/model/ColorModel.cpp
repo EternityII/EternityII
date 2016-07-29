@@ -6,7 +6,7 @@ ColorModel::ColorModel(
     : ModelInterface(eventManager)
 {
     colorsQte = gameImportData.colorsQte;
-    borduresQte = gameImportData.size * (gameImportData.size - 1) * 2;
+    borduresQte = gameImportData.size * (gameImportData.size - 1) * 4;
 
     // default values
     available.resize(colorsQte, false);
@@ -53,24 +53,29 @@ void ColorModel::denyOne(const BordureData &bordureData,
             borduresCountHistory[depth][persistent]
                 .emplace_back(colorData);
 
+            BordureData bordureDataOther(
+                bordureData.id % 2 == 0 ?
+                bordureData.id + 1 : bordureData.id - 1);
+
+            // make it disapear on the other border !
+            for (int colors = 0;
+                 colors < colorBordures[colorData.id][bordureDataOther.id];
+                 ++colors) {
+
+                static_cast<BordureColorConstraint &>(*observers[0])
+                    .denyOne(bordureDataOther, colorData, depth, persistent);
+            }
+
 
             // this border <--> color was denied
             // this is a very strong event
             // go my love, update the border please
-            addDenyOneEvent(static_cast<BordureColorConstraint &>
-                (*observers[0]),
-                bordureData,
-                colorData,
-                depth,
-                persistent);
+            static_cast<BordureColorConstraint &>(*observers[0])
+                .denyOne(bordureData, colorData, depth, persistent);
 
             // go my love update the piece <--> case
-            addDenyOneEvent(static_cast<ColorPieceConstraint &>
-                (*observers[1]),
-                bordureData,
-                colorData,
-                depth,
-                persistent);
+            static_cast<ColorPieceConstraint &>(*observers[1])
+                .denyOne(bordureData, colorData, depth, persistent);
         }
     }
 }

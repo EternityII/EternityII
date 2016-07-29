@@ -123,7 +123,8 @@ void CasePieceSolver::resolve(CaseData &caseData, int &depth)
         durationAllow += clock() - beginAllow;
 
         // DEBUG :
-        //cout << " " << pieceData->id << ":" << pieceData->rotation << endl;
+        cout << depth << " " << pieceData->id << ":" << pieceData->rotation
+             << endl;
 
         /*************/
         /* RECURSION */

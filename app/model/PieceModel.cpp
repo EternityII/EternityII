@@ -68,13 +68,12 @@ void PieceModel::denyOne(
         casesCountHistory[depth][persistent]
             .emplace_back(pieceData);
 
-        addDenyOneEvent(static_cast<CasePieceConstraint &>
-            (*observers[0]),
-            caseData, pieceData, depth, persistent);
+        static_cast<CasePieceConstraint &>(*observers[0])
+            .denyOne(caseData, pieceData, depth, persistent);
 
-        addDenyOneEvent(static_cast<ColorPieceConstraint &>
-            (*observers[1]),
-            caseData, pieceData, depth, persistent);
+        static_cast<ColorPieceConstraint &>(*observers[1])
+            .denyOne(caseData, pieceData, depth, persistent);
+
     }
 }
 

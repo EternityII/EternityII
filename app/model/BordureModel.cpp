@@ -8,7 +8,7 @@ BordureModel::BordureModel(
     : ModelInterface(eventManager)
 {
     // Initializing to default values (empty or all denied)
-    borduresQte = gameImportData.size * (gameImportData.size - 1) * 2;
+    borduresQte = gameImportData.size * (gameImportData.size - 1) * 4;
     colorsQte = gameImportData.colorsQte;
 
     //default values
@@ -68,25 +68,29 @@ void BordureModel::denyOne(const BordureData &bordureData,
 
         // HAHA !! The color is not here anymoooroe !
         if (bordureColors[bordureData.id][colorData.id] == 0) {
+            BordureData bordureDataOther(
+                bordureData.id % 2 == 0 ?
+                bordureData.id + 1 : bordureData.id - 1);
+
+            // make it disapear on the other border !
+            for (int colors = 0;
+                 colors < bordureColors[bordureDataOther.id][colorData.id];
+                 ++colors) {
+                static_cast<BordureColorConstraint &>(*observers[0])
+                    .denyOne(bordureDataOther, colorData, depth, persistent);
+            }
+
             --colorsCount[bordureData.id];
             colorsCountHistory[depth][persistent]
                 .emplace_back(bordureData);
 
             // this border <--> color was denied
             // this is a very strong event
-            addDenyOneEvent(static_cast<BordureColorConstraint &>
-                (*observers[0]),
-                bordureData,
-                colorData,
-                depth,
-                persistent);
+            static_cast<BordureColorConstraint &>(*observers[0])
+                .denyOne(bordureData, colorData, depth, persistent);
 
-            addDenyOneEvent(static_cast<BordureCaseConstraint &>
-                (*observers[1]),
-                bordureData,
-                colorData,
-                depth,
-                persistent);
+            static_cast<BordureCaseConstraint &>(*observers[1])
+                .denyOne(bordureData, colorData, depth, persistent);
         }
     }
 }

@@ -12,7 +12,7 @@ BordureCaseConstraint::BordureCaseConstraint(BordureModel &bordureModel,
     // TODO all the equivalence piece[rotation] <--> colors.id and bordure.id <--> case.id
 
     const auto size = gameImportData.size;
-    borderMaxIndex = size * (size - 1);
+    borderMaxIndex = 2 * (size * (size - 1));
 
 
     /*
@@ -41,16 +41,16 @@ BordureCaseConstraint::BordureCaseConstraint(BordureModel &bordureModel,
     auto borderIndex = 0;
     for (int yi = 0; yi < size; ++yi) {
         for (int xi = 0; xi < size - 1; ++xi) {
-            bordureCases[borderIndex].first.x = xi;
-            bordureCases[borderIndex].first.y = yi;
-            bordureCases[borderIndex].second.x = xi + 1;
-            bordureCases[borderIndex].second.y = yi;
-
             // right side
+            bordureCases[borderIndex].x = xi;
+            bordureCases[borderIndex].y = yi;
             caseBordure[xi][yi][2].id = borderIndex;
-            //leftside
-            caseBordure[xi + 1][yi][0].id = borderIndex;
+            ++borderIndex;
 
+            //leftside
+            bordureCases[borderIndex].x = xi + 1;
+            bordureCases[borderIndex].y = yi;
+            caseBordure[xi + 1][yi][0].id = borderIndex;
             ++borderIndex;
         }
     }
@@ -58,14 +58,15 @@ BordureCaseConstraint::BordureCaseConstraint(BordureModel &bordureModel,
     // horizontal borders
     for (int yi = 0; yi < size - 1; ++yi) {
         for (int xi = 0; xi < size; ++xi) {
-            bordureCases[borderIndex].first.x = xi;
-            bordureCases[borderIndex].first.y = yi;
-            bordureCases[borderIndex].second.x = xi;
-            bordureCases[borderIndex].second.y = yi + 1;
-
-            // right side
+            // topside
+            bordureCases[borderIndex].x = xi;
+            bordureCases[borderIndex].y = yi;
             caseBordure[xi][yi][3].id = borderIndex;
-            //leftside
+            ++borderIndex;
+
+            //bottomside
+            bordureCases[borderIndex].x = xi;
+            bordureCases[borderIndex].y = yi + 1;
             caseBordure[xi][yi + 1][1].id = borderIndex;
             ++borderIndex;
         }
@@ -128,12 +129,15 @@ void BordureCaseConstraint::denyOne(
     const int &depth,
     const int &persistent)
 {
+    // a color disapered from the bordure
     if (bordureData.id == -1) {
         return;
     }
 
-    const auto &caseDataFirst = bordureCases[bordureData.id].first;
-    const auto &caseDataSecond = bordureCases[bordureData.id].second;
+    const auto &caseDataFirst =
+        bordureCases[bordureData.id - (bordureData.id % 2)];
+    const auto &caseDataSecond =
+        bordureCases[bordureData.id + (bordureData.id + 1) % 2];
 
     // SAVAGE !
     if (bordureData.id < borderMaxIndex) { // vertical
