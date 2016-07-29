@@ -36,9 +36,7 @@ public:
         const int &depth);
 
     void addOne(const BordureData &bordureData,
-        const ColorData &colorData,
-        const int &depth,
-        const int &persistent);
+        const ColorData &colorData);
 
     void denyOne(const BordureData &bordureData,
         const ColorData &colorData,

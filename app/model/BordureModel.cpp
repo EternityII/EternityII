@@ -92,9 +92,7 @@ void BordureModel::denyOne(const BordureData &bordureData,
 }
 
 void BordureModel::addOne(const BordureData &bordureData,
-    const ColorData &colorData,
-    const int &depth,
-    const int &persistent)
+    const ColorData &colorData)
 {
     // just in case :)
     if (bordureData.id != -1) {

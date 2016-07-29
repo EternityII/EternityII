@@ -80,9 +80,7 @@ void PieceModel::denyOne(
 
 void PieceModel::addOne(
     const CaseData &caseData,
-    const PieceData &pieceData,
-    const int &depth,
-    const int &persistent)
+    const PieceData &pieceData)
 {
 
 
@@ -100,7 +98,7 @@ void PieceModel::addOne(
         // propagation
         addAddOneEvent(static_cast<ColorPieceConstraint &>
             (*observers[1]),
-            caseData, pieceData, depth, persistent);
+            caseData, pieceData);
     }
 }
 

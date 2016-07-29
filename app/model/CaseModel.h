@@ -32,10 +32,7 @@ public:
     void allow(
         const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
-    void addOne(const CaseData &caseData,
-        const PieceData &pieceData,
-        const int &depth,
-        const int &persistent);
+    void addOne(const CaseData &caseData, const PieceData &pieceData);
 
     void denyOne(
         const CaseData &caseData,

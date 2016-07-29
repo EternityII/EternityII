@@ -5,7 +5,7 @@ using namespace std;
 
 int main(int argc, const char *argv[])
 {
-    string filename = "assets/pieces_5x5.txt";
+    string filename = "assets/pieces_4x4.txt";
 
     /**
      * 0 : Rowscan

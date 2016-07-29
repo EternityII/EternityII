@@ -19,19 +19,15 @@ ColorPieceConstraint::ColorPieceConstraint(ColorModel &colorModel,
     bordureCases.resize(2 * borderMaxIndex);
 
     caseBordure.resize(size, // x
-        vector<vector<BordureData> >(size, // y
+        vector < vector < BordureData > > (size, // y
             vector<BordureData>(4, BordureData(-1)))); // border n°-1
 
     colorPieces.resize(gameImportData.colorsQte,
-        vector<deque<PieceData> >(4));
+        vector < deque < PieceData > > (4));
 
     pieceColors.resize(gameImportData.piecesQte, // pieceId
-        vector<vector<ColorData> >(4, // pieceRotation
+        vector < vector < ColorData > > (4, // pieceRotation
             vector<ColorData>(4))); // wanted face.
-
-    /*
-     * Default values
-     */
 
     /*
      * Default values
@@ -39,34 +35,36 @@ ColorPieceConstraint::ColorPieceConstraint(ColorModel &colorModel,
     // bordureCases & caseBordure
     // could be put together but won't for cohesion reason
     // vertical borders
-    for (int xi = 0; xi < size - 1; ++xi) {
-        for (int yi = 0; yi < size; ++yi) {
-            const auto index = xi * size + yi;
-            bordureCases[index].first.x = xi;
-            bordureCases[index].first.y = yi;
-            bordureCases[index].second.x = xi + 1;
-            bordureCases[index].second.y = yi;
+    auto borderIndex = 0;
+    for (int yi = 0; yi < size; ++yi) {
+        for (int xi = 0; xi < size - 1; ++xi) {
+            bordureCases[borderIndex].first.x = xi;
+            bordureCases[borderIndex].first.y = yi;
+            bordureCases[borderIndex].second.x = xi + 1;
+            bordureCases[borderIndex].second.y = yi;
 
             // right side
-            caseBordure[xi][yi][2].id = index;
+            caseBordure[xi][yi][2].id = borderIndex;
             //leftside
-            caseBordure[xi + 1][yi][0].id = index;
+            caseBordure[xi + 1][yi][0].id = borderIndex;
+
+            ++borderIndex;
         }
     }
 
     // horizontal borders
-    for (int xi = 0; xi < size; ++xi) {
-        for (int yi = 0; yi < size - 1; ++yi) {
-            const auto index = borderMaxIndex + (xi * size + yi);
-            bordureCases[index].first.x = xi;
-            bordureCases[index].first.y = yi;
-            bordureCases[index].second.x = xi;
-            bordureCases[index].second.y = yi + 1;
+    for (int yi = 0; yi < size - 1; ++yi) {
+        for (int xi = 0; xi < size; ++xi) {
+            bordureCases[borderIndex].first.x = xi;
+            bordureCases[borderIndex].first.y = yi;
+            bordureCases[borderIndex].second.x = xi;
+            bordureCases[borderIndex].second.y = yi + 1;
 
             // right side
-            caseBordure[xi][yi][3].id = index;
+            caseBordure[xi][yi][3].id = borderIndex;
             //leftside
-            caseBordure[xi][yi + 1][1].id = index;
+            caseBordure[xi][yi + 1][1].id = borderIndex;
+            ++borderIndex;
         }
     }
 
@@ -158,8 +156,7 @@ void ColorPieceConstraint::denyOne(const BordureData &bordureData,
 }
 
 void ColorPieceConstraint::addOne(const CaseData &caseData,
-    const PieceData &pieceData,
-    const int &depth, const int &persistent)
+    const PieceData &pieceData)
 {
     // entrypoint : advice : the entrypoint is CasePieceConstraint, addOne action never goes up
     for (int rotation = 0; rotation < 4; ++rotation) {
@@ -168,14 +165,13 @@ void ColorPieceConstraint::addOne(const CaseData &caseData,
         const auto &colorData =
             pieceColors[pieceData.id][pieceData.rotation][rotation];
 
-        _first.addOne(bordureData, colorData, depth, persistent);
+        _first.addOne(bordureData, colorData);
     }
 }
 
 void ColorPieceConstraint::addOne(
     const BordureData &bordureData,
-    const ColorData &colorData,
-    const int &depth, const int &persistent)
+    const ColorData &colorData)
 {
     // entrypoint : unused : the entrypoint is CasePieceConstraint, addOne action never goes up
     /*
@@ -188,19 +184,19 @@ void ColorPieceConstraint::addOne(
 
     if (bordureData.id < borderMaxIndex) { // vertical
         for (auto &iterator : colorPieces[colorData.id][2]) {
-            _second.addOne(caseDataFirst, iterator, depth, persistent);
+            _second.addOne(caseDataFirst, iterator);
         }
 
         for (auto &iterator : colorPieces[colorData.id][0]) {
-            _second.addOne(caseDataFirst, iterator, depth, persistent);
+            _second.addOne(caseDataFirst, iterator);
         }
     } else if (bordureData.id > borderMaxIndex) { // horizontal
         for (auto &iterator : colorPieces[colorData.id][3]) {
-            _second.addOne(caseDataFirst, iterator, depth, persistent);
+            _second.addOne(caseDataFirst, iterator);
         }
 
         for (auto &iterator : colorPieces[colorData.id][1]) {
-            _second.addOne(caseDataSecond, iterator, depth, persistent);
+            _second.addOne(caseDataSecond, iterator);
         }
     }
      */

@@ -1,4 +1,3 @@
-#include <iostream>
 #include "CaseModel.h"
 #include "../constraint/CasePieceConstraint.h"
 #include "../constraint/BordureCaseConstraint.h"
@@ -23,8 +22,8 @@ CaseModel::CaseModel(
 
     // [x][y][n°piece][rotation]
     casePieces.resize(size,
-        vector<vector<vector<bool>>>(size,
-            vector<vector<bool>>(depth,
+        vector<vector<vector<bool> > >(size,
+            vector<vector<bool> >(depth,
                 vector<bool>(4, false))));
 
 
@@ -90,9 +89,7 @@ void CaseModel::denyOne(
 
 void CaseModel::addOne(
     const CaseData &caseData,
-    const PieceData &pieceData,
-    const int &depth,
-    const int &persistent)
+    const PieceData &pieceData)
 {
     // one time action
     if (!casePieces[caseData.x][caseData.y][pieceData.id][pieceData.rotation]) {
@@ -107,9 +104,7 @@ void CaseModel::addOne(
 
         // propagation to lower level of Models (bordure)
         addAddOneEvent(static_cast<BordureCaseConstraint &>
-            (*observers[1]),
-            caseData, pieceData, depth, persistent
-        );
+        (*observers[1]), caseData, pieceData);
     }
 }
 

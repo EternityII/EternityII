@@ -23,6 +23,8 @@ public:
     void allow(
         const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
+    void addOne(const CaseData &caseData, const PieceData &pieceData);
+
     /**
      * @param CaseData &caseData, the variable to apply
      * @param PieceData &pieceData, the value to apply
@@ -40,10 +42,6 @@ public:
 
     void
     deny(const CaseData &caseData, const int &depth, const int &persistent);
-    void addOne(const CaseData &caseData,
-        const PieceData &pieceData,
-        const int &depth,
-        const int &persistent);
 };
 
 

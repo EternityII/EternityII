@@ -39,7 +39,8 @@ void ColorModel::denyOne(const BordureData &bordureData,
     const int &persistent)
 {
     // if still available
-    if (colorBordures[colorData.id][bordureData.id] != 0) {
+    if (bordureData.id != -1
+        && colorBordures[colorData.id][bordureData.id] != 0) {
 
         --colorBordures[colorData.id][bordureData.id];
         colorBorduresHistory[depth][persistent]
@@ -75,9 +76,7 @@ void ColorModel::denyOne(const BordureData &bordureData,
 }
 
 void ColorModel::addOne(const BordureData &bordureData,
-    const ColorData &colorData,
-    const int &depth,
-    const int &persistent)
+    const ColorData &colorData)
 {
 
     if (bordureData.id != -1) { // just to be sure

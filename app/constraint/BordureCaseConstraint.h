@@ -52,13 +52,9 @@ public:
         const int &persistent);
 
     void addOne(const CaseData &caseData,
-        const PieceData &pieceData,
-        const int &depth,
-        const int &persistent);
+        const PieceData &pieceData);
     void addOne(const BordureData &bordureData,
-        const ColorData &colorData,
-        const int &depth,
-        const int &persistent);
+        const ColorData &colorData);
 
     void deny(const BordureData &bordureData,
         const int &depth,

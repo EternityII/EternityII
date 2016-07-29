@@ -38,12 +38,16 @@ void CasePieceConstraint::denyOne(const CaseData &caseData,
 }
 
 void CasePieceConstraint::addOne(const CaseData &caseData,
-    const PieceData &pieceData,
-    const int &depth, const int &persistent)
+    const PieceData &pieceData)
 {
     // entrypoint : advice : avoid recursivity with a double check ...
-    _first.addOne(caseData, pieceData, depth, persistent);
-    _second.addOne(caseData, pieceData, depth, persistent);
+    _first.addOne(caseData, pieceData);
+    _second.addOne(caseData, pieceData);
+
+    // entrypoint : advice : comment this if the entrypoint is not this constraint
+    while (not eventManager.empty()) {
+        eventManager.process();
+    }
 }
 
 void CasePieceConstraint::deny(const CaseData &caseData,

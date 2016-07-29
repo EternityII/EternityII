@@ -8,9 +8,6 @@ class BordureData: public DataInterface
 public:
     int id;
 
-    BordureData()
-    {}
-
     BordureData(const bool valid)
         : DataInterface(valid)
     {};
