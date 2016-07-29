@@ -43,7 +43,7 @@ void ColorModel::denyOne(const BordureData &bordureData,
     const int &persistent)
 {
     // if still available
-    if (colorBordures[colorData.id][bordureData.id]) {
+    if (colorBordures[colorData.id][bordureData.id] != 0) {
 
         --colorBordures[colorData.id][bordureData.id];
         colorBorduresHistory[depth][persistent]
@@ -75,6 +75,22 @@ void ColorModel::denyOne(const BordureData &bordureData,
                 depth,
                 persistent);
         }
+    }
+}
+
+void ColorModel::addOne(const BordureData &bordureData,
+    const ColorData &colorData,
+    const int &depth,
+    const int &persistent)
+{
+    // x time action no consequence (blind action)
+    if (bordureData.id != -1) {
+        if (colorBordures[colorData.id][bordureData.id] == 0) {
+            // first time having this border :)
+            ++borduresCount[colorData.id];
+        }
+
+        ++colorBordures[colorData.id][bordureData.id];
     }
 }
 

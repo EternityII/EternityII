@@ -34,17 +34,22 @@ public:
     void allow(
         const CaseData &caseData, const PieceData &pieceData, const int &depth);
 
+    void addOne(const CaseData &caseData,
+        const PieceData &pieceData,
+        const int &depth,
+        const int &persistent);
+
     void denyOne(
         const CaseData &caseData,
         const PieceData &pieceData,
         const int &depth,
         const int &persistent);
 
-    void
-    deny(const CaseData &caseData, const int &depth, const int &persistent);
+    void deny(
+        const CaseData &caseData, const int &depth, const int &persistent);
 
-    void
-    deny(const PieceData &pieceData, const int &depth, const int &persistent);
+    void deny(
+        const PieceData &pieceData, const int &depth, const int &persistent);
 
     void rollback(const int &depth, const bool &total = true);
 };

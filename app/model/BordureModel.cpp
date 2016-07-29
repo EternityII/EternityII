@@ -92,6 +92,23 @@ void BordureModel::denyOne(const BordureData &bordureData,
     }
 }
 
+void BordureModel::addOne(const BordureData &bordureData,
+    const ColorData &colorData,
+    const int &depth,
+    const int &persistent)
+{
+    // x time action no consequence (blind action)
+    if (bordureData.id != -1) {
+        // this one is à no check so be careful
+        if (bordureColors[bordureData.id][colorData.id] == 0) {
+            // first time having this color :)
+            ++colorsCount[bordureData.id];
+        }
+
+        ++bordureColors[bordureData.id][colorData.id];
+    }
+}
+
 void BordureModel::deny(const BordureData &bordureData,
     const int &depth,
     const int &persistent)

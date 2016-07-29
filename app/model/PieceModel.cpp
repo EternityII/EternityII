@@ -77,6 +77,21 @@ void PieceModel::denyOne(
     }
 }
 
+void PieceModel::addOne(
+    const CaseData &caseData,
+    const PieceData &pieceData,
+    const int &depth,
+    const int &persistent)
+{
+    // i can do it only one time :)
+    if (!pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y]) {
+        pieceCases[pieceData.id][pieceData.rotation][caseData.x][caseData.y]
+            = true; // not anymore :)
+
+        ++casesCount[pieceData.id][pieceData.rotation];
+    }
+}
+
 void PieceModel::deny(const CaseData &caseData,
     const int &depth,
     const int &persistent)
