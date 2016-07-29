@@ -37,6 +37,15 @@ void CasePieceConstraint::denyOne(const CaseData &caseData,
     }
 }
 
+void CasePieceConstraint::addOne(const CaseData &caseData,
+    const PieceData &pieceData,
+    const int &depth, const int &persistent)
+{
+    // entrypoint : advice : avoid recursivity with a double check ...
+    _first.addOne(caseData, pieceData, depth, persistent);
+    _second.addOne(caseData, pieceData, depth, persistent);
+}
+
 void CasePieceConstraint::deny(const CaseData &caseData,
     const int &depth,
     const int &persistent)

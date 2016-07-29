@@ -19,7 +19,7 @@ ColorPieceConstraint::ColorPieceConstraint(ColorModel &colorModel,
 
     caseBordure.resize(gameImportData.size, // x
         vector<vector<BordureData> >(gameImportData.size, // y
-            vector<BordureData>(4, BordureData(-1)))); // border n°
+            vector<BordureData>(4, BordureData(-1)))); // border n°-1
 
     colorPieces.resize(gameImportData.colorsQte,
         vector<deque<PieceData> >(4));
@@ -59,19 +59,6 @@ ColorPieceConstraint::ColorPieceConstraint(ColorModel &colorModel,
                 borderMaxIndex + (y * gameImportData.size + x);
             caseBordure[x][y + 1][1] =
                 borderMaxIndex + (y * gameImportData.size + x);
-        }
-    }
-
-    for (int pieceId = 0; pieceId < gameImportData.piecesQte; ++pieceId) {
-        for (int rotation = 0; rotation < 4; ++rotation) {
-            for (int face = 0; face < 4; ++face) {
-                colorPieces[gameImportData.pieces[pieceId]
-                    ->colors[rotation][face]][face]
-                    .emplace_back(pieceId, rotation);
-
-                pieceColors[pieceId][rotation][face].id =
-                    gameImportData.pieces[pieceId]->colors[rotation][face];
-            }
         }
     }
 }
@@ -145,7 +132,55 @@ void ColorPieceConstraint::denyOne(const BordureData &bordureData,
             _second.denyOne(caseDataSecond, iterator, depth, persistent);
         }
     }
-    //_second.denyOne(caseData, pieceData, depth, persistent);
+}
+
+void ColorPieceConstraint::addOne(const CaseData &caseData,
+    const PieceData &pieceData,
+    const int &depth, const int &persistent)
+{
+    // entrypoint : advice : the entrypoint is CasePieceConstraint, addOne action never goes up
+    for (int rotation = 0; rotation < 4; ++rotation) {
+        const auto &bordureData =
+            caseBordure[caseData.x][caseData.y][rotation];
+        const auto &colorData =
+            pieceColors[pieceData.id][pieceData.rotation][rotation];
+
+        _first.addOne(bordureData, colorData, depth, persistent);
+    }
+}
+
+void ColorPieceConstraint::addOne(
+    const BordureData &bordureData,
+    const ColorData &colorData,
+    const int &depth, const int &persistent)
+{
+    // entrypoint : unused : the entrypoint is CasePieceConstraint, addOne action never goes up
+    /*
+    if (bordureData.id == -1) {
+        return;
+    }
+
+    const auto &caseDataFirst = bordureCases[bordureData.id].first;
+    const auto &caseDataSecond = bordureCases[bordureData.id].second;
+
+    if (bordureData.id < borderMaxIndex) { // vertical
+        for (auto &iterator : colorPieces[colorData.id][2]) {
+            _second.addOne(caseDataFirst, iterator, depth, persistent);
+        }
+
+        for (auto &iterator : colorPieces[colorData.id][0]) {
+            _second.addOne(caseDataFirst, iterator, depth, persistent);
+        }
+    } else if (bordureData.id > borderMaxIndex) { // horizontal
+        for (auto &iterator : colorPieces[colorData.id][3]) {
+            _second.addOne(caseDataFirst, iterator, depth, persistent);
+        }
+
+        for (auto &iterator : colorPieces[colorData.id][1]) {
+            _second.addOne(caseDataSecond, iterator, depth, persistent);
+        }
+    }
+     */
 
 }
 

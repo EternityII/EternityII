@@ -37,6 +37,19 @@ void BordureColorConstraint::denyOne(
     _second.denyOne(bordureData, colorData, depth, persistent);
 }
 
+void BordureColorConstraint::addOne(
+    const BordureData &bordureData,
+    const ColorData &colorData,
+    const int &depth,
+    const int &persistent)
+{
+    // entrypoint : unused : never called because the entrypoint is CasePieceConstraint
+    /*
+    _first.addOne(bordureData, colorData, depth, persistent);
+    _second.addOne(bordureData, colorData, depth, persistent);
+    */
+}
+
 void BordureColorConstraint::deny(
     const BordureData &bordureData, const int &depth, const int &persistent)
 {

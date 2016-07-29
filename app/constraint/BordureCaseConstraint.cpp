@@ -117,6 +117,57 @@ void BordureCaseConstraint::denyOne(
     }
 }
 
+void BordureCaseConstraint::addOne(
+    const CaseData &caseData,
+    const PieceData &pieceData,
+    const int &depth, const int &persistent)
+{
+    // entrypoint : the entrypoint is CasePieceConstraint so the oneway is CaPi to BoCo
+    for (int rotation = 0; rotation < 4; ++rotation) {
+        const auto &bordureData =
+            caseBordure[caseData.x][caseData.y][rotation];
+        const auto &colorData =
+            pieceColors[pieceData.id][pieceData.rotation][rotation];
+
+        _first.addOne(bordureData, colorData, depth, persistent);
+    }
+}
+
+void BordureCaseConstraint::addOne(
+    const BordureData &bordureData,
+    const ColorData &colorData,
+    const int &depth,
+    const int &persistent)
+{
+    // entrypoint : unused : the entrypoint is CasePieceConstraint, addOne never go up
+    /*
+    if (bordureData.id == -1) {
+        return;
+    }
+
+    const auto &caseDataFirst = bordureCases[bordureData.id].first;
+    const auto &caseDataSecond = bordureCases[bordureData.id].second;
+
+    // SAVAGE !
+    if (bordureData.id < borderMaxIndex) { // vertical
+        // TODO : RIGHT = 2;
+        for (auto &iterator : colorPieces[colorData.id][2]) {
+            _second.addOne(caseDataFirst, iterator, depth, persistent);
+        }
+        for (auto &iterator : colorPieces[colorData.id][0]) {
+            _second.addOne(caseDataSecond, iterator, depth, persistent);
+        }
+    } else if (bordureData.id >= borderMaxIndex) { // horizontal
+        for (auto &iterator : colorPieces[colorData.id][3]) {
+            _second.addOne(caseDataFirst, iterator, depth, persistent);
+        }
+        for (auto &iterator : colorPieces[colorData.id][1]) {
+            _second.addOne(caseDataSecond, iterator, depth, persistent);
+        }
+    }
+    */
+}
+
 void BordureCaseConstraint::denyOne(
     const BordureData &bordureData,
     const ColorData &colorData,
